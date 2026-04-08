@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Fire Loading Page</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="video-container">
+        <video autoplay muted loop playsinline id="bg-video">
+            <source src="video.mp4" type="video/mp4">
+            Your browser does not support HTML5 video.
+        </video>
+    </div>
+
+    <div class="overlay">
+        
+        <div class="loading-section">
+            <p id="loading-text">RESOURCE LOADING, PLEASE WAIT... <span id="percent">0%</span></p>
+            <div class="progress-container">
+                <div class="progress-bar" id="myBar"></div>
+            </div>
+        </div>
+
+        <div class="login-buttons" id="loginArea" style="display: none;">
+            <button class="btn facebook">Sign in with Facebook</button>
+            <div class="small-btns">
+                <button class="btn guest">Guest</button>
+                <button class="btn more">More</button>
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        // Progress Bar Script
+        let i = 0;
+        function move() {
+            if (i == 0) {
+                i = 1;
+                let elem = document.getElementById("myBar");
+                let percentText = document.getElementById("percent");
+                let width = 0;
+                let id = setInterval(frame, 50); // Speed of loading
+
+                function frame() {
+                    if (width >= 100) {
+                        clearInterval(id);
+                        i = 0;
+                        // Show login buttons after loading
+                        document.querySelector('.loading-section').style.display = 'none';
+                        document.getElementById('loginArea').style.display = 'block';
+                    } else {
+                        width++;
+                        elem.style.width = width + "%";
+                        percentText.innerHTML = width + "%";
+                    }
+                }
+            }
+        }
+        window.onload = move;
+    </script>
+</body>
+</html>
+
