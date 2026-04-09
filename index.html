@@ -8,30 +8,18 @@
 
 <body>
 
-<!-- HEADER -->
 <div class="header">
-    <div>
-        <h3>Good Morning</h3>
-        <h2>Raghav HK</h2>
-    </div>
-    <div class="icon">⚙️</div>
+    <h2>🎵 RHK MUSIC</h2>
 </div>
 
-<!-- SEARCH -->
-<input type="text" placeholder="Search songs..." onkeyup="searchYouTube(this.value)">
+<input type="text" id="searchInput" placeholder="Search songs..." onkeyup="searchYouTube(this.value)">
 
-<!-- TABS -->
-<div class="tabs">
-    <button class="active">All</button>
-    <button>Music</button>
-    <button>Radio</button>
+<div id="empty">
+    <p>Search your favorite songs 🎧</p>
 </div>
 
-<!-- RESULTS -->
-<h2>Top Charts</h2>
 <div class="scroll" id="results"></div>
 
-<!-- NAV -->
 <div class="bottom-nav">
     <div onclick="goHome()">🏠</div>
     <div onclick="focusSearch()">🔍</div>
