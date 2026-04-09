@@ -1,153 +1,17 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Garena Style Entrance</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: black;
-      color: white;
-      overflow: hidden;
-    }/* Splash Screen */
-#splash {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: radial-gradient(circle, #111, #000);
-  flex-direction: column;
-  z-index: 10;
-}
-
-.logo {
-  font-size: 40px;
-  font-weight: bold;
-  color: red;
-  animation: glow 1.5s infinite alternate;
-}
-
-@keyframes glow {
-  from { text-shadow: 0 0 10px red; }
-  to { text-shadow: 0 0 30px red, 0 0 60px red; }
-}
-
-.loading-bar {
-  width: 200px;
-  height: 5px;
-  background: #333;
-  margin-top: 20px;
-  overflow: hidden;
-}
-
-.loading-progress {
-  width: 0%;
-  height: 100%;
-  background: red;
-  animation: load 3s forwards;
-}
-
-@keyframes load {
-  to { width: 100%; }
-}
-
-/* Login Screen */
-#login {
-  display: none;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  background: linear-gradient(135deg, #000, #111);
-}
-
-.btn {
-  padding: 12px 20px;
-  margin: 10px;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  border-radius: 5px;
-  transition: 0.3s;
-}
-
-.fb { background: #1877f2; color: white; }
-.guest { background: gray; color: white; }
-.google { background: #db4437; color: white; }
-
-.btn:hover {
-  transform: scale(1.1);
-}
-
-/* Glitter Effect */
-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 0;
-}
-
-  </style>
+  <title>Garena Entry</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-<body><canvas id="glitter"></canvas>
+<body>
 
-<div id="splash">
-  <div class="logo">GARENA</div>
-  <div class="loading-bar">
-    <div class="loading-progress"></div>
-  </div>
-</div><div id="login">
-  <h2>Login</h2>
-  <button class="btn fb">Login with Facebook</button>
-  <button class="btn google">Login with Google</button>
-  <button class="btn guest">Continue as Guest</button>
-</div><script>
-  // Switch screens
-  setTimeout(() => {
-    document.getElementById('splash').style.display = 'none';
-    document.getElementById('login').style.display = 'flex';
-  }, 3000);
+<div class="loader">
+  <img src="assets/logo.png" class="logo" id="logo">
+  <h1 class="brand">Garena</h1>
+</div>
 
-  // Glitter Effect
-  const canvas = document.getElementById('glitter');
-  const ctx = canvas.getContext('2d');
-
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  let particles = [];
-
-  for (let i = 0; i < 100; i++) {
-    particles.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      size: Math.random() * 2,
-      speed: Math.random() * 1
-    });
-  }
-
-  function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = 'white';
-
-    particles.forEach(p => {
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ctx.fill();
-
-      p.y += p.speed;
-      if (p.y > canvas.height) {
-        p.y = 0;
-        p.x = Math.random() * canvas.width;
-      }
-    });
-
-    requestAnimationFrame(draw);
-  }
-
-  draw();
-</script></body>
+<script src="script.js"></script>
+</body>
 </html>
