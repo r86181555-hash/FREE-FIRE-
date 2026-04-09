@@ -14,28 +14,28 @@
         <h3>Good Morning</h3>
         <h2>Raghav HK</h2>
     </div>
-    <div class="icons">⚙️</div>
+    <div class="icon">⚙️</div>
 </div>
 
 <!-- SEARCH -->
 <input type="text" placeholder="Search songs..." onkeyup="searchYouTube(this.value)">
 
-<!-- CATEGORY -->
+<!-- TABS -->
 <div class="tabs">
     <button class="active">All</button>
     <button>Music</button>
     <button>Radio</button>
 </div>
 
-<!-- TOP CHARTS -->
+<!-- RESULTS -->
 <h2>Top Charts</h2>
 <div class="scroll" id="results"></div>
 
-<!-- BOTTOM NAV -->
+<!-- NAV -->
 <div class="bottom-nav">
-    <div>🏠 Home</div>
-    <div>🔍 Search</div>
-    <div>❤️ Library</div>
+    <div onclick="goHome()">🏠</div>
+    <div onclick="focusSearch()">🔍</div>
+    <div onclick="openFav()">❤️</div>
 </div>
 
 <script src="script.js"></script>
