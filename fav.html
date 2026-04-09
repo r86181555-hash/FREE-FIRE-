@@ -2,10 +2,12 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Favorites</title>
+<link rel="stylesheet" href="style.css">
 </head>
 
-<body style="background:#04142c; color:white;">
+<body>
+
+<div class="back" onclick="history.back()">⬅</div>
 
 <h2>❤️ Favorites</h2>
 <div id="favList"></div>
@@ -26,7 +28,6 @@ function play(id,title,img){
     localStorage.setItem("videoId", id);
     localStorage.setItem("title", title);
     localStorage.setItem("img", img);
-
     window.location.href = "player.html";
 }
 </script>
