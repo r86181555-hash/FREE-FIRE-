@@ -1,0 +1,57 @@
+body {
+  margin: 0;
+  background: black;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+}
+
+/* Center container */
+.loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+/* Logo animation */
+.logo {
+  width: 150px;
+  opacity: 0;
+  transform: scale(0.5);
+  animation: logoAnim 2s ease forwards;
+}
+
+/* Text */
+.brand {
+  color: red;
+  margin-top: 10px;
+  font-size: 30px;
+  opacity: 0;
+  letter-spacing: 2px;
+  animation: textAnim 2s ease forwards;
+  animation-delay: 1s;
+}
+
+/* Animations */
+@keyframes logoAnim {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) rotate(-20deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes textAnim {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
