@@ -4,229 +4,44 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RHK MUSIC</title>
-
-<style>
-body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: #04142c;
-    color: white;
-}
-
-/* HEADER */
-.header {
-    display: flex;
-    align-items: center;
-    padding: 15px;
-}
-
-.profile {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    background: linear-gradient(45deg, pink, purple);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    margin-right: 10px;
-}
-
-.header-text {
-    flex: 1;
-}
-
-.header-text small {
-    color: #aaa;
-}
-
-.icons {
-    font-size: 20px;
-}
-
-/* CATEGORY */
-.categories {
-    display: flex;
-    overflow-x: auto;
-    padding: 10px;
-}
-
-.categories button {
-    margin-right: 10px;
-    padding: 10px 18px;
-    border-radius: 25px;
-    border: none;
-    background: #0b2a52;
-    color: white;
-}
-
-.categories .active {
-    background: white;
-    color: black;
-}
-
-/* SECTION */
-.section {
-    padding: 15px;
-}
-
-.section-title {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.section-title h2 {
-    margin: 0;
-}
-
-.view-all {
-    background: #0b2a52;
-    padding: 6px 12px;
-    border-radius: 15px;
-    font-size: 12px;
-}
-
-/* CARDS */
-.cards {
-    display: flex;
-    overflow-x: auto;
-    margin-top: 10px;
-}
-
-.card {
-    min-width: 140px;
-    margin-right: 12px;
-}
-
-.card img {
-    width: 100%;
-    border-radius: 12px;
-}
-
-.card p {
-    font-size: 14px;
-    margin-top: 5px;
-}
-
-/* PREMIUM BANNER */
-.banner {
-    margin: 15px;
-    padding: 20px;
-    border-radius: 15px;
-    background: linear-gradient(45deg, purple, pink);
-    text-align: center;
-}
-
-.banner button {
-    margin-top: 10px;
-    padding: 10px 20px;
-    border-radius: 20px;
-    border: none;
-    font-weight: bold;
-}
-
-/* NAVBAR */
-.nav {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background: #021022;
-    display: flex;
-    justify-content: space-around;
-    padding: 10px 0;
-}
-
-.nav div {
-    text-align: center;
-    color: #aaa;
-}
-
-.nav .active {
-    color: red;
-}
-</style>
-
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<!-- HEADER -->
 <div class="header">
     <div class="profile">RH</div>
-    <div class="header-text">
+    <div>
         <small>Good Morning</small><br>
         <b>Raghav Hk</b>
     </div>
-    <div class="icons">⚙️</div>
 </div>
 
-<!-- CATEGORIES -->
 <div class="categories">
     <button class="active">All</button>
-    <button>True Fans Charts</button>
+    <button>Charts</button>
     <button>Music</button>
-    <button>Radio</button>
 </div>
 
-<!-- TOP CHARTS -->
 <div class="section">
-    <div class="section-title">
-        <h2>Top Charts</h2>
-        <div class="view-all">View All</div>
-    </div>
+    <h2>Top Charts</h2>
 
     <div class="cards">
-        <div class="card">
-            <img src="img1.jpg">
-            <p>Kannada Top 50</p>
+        <div class="card" onclick="openPlayer(0)">
+            <img src="assets/images/img1.jpg">
+            <p>Kannada Top</p>
         </div>
 
-        <div class="card">
-            <img src="img2.jpg">
-            <p>Namma Bengaluru</p>
+        <div class="card" onclick="openPlayer(1)">
+            <img src="assets/images/img2.jpg">
+            <p>Hindi Hits</p>
         </div>
 
-        <div class="card">
-            <img src="img3.jpg">
-            <p>Top Hits</p>
-        </div>
-    </div>
-</div>
-
-<!-- BANNER -->
-<div class="banner">
-    <h3>FREE is great…</h3>
-    <p>₹1 for Premium? Even better!</p>
-    <button>Start Now</button>
-</div>
-
-<!-- SECOND SECTION -->
-<div class="section">
-    <div class="section-title">
-        <h2>Ultimate Maharajas</h2>
-        <div class="view-all">View All</div>
-    </div>
-
-    <div class="cards">
-        <div class="card">
-            <img src="img4.jpg">
-            <p>Power Star</p>
-        </div>
-
-        <div class="card">
-            <img src="img5.jpg">
-            <p>KGF Hero</p>
+        <div class="card" onclick="openPlayer(2)">
+            <img src="assets/images/img3.jpg">
+            <p>English Pop</p>
         </div>
     </div>
 </div>
 
-<!-- NAV -->
-<div class="nav">
-    <div class="active">🏠<br>Home</div>
-    <div>🔍<br>Search</div>
-    <div>⭐<br>Upgrade</div>
-</div>
-
-</body>
-</html>
+<script src="script.js"></script
