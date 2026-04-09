@@ -1,204 +1,82 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Free Fire Entry</title>
-
-<style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family: Arial, sans-serif;
-}
-
-body{
-  background:black;
-  overflow:hidden;
-}
-
-/* ROTATE MESSAGE */
-.rotate-msg{
-  position:fixed;
-  width:100%;
-  height:100%;
-  background:black;
-  color:white;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-size:18px;
-  z-index:99;
-}
-
-@media (orientation: landscape){
-  .rotate-msg{ display:none; }
-}
-
-/* SCREEN STYLE */
-.screen{
-  position:absolute;
-  width:100%;
-  height:100%;
-  opacity:0;
-  transition:opacity 1s ease-in-out;
-}
-
-.active{
-  opacity:1;
-  z-index:1;
-}
-
-.screen img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-/* LOADING */
-.loading-text{
-  position:absolute;
-  bottom:8%;
-  width:100%;
-  text-align:center;
-  color:white;
-}
-
-.progress-bar{
-  position:absolute;
-  bottom:5%;
-  left:10%;
-  width:80%;
-  height:4px;
-  background:rgba(255,255,255,0.2);
-}
-
-.progress{
-  height:100%;
-  width:0%;
-  background:gold;
-}
-
-/* LOGIN */
-.login-container{
-  position:absolute;
-  bottom:10%;
-  width:100%;
-  text-align:center;
-}
-
-.btn{
-  margin:8px;
-  padding:10px 20px;
-  border:none;
-  border-radius:5px;
-}
-
-.fb{
-  width:70%;
-  background:#1877f2;
-  color:white;
-}
-
-.small{
-  width:30%;
-  background:#ccc;
-}
-
-</style>
-</head>
-
-<body>
-
-<div class="rotate-msg">Rotate your phone 📱</div>
-
-<!-- SCREEN 1 -->
-<div class="screen active" id="screen1">
-  <img src="img1.jpg">
-</div>
-
-<!-- SCREEN 2 -->
-<div class="screen" id="screen2">
-  <img src="img2.jpg">
-</div>
-
-<!-- SCREEN 3 -->
-<div class="screen" id="screen3">
-  <img src="img3.jpg">
-</div>
-
-<!-- SCREEN 4 (LOADING) -->
-<div class="screen" id="screen4">
-  <img src="img4.jpg">
-
-  <div class="loading-text" id="loadingText">Loading... 0%</div>
-
-  <div class="progress-bar">
-    <div class="progress" id="progress"></div>
-  </div>
-</div>
-
-<!-- SCREEN 5 -->
-<div class="screen" id="screen5">
-  <img src="img5.jpg">
-</div>
-
-<!-- SCREEN 6 (LOGIN) -->
-<div class="screen" id="screen6">
-  <img src="img6.jpg">
-
-  <div class="login-container">
-    <button class="btn fb">Sign in with Facebook</button><br>
-    <button class="btn small">Guest</button>
-    <button class="btn small">More</button>
-  </div>
-</div>
-
-<script>
-
-let current = 1;
-
-function nextScreen(){
-  document.getElementById("screen"+current).classList.remove("active");
-  current++;
-  document.getElementById("screen"+current).classList.add("active");
-}
-
-/* FLOW TIMING */
-
-// 1 → 2
-setTimeout(nextScreen, 2000);
-
-// 2 → 3
-setTimeout(nextScreen, 4000);
-
-// 3 → 4
-setTimeout(nextScreen, 6000);
-
-/* LOADING SCREEN */
-let percent = 0;
-
-let load = setInterval(()=>{
-  if(current === 4){
-    percent++;
-
-    document.getElementById("progress").style.width = percent + "%";
-    document.getElementById("loadingText").innerText = "Loading... " + percent + "%";
-
-    if(percent >= 100){
-      clearInterval(load);
-
-      // 4 → 5
-      nextScreen();
-
-      // 5 → 6
-      setTimeout(nextScreen, 2000);
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Entry</title>  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
     }
-  }
-}, 40);
 
-</script>
+    body{
+      background:black;
+      overflow:hidden;
+    }
 
-</body>
+    /* ROTATE PHONE MESSAGE */
+    .rotate-msg{
+      position:fixed;
+      width:100%;
+      height:100%;
+      background:black;
+      color:white;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      font-size:18px;
+      z-index:999;
+    }
+
+    @media (orientation: landscape){
+      .rotate-msg{
+        display:none;
+      }
+    }
+
+    /* SCREEN STYLE */
+    .screen{
+      position:absolute;
+      width:100%;
+      height:100%;
+      top:0;
+      left:0;
+      opacity:0;
+      transition:opacity 1.5s ease-in-out;
+    }
+
+    .screen.active{
+      opacity:1;
+      z-index:1;
+    }
+
+    /* IMAGE FULL SCREEN */
+    .screen img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+  </style></head><body>  <div class="rotate-msg">Rotate your phone 📱</div>  <!-- IMAGES -->  <div class="screen active" id="s1"><img src="img1.jpg"></div>
+  <div class="screen" id="s2"><img src="img2.jpg"></div>
+  <div class="screen" id="s3"><img src="img3.jpg"></div>
+  <div class="screen" id="s4"><img src="img4.jpg"></div>
+  <div class="screen" id="s5"><img src="img5.jpg"></div>
+  <div class="screen" id="s6"><img src="img6.jpg"></div>  <script>
+    let current = 1;
+
+    function nextScreen(){
+      document.getElementById("s"+current).classList.remove("active");
+      current++;
+      if(current <= 6){
+        document.getElementById("s"+current).classList.add("active");
+      }
+    }
+
+    /* TIMINGS */
+    setTimeout(nextScreen, 2000);   // 1 → 2
+    setTimeout(nextScreen, 4000);   // 2 → 3
+    setTimeout(nextScreen, 6000);   // 3 → 4
+    setTimeout(nextScreen, 9000);   // 4 → 5
+    setTimeout(nextScreen, 12000);  // 5 → 6
+  </script></body>
 </html>
