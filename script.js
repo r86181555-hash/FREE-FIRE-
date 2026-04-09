@@ -1,52 +1,34 @@
-let songs = [
-    {
-        name: "Kannada Song",
-        src: "assets/songs/song1.mp3",
-        img: "assets/images/img1.jpg"
-    },
-    {
-        name: "Hindi Song",
-        src: "assets/songs/song2.mp3",
-        img: "assets/images/img2.jpg"
-    },
-    {
-        name: "English Song",
-        src: "assets/songs/song3.mp3",
-        img: "assets/images/img3.jpg"
-    }
-];
+const API_KEY = "AIzaSyDdklLjpuYqiQU1akYheP7K3aOLxgQTEtM";
 
-let audio = document.getElementById("audio");
-let index = localStorage.getItem("songIndex") || 0;
+async function searchYouTube(query) {
+    if (query.length < 2) return;
 
-function openPlayer(i) {
-    localStorage.setItem("songIndex", i);
+    let res = await fetch(
+        `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=10&q=${query}&key=${API_KEY}`
+    );
+
+    let data = await res.json();
+
+    let container = document.getElementById("results");
+    container.innerHTML = "";
+
+    data.items.forEach(video => {
+        let vid = video.id.videoId;
+        let title = video.snippet.title;
+        let img = video.snippet.thumbnails.medium.url;
+
+        container.innerHTML += `
+        <div class="card" onclick="openPlayer('${vid}','${title}','${img}')">
+            <img src="${img}">
+            <p>${title}</p>
+        </div>`;
+    });
+}
+
+function openPlayer(id, title, img) {
+    localStorage.setItem("videoId", id);
+    localStorage.setItem("title", title);
+    localStorage.setItem("img", img);
+
     window.location.href = "player.html";
-}
-
-function loadSong(i) {
-    if (!audio) return;
-
-    audio.src = songs[i].src;
-    document.getElementById("title").innerText = songs[i].name;
-    document.getElementById("cover").src = songs[i].img;
-}
-
-if (audio) loadSong(index);
-
-function playPause() {
-    if (audio.paused) audio.play();
-    else audio.pause();
-}
-
-function next() {
-    index = (parseInt(index) + 1) % songs.length;
-    loadSong(index);
-    audio.play();
-}
-
-function prev() {
-    index = (index - 1 + songs.length) % songs.length;
-    loadSong(index);
-    audio.play();
 }
