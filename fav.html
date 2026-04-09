@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Favorites</title>
+</head>
+
+<body style="background:#04142c; color:white;">
+
+<h2>❤️ Favorites</h2>
+<div id="favList"></div>
+
+<script>
+let fav = JSON.parse(localStorage.getItem("fav")) || [];
+let container = document.getElementById("favList");
+
+fav.forEach(song => {
+    container.innerHTML += `
+    <div onclick="play('${song.id}','${song.title}','${song.img}')">
+        <img src="${song.img}" width="100">
+        <p>${song.title}</p>
+    </div>`;
+});
+
+function play(id,title,img){
+    localStorage.setItem("videoId", id);
+    localStorage.setItem("title", title);
+    localStorage.setItem("img", img);
+
+    window.location.href = "player.html";
+}
+</script>
+
+</body>
+</html>
