@@ -8,11 +8,35 @@
 
 <body>
 
-<h2>🎵 RHK MUSIC</h2>
+<!-- HEADER -->
+<div class="header">
+    <div>
+        <h3>Good Morning</h3>
+        <h2>Raghav HK</h2>
+    </div>
+    <div class="icons">⚙️</div>
+</div>
 
+<!-- SEARCH -->
 <input type="text" placeholder="Search songs..." onkeyup="searchYouTube(this.value)">
 
-<div id="results"></div>
+<!-- CATEGORY -->
+<div class="tabs">
+    <button class="active">All</button>
+    <button>Music</button>
+    <button>Radio</button>
+</div>
+
+<!-- TOP CHARTS -->
+<h2>Top Charts</h2>
+<div class="scroll" id="results"></div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+    <div>🏠 Home</div>
+    <div>🔍 Search</div>
+    <div>❤️ Library</div>
+</div>
 
 <script src="script.js"></script>
 </body>
