@@ -3,26 +3,35 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Player</title>
-<link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<body style="background:black; color:white; text-align:center;">
 
-<div class="player">
-    <img id="cover" src="">
-    <h2 id="title"></h2>
+<h2 id="title"></h2>
 
-    <input type="range" id="progress">
+<img id="cover" width="200">
 
-    <div class="controls">
-        <button onclick="prev()">⏮</button>
-        <button onclick="playPause()" id="playBtn">▶️</button>
-        <button onclick="next()">⏭</button>
-    </div>
-</div>
+<br><br>
 
-<audio id="audio"></audio>
+<iframe id="ytPlayer"
+width="100%"
+height="250"
+frameborder="0"
+allow="autoplay"
+allowfullscreen>
+</iframe>
 
-<script src="script.js"></script>
+<script>
+let videoId = localStorage.getItem("videoId");
+let title = localStorage.getItem("title");
+let img = localStorage.getItem("img");
+
+document.getElementById("title").innerText = title;
+document.getElementById("cover").src = img;
+
+document.getElementById("ytPlayer").src =
+`https://www.youtube.com/embed/${videoId}?autoplay=1`;
+</script>
+
 </body>
 </html>
