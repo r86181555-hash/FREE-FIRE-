@@ -1,82 +1,100 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Game Entry</title>  <style>
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    body{
-      background:black;
-      overflow:hidden;
-    }
+<title>Free Fire</title>
 
-    /* ROTATE PHONE MESSAGE */
-    .rotate-msg{
-      position:fixed;
-      width:100%;
-      height:100%;
-      background:black;
-      color:white;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      font-size:18px;
-      z-index:999;
-    }
+<style>
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: black;
+  font-family: Arial, sans-serif;
+}
 
-    @media (orientation: landscape){
-      .rotate-msg{
-        display:none;
-      }
-    }
+/* LOADER */
+#loader {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  z-index: 9999;
+  flex-direction: column;
+}
 
-    /* SCREEN STYLE */
-    .screen{
-      position:absolute;
-      width:100%;
-      height:100%;
-      top:0;
-      left:0;
-      opacity:0;
-      transition:opacity 1.5s ease-in-out;
-    }
+#percent {
+  font-size: 30px;
+  margin-top: 10px;
+}
 
-    .screen.active{
-      opacity:1;
-      z-index:1;
-    }
+/* MAIN CONTENT */
+#main {
+  display: none;
+  width: 100vw;
+  height: 100vh;
+  background: url('https://i.imgur.com/3ZQ3Z6Q.jpg') no-repeat center center/cover;
+}
 
-    /* IMAGE FULL SCREEN */
-    .screen img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-    }
-  </style></head><body>  <div class="rotate-msg">Rotate your phone 📱</div>  <!-- IMAGES -->  <div class="screen active" id="s1"><img src="img1.jpg"></div>
-  <div class="screen" id="s2"><img src="img2.jpg"></div>
-  <div class="screen" id="s3"><img src="img3.jpg"></div>
-  <div class="screen" id="s4"><img src="img4.jpg"></div>
-  <div class="screen" id="s5"><img src="img5.jpg"></div>
-  <div class="screen" id="s6"><img src="img6.jpg"></div>  <script>
-    let current = 1;
+/* BUTTONS */
+.btn-container {
+  position: absolute;
+  bottom: 50px;
+  width: 100%;
+  text-align: center;
+}
 
-    function nextScreen(){
-      document.getElementById("s"+current).classList.remove("active");
-      current++;
-      if(current <= 6){
-        document.getElementById("s"+current).classList.add("active");
-      }
-    }
+button {
+  padding: 15px 25px;
+  margin: 10px;
+  font-size: 18px;
+  border: none;
+  border-radius: 10px;
+  background: orange;
+  color: black;
+  font-weight: bold;
+}
+</style>
+</head>
 
-    /* TIMINGS */
-    setTimeout(nextScreen, 2000);   // 1 → 2
-    setTimeout(nextScreen, 4000);   // 2 → 3
-    setTimeout(nextScreen, 6000);   // 3 → 4
-    setTimeout(nextScreen, 9000);   // 4 → 5
-    setTimeout(nextScreen, 12000);  // 5 → 6
-  </script></body>
+<body>
+
+<!-- LOADING SCREEN -->
+<div id="loader">
+  <h1>Loading...</h1>
+  <div id="percent">0%</div>
+</div>
+
+<!-- MAIN UI -->
+<div id="main">
+  <div class="btn-container">
+    <button onclick="alert('Login with Facebook')">Facebook</button>
+    <button onclick="alert('Login as Guest')">Guest</button>
+    <button onclick="alert('More Options')">More</button>
+  </div>
+</div>
+
+<script>
+let count = 0;
+let percent = document.getElementById("percent");
+
+let interval = setInterval(() => {
+  count++;
+  percent.innerText = count + "%";
+
+  if (count >= 100) {
+    clearInterval(interval);
+    document.getElementById("loader").style.display = "none";
+    document.getElementById("main").style.display = "block";
+  }
+}, 30);
+</script>
+
+</body>
 </html>
