@@ -1,7 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RHK MUSIC</title>
 <link rel="stylesheet" href="style.css">
@@ -9,39 +8,12 @@
 
 <body>
 
-<div class="header">
-    <div class="profile">RH</div>
-    <div>
-        <small>Good Morning</small><br>
-        <b>Raghav Hk</b>
-    </div>
-</div>
+<h2>🎵 RHK MUSIC</h2>
 
-<div class="categories">
-    <button class="active">All</button>
-    <button>Charts</button>
-    <button>Music</button>
-</div>
+<input type="text" placeholder="Search songs..." onkeyup="searchYouTube(this.value)">
 
-<div class="section">
-    <h2>Top Charts</h2>
+<div id="results"></div>
 
-    <div class="cards">
-        <div class="card" onclick="openPlayer(0)">
-            <img src="assets/images/img1.jpg">
-            <p>Kannada Top</p>
-        </div>
-
-        <div class="card" onclick="openPlayer(1)">
-            <img src="assets/images/img2.jpg">
-            <p>Hindi Hits</p>
-        </div>
-
-        <div class="card" onclick="openPlayer(2)">
-            <img src="assets/images/img3.jpg">
-            <p>English Pop</p>
-        </div>
-    </div>
-</div>
-
-<script src="script.js"></script
+<script src="script.js"></script>
+</body>
+</html>
