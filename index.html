@@ -2,98 +2,160 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-<title>Free Fire</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Free Fire Clone</title>
 
 <style>
 body {
   margin: 0;
-  padding: 0;
   overflow: hidden;
+  font-family: Arial;
   background: black;
-  font-family: Arial, sans-serif;
 }
 
-/* LOADER */
-#loader {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background: black;
+/* COMMON SCREEN */
+.screen {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: white;
-  z-index: 9999;
-  flex-direction: column;
 }
 
-#percent {
-  font-size: 30px;
-  margin-top: 10px;
+/* GARENA */
+#garena {
+  background: black;
+  color: red;
+  font-size: 50px;
+  animation: fade 2s ease-in-out;
 }
 
-/* MAIN CONTENT */
-#main {
+/* LOADING */
+#loading {
   display: none;
-  width: 100vw;
-  height: 100vh;
-  background: url('https://i.imgur.com/3ZQ3Z6Q.jpg') no-repeat center center/cover;
+  flex-direction: column;
+  color: white;
+}
+
+.bar {
+  width: 80%;
+  height: 10px;
+  background: gray;
+  margin-top: 20px;
+}
+
+.fill {
+  width: 0%;
+  height: 100%;
+  background: orange;
+}
+
+/* LOGIN */
+#login {
+  display: none;
+  background: url('https://wallpapercave.com/wp/wp7438008.jpg') no-repeat center/cover;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
 /* BUTTONS */
-.btn-container {
-  position: absolute;
-  bottom: 50px;
-  width: 100%;
+.buttons {
+  margin-bottom: 40px;
   text-align: center;
 }
 
 button {
-  padding: 15px 25px;
+  width: 85%;
+  padding: 15px;
   margin: 10px;
   font-size: 18px;
   border: none;
   border-radius: 10px;
-  background: orange;
-  color: black;
-  font-weight: bold;
+  transition: 0.3s;
 }
+
+.fb {
+  background: #1877f2;
+  color: white;
+}
+
+.guest {
+  background: orange;
+}
+
+.more {
+  background: gray;
+  color: white;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+/* ANIMATION */
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 </style>
 </head>
 
 <body>
 
-<!-- LOADING SCREEN -->
-<div id="loader">
-  <h1>Loading...</h1>
-  <div id="percent">0%</div>
+<!-- GARENA -->
+<div id="garena" class="screen">
+  GARENA
 </div>
 
-<!-- MAIN UI -->
-<div id="main">
-  <div class="btn-container">
-    <button onclick="alert('Login with Facebook')">Facebook</button>
-    <button onclick="alert('Login as Guest')">Guest</button>
-    <button onclick="alert('More Options')">More</button>
+<!-- LOADING -->
+<div id="loading" class="screen">
+  <h1>Loading...</h1>
+  <div class="bar">
+    <div class="fill" id="fill"></div>
+  </div>
+  <p id="percent">0%</p>
+</div>
+
+<!-- LOGIN -->
+<div id="login" class="screen">
+  <div class="buttons">
+    <button class="fb">Login with Facebook</button>
+    <button class="guest">Guest</button>
+    <button class="more">More</button>
   </div>
 </div>
 
 <script>
-let count = 0;
-let percent = document.getElementById("percent");
 
-let interval = setInterval(() => {
-  count++;
-  percent.innerText = count + "%";
+// STEP 1: Garena → Loading
+setTimeout(() => {
+  document.getElementById("garena").style.display = "none";
+  document.getElementById("loading").style.display = "flex";
+  startLoading();
+}, 2000);
 
-  if (count >= 100) {
-    clearInterval(interval);
-    document.getElementById("loader").style.display = "none";
-    document.getElementById("main").style.display = "block";
-  }
-}, 30);
+
+// STEP 2: Loading animation
+function startLoading() {
+  let count = 0;
+  let fill = document.getElementById("fill");
+  let percent = document.getElementById("percent");
+
+  let interval = setInterval(() => {
+    count++;
+    fill.style.width = count + "%";
+    percent.innerText = count + "%";
+
+    if (count >= 100) {
+      clearInterval(interval);
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("login").style.display = "flex";
+    }
+  }, 25);
+}
+
 </script>
 
 </body>
