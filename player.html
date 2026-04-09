@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Player</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="player">
+    <img id="cover" src="">
+    <h2 id="title"></h2>
+
+    <input type="range" id="progress">
+
+    <div class="controls">
+        <button onclick="prev()">⏮</button>
+        <button onclick="playPause()" id="playBtn">▶️</button>
+        <button onclick="next()">⏭</button>
+    </div>
+</div>
+
+<audio id="audio"></audio>
+
+<script src="script.js"></script>
+</body>
+</html>
