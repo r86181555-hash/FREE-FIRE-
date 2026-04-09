@@ -17,7 +17,6 @@
       overflow:hidden;
     }
 
-    /* ROTATE PHONE MESSAGE */
     .rotate-msg{
       position:fixed;
       width:100%;
@@ -37,7 +36,6 @@
       }
     }
 
-    /* VIDEO SCREEN */
     .screen{
       position:absolute;
       width:100%;
@@ -56,14 +54,27 @@
 
 <body>
 
-  <div class="rotate-msg">Rotate your phone 📱</div>
+<div class="rotate-msg">Rotate your phone 📱</div>
 
-  <!-- VIDEO -->
-  <div class="screen">
-    <video autoplay muted playsinline>
-      <source src="VID_20250409_233027_1.mp4" type="video/mp4">
-    </video>
-  </div>
+<div class="screen">
+  <video id="introVideo" muted playsinline loop>
+    <source src="VID_20250409_233027_1.mp4" type="video/mp4">
+  </video>
+</div>
+
+<script>
+  const video = document.getElementById("introVideo");
+
+  // Force autoplay
+  window.addEventListener("load", () => {
+    video.play().catch(() => {
+      // If blocked, play on first touch
+      document.body.addEventListener("click", () => {
+        video.play();
+      }, { once: true });
+    });
+  });
+</script>
 
 </body>
 </html>
