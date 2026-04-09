@@ -1,13 +1,21 @@
 const API_KEY = "AIzaSyDdklLjpuYqiQU1akYheP7K3aOLxgQTEtM";
 
 function searchYouTube(query) {
-    if (query.length < 2) return;
+    let empty = document.getElementById("empty");
+    let container = document.getElementById("results");
+
+    if (query.length < 2) {
+        container.innerHTML = "";
+        empty.style.display = "block";
+        return;
+    }
+
+    empty.style.display = "none";
 
     fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=10&q=${query}&key=${API_KEY}`)
     .then(res => res.json())
     .then(data => {
 
-        let container = document.getElementById("results");
         container.innerHTML = "";
 
         data.items.forEach(video => {
@@ -29,17 +37,14 @@ function openPlayer(id, title, img) {
     localStorage.setItem("videoId", id);
     localStorage.setItem("title", title);
     localStorage.setItem("img", img);
-
     window.location.href = "player.html";
 }
 
 function addFav(id, title, img) {
     let fav = JSON.parse(localStorage.getItem("fav")) || [];
-
     fav.push({id, title, img});
     localStorage.setItem("fav", JSON.stringify(fav));
-
-    alert("Added to favorites ❤️");
+    alert("Added ❤️");
 }
 
 function openFav() {
@@ -51,5 +56,5 @@ function goHome() {
 }
 
 function focusSearch() {
-    document.querySelector("input").focus();
+    document.getElementById("searchInput").focus();
 }
