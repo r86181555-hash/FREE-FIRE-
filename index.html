@@ -3,209 +3,206 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Free Fire Style Clone</title>
+<title>Free Fire Style Entry</title>
 
 <style>
-body {
-  margin: 0;
-  background: black;
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
   font-family: Arial, sans-serif;
-  overflow: hidden;
-  color: white;
 }
 
-/* COMMON SCREEN */
-.screen {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* FORCE LANDSCAPE */
+body{
+  background:black;
+  overflow:hidden;
 }
 
-/* ---------------- GARAGE INTRO ---------------- */
-#intro {
-  background: black;
-  flex-direction: column;
+/* MAIN CONTAINER */
+.container{
+  position:fixed;
+  width:100vw;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 
-svg {
-  width: 140px;
-  stroke: red;
-  fill: none;
-  stroke-width: 3;
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 1000;
-  animation: draw 2.5s ease forwards;
-  filter: drop-shadow(0 0 20px red);
+/* SCREEN STYLE */
+.screen{
+  position:absolute;
+  width:100%;
+  height:100%;
+  opacity:0;
+  transition:opacity 1s ease-in-out;
 }
 
-.brand {
-  color: red;
-  font-size: 32px;
-  margin-top: 10px;
-  opacity: 0;
-  animation: fadeIn 2s forwards;
-  animation-delay: 2s;
+.active{
+  opacity:1;
+  z-index:1;
 }
 
-@keyframes draw {
-  to { stroke-dashoffset: 0; }
+/* IMAGE FIT LIKE GAME */
+.screen img{
+  width:100%;
+  height:100%;
+  object-fit:cover; /* fills horizontal */
 }
 
-@keyframes fadeIn {
-  to { opacity: 1; }
+/* LOADING TEXT */
+.loading-text{
+  position:absolute;
+  bottom:8%;
+  width:100%;
+  text-align:center;
+  color:white;
+  font-size:14px;
 }
 
-/* ---------------- LOADING SCREEN ---------------- */
-#loading {
-  display: none;
-  flex-direction: column;
-  background: radial-gradient(circle at center, #111, black);
+/* PROGRESS BAR */
+.progress-bar{
+  position:absolute;
+  bottom:4%;
+  left:10%;
+  width:80%;
+  height:4px;
+  background:rgba(255,255,255,0.2);
 }
 
-.loading-text {
-  margin-top: 20px;
-  font-size: 18px;
-  letter-spacing: 2px;
+.progress{
+  height:100%;
+  width:0%;
+  background:gold;
 }
 
-.bar {
-  width: 60%;
-  height: 8px;
-  background: #333;
-  margin-top: 20px;
-  border-radius: 10px;
-  overflow: hidden;
+/* LOGIN */
+.login-container{
+  position:absolute;
+  bottom:10%;
+  width:100%;
+  text-align:center;
 }
 
-.progress {
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, red, orange);
-  transition: width 1s ease;
+.btn{
+  display:inline-block;
+  margin:8px;
+  padding:10px 20px;
+  border:none;
+  border-radius:5px;
+  font-size:14px;
 }
 
-/* ---------------- LOGIN SCREEN ---------------- */
-#login {
-  display: none;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding-bottom: 60px;
-  background: linear-gradient(120deg, #0a0a0a, #1a1a1a);
+.fb{
+  background:#1877f2;
+  color:white;
+  width:70%;
 }
 
-/* Fake animated background */
-.bg-effect {
-  position: absolute;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(0,150,255,0.2), transparent);
-  animation: moveBg 10s linear infinite;
+.small-btn{
+  width:30%;
+  background:#ccc;
 }
 
-@keyframes moveBg {
-  from { transform: translate(-25%, -25%); }
-  to { transform: translate(0%, 0%); }
+/* FORCE LANDSCAPE MESSAGE */
+.rotate-msg{
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:black;
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:18px;
+  z-index:99;
 }
 
-/* Buttons */
-.btn {
-  width: 250px;
-  padding: 12px;
-  margin: 10px;
-  border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.fb {
-  background: #1877f2;
-  color: white;
-}
-
-.guest {
-  background: #444;
-  color: white;
-}
-
-.more {
-  background: #222;
-  color: white;
-}
-
-/* Horizontal feel */
-@media (orientation: landscape) {
-  .screen {
-    flex-direction: row;
+@media screen and (orientation:landscape){
+  .rotate-msg{
+    display:none;
   }
 }
+
 </style>
 </head>
 
 <body>
 
-<!-- 1️⃣ INTRO -->
-<div id="intro" class="screen">
-  <svg viewBox="0 0 100 100">
-    <path d="M50 10 Q80 20 70 50 Q60 80 30 70 Q20 60 40 50 Q60 40 50 10"/>
-  </svg>
-  <div class="brand">GARENA</div>
+<div class="rotate-msg">
+  Please rotate your phone 📱
 </div>
 
-<!-- 2️⃣ LOADING -->
-<div id="loading" class="screen">
-  <div>LOADING...</div>
-  <div class="bar">
+<div class="container">
+
+<!-- SCREEN 1 -->
+<div class="screen active" id="screen1">
+  <img src="img1.png">
+</div>
+
+<!-- SCREEN 2 -->
+<div class="screen" id="screen2">
+  <img src="img2.png">
+</div>
+
+<!-- SCREEN 3 -->
+<div class="screen" id="screen3">
+  <img src="img3.png">
+
+  <div class="loading-text" id="loadingText">Loading... 0%</div>
+
+  <div class="progress-bar">
     <div class="progress" id="progress"></div>
   </div>
-  <div class="loading-text" id="percent">0%</div>
 </div>
 
-<!-- 3️⃣ LOGIN -->
-<div id="login" class="screen">
-  <div class="bg-effect"></div>
+<!-- SCREEN 4 -->
+<div class="screen" id="screen4">
+  <img src="img4.png">
 
-  <button class="btn fb">Sign in with Facebook</button>
-  <button class="btn guest">Guest</button>
-  <button class="btn more">More</button>
+  <div class="login-container">
+    <button class="btn fb">Sign in with Facebook</button><br>
+    <button class="btn small-btn">Guest</button>
+    <button class="btn small-btn">More</button>
+  </div>
+</div>
+
 </div>
 
 <script>
 
-// FLOW CONTROL
-setTimeout(() => {
-  document.getElementById("intro").style.display = "none";
-  document.getElementById("loading").style.display = "flex";
-  startLoading();
-}, 3500);
+let current = 1;
 
-function startLoading() {
-  let progress = 0;
-  let bar = document.getElementById("progress");
-  let text = document.getElementById("percent");
-
-  let steps = [50, 75, 100];
-  let i = 0;
-
-  let interval = setInterval(() => {
-    if (i < steps.length) {
-      progress = steps[i];
-      bar.style.width = progress + "%";
-      text.innerText = progress + "%";
-      i++;
-    } else {
-      clearInterval(interval);
-
-      setTimeout(() => {
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("login").style.display = "flex";
-      }, 800);
-    }
-  }, 1000);
+function nextScreen(){
+  document.getElementById("screen"+current).classList.remove("active");
+  current++;
+  document.getElementById("screen"+current).classList.add("active");
 }
+
+/* TIMINGS */
+
+// img1 → img2
+setTimeout(nextScreen, 2000);
+
+// img2 → img3
+setTimeout(nextScreen, 4000);
+
+/* LOADING */
+let percent = 0;
+
+let load = setInterval(()=>{
+  percent++;
+
+  document.getElementById("progress").style.width = percent + "%";
+  document.getElementById("loadingText").innerText = "Loading... " + percent + "%";
+
+  if(percent >= 100){
+    clearInterval(load);
+
+    setTimeout(nextScreen, 500);
+  }
+
+}, 40);
 
 </script>
 
