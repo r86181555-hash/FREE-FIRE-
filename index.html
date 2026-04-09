@@ -1,162 +1,82 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Free Fire Clone</title>
-
-<style>
-body {
-  margin: 0;
-  overflow: hidden;
-  font-family: Arial;
-  background: black;
-}
-
-/* COMMON SCREEN */
-.screen {
-  position: absolute;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* GARENA */
-#garena {
-  background: black;
-  color: red;
-  font-size: 50px;
-  animation: fade 2s ease-in-out;
-}
-
-/* LOADING */
-#loading {
-  display: none;
-  flex-direction: column;
-  color: white;
-}
-
-.bar {
-  width: 80%;
-  height: 10px;
-  background: gray;
-  margin-top: 20px;
-}
-
-.fill {
-  width: 0%;
-  height: 100%;
-  background: orange;
-}
-
-/* LOGIN */
-#login {
-  display: none;
-  background: url('https://wallpapercave.com/wp/wp7438008.jpg') no-repeat center/cover;
-  flex-direction: column;
-  justify-content: flex-end;
-}
-
-/* BUTTONS */
-.buttons {
-  margin-bottom: 40px;
-  text-align: center;
-}
-
-button {
-  width: 85%;
-  padding: 15px;
-  margin: 10px;
-  font-size: 18px;
-  border: none;
-  border-radius: 10px;
-  transition: 0.3s;
-}
-
-.fb {
-  background: #1877f2;
-  color: white;
-}
-
-.guest {
-  background: orange;
-}
-
-.more {
-  background: gray;
-  color: white;
-}
-
-button:hover {
-  transform: scale(1.05);
-}
-
-/* ANIMATION */
-@keyframes fade {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-</style>
-</head>
-
-<body>
-
-<!-- GARENA -->
-<div id="garena" class="screen">
-  GARENA
-</div>
-
-<!-- LOADING -->
-<div id="loading" class="screen">
-  <h1>Loading...</h1>
-  <div class="bar">
-    <div class="fill" id="fill"></div>
-  </div>
-  <p id="percent">0%</p>
-</div>
-
-<!-- LOGIN -->
-<div id="login" class="screen">
-  <div class="buttons">
-    <button class="fb">Login with Facebook</button>
-    <button class="guest">Guest</button>
-    <button class="more">More</button>
-  </div>
-</div>
-
-<script>
-
-// STEP 1: Garena → Loading
-setTimeout(() => {
-  document.getElementById("garena").style.display = "none";
-  document.getElementById("loading").style.display = "flex";
-  startLoading();
-}, 2000);
-
-
-// STEP 2: Loading animation
-function startLoading() {
-  let count = 0;
-  let fill = document.getElementById("fill");
-  let percent = document.getElementById("percent");
-
-  let interval = setInterval(() => {
-    count++;
-    fill.style.width = count + "%";
-    percent.innerText = count + "%";
-
-    if (count >= 100) {
-      clearInterval(interval);
-      document.getElementById("loading").style.display = "none";
-      document.getElementById("login").style.display = "flex";
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Entry</title>  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
     }
-  }, 25);
-}
 
-</script>
+    body{
+      background:black;
+      overflow:hidden;
+    }
 
-</body>
+    /* ROTATE PHONE MESSAGE */
+    .rotate-msg{
+      position:fixed;
+      width:100%;
+      height:100%;
+      background:black;
+      color:white;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      font-size:18px;
+      z-index:999;
+    }
+
+    @media (orientation: landscape){
+      .rotate-msg{
+        display:none;
+      }
+    }
+
+    /* SCREEN STYLE */
+    .screen{
+      position:absolute;
+      width:100%;
+      height:100%;
+      top:0;
+      left:0;
+      opacity:0;
+      transition:opacity 1.5s ease-in-out;
+    }
+
+    .screen.active{
+      opacity:1;
+      z-index:1;
+    }
+
+    /* IMAGE FULL SCREEN */
+    .screen img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+  </style></head><body>  <div class="rotate-msg">Rotate your phone 📱</div>  <!-- IMAGES -->  <div class="screen active" id="s1"><img src="img1.jpg"></div>
+  <div class="screen" id="s2"><img src="img2.jpg"></div>
+  <div class="screen" id="s3"><img src="img3.jpg"></div>
+  <div class="screen" id="s4"><img src="img4.jpg"></div>
+  <div class="screen" id="s5"><img src="img5.jpg"></div>
+  <div class="screen" id="s6"><img src="img6.jpg"></div>  <script>
+    let current = 1;
+
+    function nextScreen(){
+      document.getElementById("s"+current).classList.remove("active");
+      current++;
+      if(current <= 6){
+        document.getElementById("s"+current).classList.add("active");
+      }
+    }
+
+    /* TIMINGS */
+    setTimeout(nextScreen, 2000);   // 1 → 2
+    setTimeout(nextScreen, 4000);   // 2 → 3
+    setTimeout(nextScreen, 6000);   // 3 → 4
+    setTimeout(nextScreen, 9000);   // 4 → 5
+    setTimeout(nextScreen, 12000);  // 5 → 6
+  </script></body>
 </html>
