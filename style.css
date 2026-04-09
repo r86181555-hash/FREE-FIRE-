@@ -7,52 +7,52 @@ body {
 }
 
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    text-align: center;
 }
 
+/* SEARCH */
 input {
     width: 100%;
-    padding: 12px;
-    border-radius: 25px;
+    padding: 14px;
+    border-radius: 30px;
     border: none;
     margin: 15px 0;
 }
 
-.tabs {
-    display: flex;
-    gap: 10px;
+/* EMPTY */
+#empty {
+    text-align: center;
+    color: gray;
+    margin-top: 50px;
 }
 
-.tabs button {
-    padding: 8px 15px;
-    border-radius: 20px;
-    border: none;
-    background: #1a2a4a;
-    color: white;
-}
-
-.tabs .active {
-    background: white;
-    color: black;
-}
-
+/* SCROLL */
 .scroll {
     display: flex;
     overflow-x: auto;
     gap: 10px;
 }
 
+/* CARD */
 .card {
     min-width: 150px;
 }
 
 .card img {
     width: 100%;
-    border-radius: 10px;
+    border-radius: 12px;
 }
 
+/* BUTTON */
+button {
+    padding: 5px 10px;
+    border-radius: 10px;
+    border: none;
+    background: red;
+    color: white;
+}
+
+/* NAV */
 .bottom-nav {
     position: fixed;
     bottom: 0;
@@ -61,4 +61,14 @@ input {
     display: flex;
     justify-content: space-around;
     padding: 10px;
+}
+
+/* BACK BUTTON */
+.back {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background: #222;
+    padding: 8px;
+    border-radius: 10px;
 }
