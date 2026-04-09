@@ -1,3 +1,5 @@
+const API_KEY = "AIzaSyDdklLjpuYqiQU1akYheP7K3aOLxgQTEtM";
+
 function searchYouTube(query) {
     if (query.length < 2) return;
 
@@ -14,10 +16,40 @@ function searchYouTube(query) {
             let img = video.snippet.thumbnails.medium.url;
 
             container.innerHTML += `
-            <div class="card" onclick="openPlayer('${vid}','${title}','${img}')">
-                <img src="${img}">
+            <div class="card">
+                <img src="${img}" onclick="openPlayer('${vid}','${title}','${img}')">
                 <p>${title}</p>
+                <button onclick="addFav('${vid}','${title}','${img}')">❤️</button>
             </div>`;
         });
     });
+}
+
+function openPlayer(id, title, img) {
+    localStorage.setItem("videoId", id);
+    localStorage.setItem("title", title);
+    localStorage.setItem("img", img);
+
+    window.location.href = "player.html";
+}
+
+function addFav(id, title, img) {
+    let fav = JSON.parse(localStorage.getItem("fav")) || [];
+
+    fav.push({id, title, img});
+    localStorage.setItem("fav", JSON.stringify(fav));
+
+    alert("Added to favorites ❤️");
+}
+
+function openFav() {
+    window.location.href = "fav.html";
+}
+
+function goHome() {
+    window.location.href = "index.html";
+}
+
+function focusSearch() {
+    document.querySelector("input").focus();
 }
