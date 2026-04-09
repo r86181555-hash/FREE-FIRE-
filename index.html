@@ -9,56 +9,60 @@
 body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(to bottom, #0a0a0a, #121212);
+    background: #04142c;
     color: white;
 }
 
 /* HEADER */
 .header {
-    padding: 18px;
-    font-size: 24px;
+    display: flex;
+    align-items: center;
+    padding: 15px;
+}
+
+.profile {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, pink, purple);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-weight: bold;
-    letter-spacing: 1px;
+    margin-right: 10px;
 }
 
-/* SEARCH */
-.search-box {
-    padding: 0 15px;
+.header-text {
+    flex: 1;
 }
 
-.search-box input {
-    width: 100%;
-    padding: 14px;
-    border-radius: 30px;
-    border: 1px solid #2a2a2a;
-    background: rgba(255,255,255,0.05);
-    color: white;
-    font-size: 15px;
-    backdrop-filter: blur(10px);
+.header-text small {
+    color: #aaa;
+}
+
+.icons {
+    font-size: 20px;
 }
 
 /* CATEGORY */
 .categories {
     display: flex;
     overflow-x: auto;
-    padding: 15px;
+    padding: 10px;
 }
 
 .categories button {
     margin-right: 10px;
     padding: 10px 18px;
     border-radius: 25px;
-    border: 1px solid #333;
-    background: #1c1c1c;
+    border: none;
+    background: #0b2a52;
     color: white;
-    cursor: pointer;
-    transition: 0.3s;
 }
 
-.categories button.active,
-.categories button:hover {
-    background: #1db954;
-    border: 1px solid #1db954;
+.categories .active {
+    background: white;
+    color: black;
 }
 
 /* SECTION */
@@ -66,66 +70,80 @@ body {
     padding: 15px;
 }
 
-.section h2 {
-    margin-bottom: 12px;
-    font-size: 18px;
+.section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-/* SONG LIST */
-.song-list {
+.section-title h2 {
+    margin: 0;
+}
+
+.view-all {
+    background: #0b2a52;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 12px;
+}
+
+/* CARDS */
+.cards {
     display: flex;
     overflow-x: auto;
+    margin-top: 10px;
 }
 
-/* CARD */
-.song-card {
-    background: rgba(255,255,255,0.05);
-    border-radius: 15px;
-    padding: 10px;
+.card {
+    min-width: 140px;
     margin-right: 12px;
-    min-width: 130px;
-    border: 1px solid rgba(255,255,255,0.1);
-    backdrop-filter: blur(8px);
-    transition: 0.3s;
 }
 
-.song-card:hover {
-    transform: scale(1.05);
-    border-color: #1db954;
-}
-
-/* IMAGE */
-.song-card img {
+.card img {
     width: 100%;
     border-radius: 12px;
 }
 
-/* TEXT */
-.song-card p {
-    margin-top: 8px;
+.card p {
     font-size: 14px;
+    margin-top: 5px;
 }
 
-/* FOOTER NAV */
+/* PREMIUM BANNER */
+.banner {
+    margin: 15px;
+    padding: 20px;
+    border-radius: 15px;
+    background: linear-gradient(45deg, purple, pink);
+    text-align: center;
+}
+
+.banner button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: none;
+    font-weight: bold;
+}
+
+/* NAVBAR */
 .nav {
     position: fixed;
     bottom: 0;
     width: 100%;
-    background: #111;
+    background: #021022;
     display: flex;
     justify-content: space-around;
     padding: 10px 0;
-    border-top: 1px solid #222;
 }
 
 .nav div {
     text-align: center;
-    font-size: 14px;
     color: #aaa;
 }
 
-.nav div.active {
-    color: #1db954;
+.nav .active {
+    color: red;
 }
 </style>
 
@@ -133,93 +151,82 @@ body {
 
 <body>
 
-<div class="header">🎵 RHK MUSIC</div>
-
-<!-- SEARCH -->
-<div class="search-box">
-    <input type="text" placeholder="Search songs, artists...">
+<!-- HEADER -->
+<div class="header">
+    <div class="profile">RH</div>
+    <div class="header-text">
+        <small>Good Morning</small><br>
+        <b>Raghav Hk</b>
+    </div>
+    <div class="icons">⚙️</div>
 </div>
 
-<!-- CATEGORY -->
+<!-- CATEGORIES -->
 <div class="categories">
-    <button onclick="setCategory(this,'kannada')" class="active">Kannada</button>
-    <button onclick="setCategory(this,'hindi')">Hindi</button>
-    <button onclick="setCategory(this,'english')">English</button>
-    <button onclick="setCategory(this,'other')">Others</button>
+    <button class="active">All</button>
+    <button>True Fans Charts</button>
+    <button>Music</button>
+    <button>Radio</button>
 </div>
 
-<!-- TRENDING -->
+<!-- TOP CHARTS -->
 <div class="section">
-    <h2>🔥 Trending</h2>
-    <div class="song-list" id="songList">
-        <div class="song-card">
-            <img src="https://via.placeholder.com/150">
-            <p>Kantara Song</p>
+    <div class="section-title">
+        <h2>Top Charts</h2>
+        <div class="view-all">View All</div>
+    </div>
+
+    <div class="cards">
+        <div class="card">
+            <img src="img1.jpg">
+            <p>Kannada Top 50</p>
         </div>
-        <div class="song-card">
-            <img src="https://via.placeholder.com/150">
-            <p>KGF Theme</p>
+
+        <div class="card">
+            <img src="img2.jpg">
+            <p>Namma Bengaluru</p>
         </div>
-        <div class="song-card">
-            <img src="https://via.placeholder.com/150">
-            <p>Pushpa Song</p>
+
+        <div class="card">
+            <img src="img3.jpg">
+            <p>Top Hits</p>
         </div>
     </div>
 </div>
 
-<!-- NEW -->
+<!-- BANNER -->
+<div class="banner">
+    <h3>FREE is great…</h3>
+    <p>₹1 for Premium? Even better!</p>
+    <button>Start Now</button>
+</div>
+
+<!-- SECOND SECTION -->
 <div class="section">
-    <h2>🆕 New Releases</h2>
-    <div class="song-list">
-        <div class="song-card">
-            <img src="https://via.placeholder.com/150">
-            <p>New Hit 1</p>
+    <div class="section-title">
+        <h2>Ultimate Maharajas</h2>
+        <div class="view-all">View All</div>
+    </div>
+
+    <div class="cards">
+        <div class="card">
+            <img src="img4.jpg">
+            <p>Power Star</p>
         </div>
-        <div class="song-card">
-            <img src="https://via.placeholder.com/150">
-            <p>New Hit 2</p>
+
+        <div class="card">
+            <img src="img5.jpg">
+            <p>KGF Hero</p>
         </div>
     </div>
 </div>
 
 <!-- NAV -->
 <div class="nav">
-    <div class="active">🏠 Home</div>
-    <div>🔍 Search</div>
-    <div>📁 Library</div>
+    <div class="active">🏠<br>Home</div>
+    <div>🔍<br>Search</div>
+    <div>⭐<br>Upgrade</div>
 </div>
-
-<script>
-function setCategory(btn, category) {
-    document.querySelectorAll(".categories button").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-
-    let list = document.getElementById("songList");
-
-    if (category === "kannada") {
-        list.innerHTML = `
-        <div class="song-card"><img src="https://via.placeholder.com/150"><p>Kantara</p></div>
-        <div class="song-card"><img src="https://via.placeholder.com/150"><p>KGF</p></div>`;
-    }
-
-    if (category === "hindi") {
-        list.innerHTML = `
-        <div class="song-card"><img src="https://via.placeholder.com/150"><p>Hindi Hit</p></div>
-        <div class="song-card"><img src="https://via.placeholder.com/150"><p>Bollywood Song</p></div>`;
-    }
-
-    if (category === "english") {
-        list.innerHTML = `
-        <div class="song-card"><img src="https://via.placeholder.com/150"><p>English Pop</p></div>
-        <div class="song-card"><img src="https://via.placeholder.com/150"><p>Top Charts</p></div>`;
-    }
-
-    if (category === "other") {
-        list.innerHTML = `
-        <div class="song-card"><img src="https://via.placeholder.com/150"><p>Other Mix</p></div>`;
-    }
-}
-</script>
 
 </body>
 </html>
