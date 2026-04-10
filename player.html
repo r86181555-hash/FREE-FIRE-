@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="style.css">
 </head>
 
-<body style="background:black; text-align:center;">
+<body style="background:black; text-align:center; color:white;">
 
 <button onclick="history.back()">⬅ Back</button>
 
@@ -19,7 +19,6 @@ let id = localStorage.getItem("vid");
 document.getElementById("title").innerText = localStorage.getItem("title");
 document.getElementById("img").src = localStorage.getItem("img");
 
-/* NO AUTOPLAY */
 document.getElementById("player").src =
 "https://www.youtube.com/embed/" + id;
 </script>
