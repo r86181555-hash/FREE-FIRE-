@@ -1,9 +1,9 @@
 body {
+    margin: 0;
     background: #04142c;
     color: white;
     font-family: sans-serif;
-    margin: 0;
-    padding: 10px;
+    padding-bottom: 120px;
 }
 
 .header {
@@ -12,44 +12,44 @@ body {
 
 /* SEARCH */
 input {
-    width: 100%;
-    padding: 14px;
+    width: 90%;
+    margin: 10px;
+    padding: 12px;
     border-radius: 30px;
     border: none;
-    margin: 15px 0;
 }
 
-/* EMPTY */
-#empty {
+/* OFFLINE */
+#offline {
+    display: none;
     text-align: center;
-    color: gray;
-    margin-top: 50px;
+    color: red;
 }
 
-/* SCROLL */
+/* CARDS */
 .scroll {
     display: flex;
     overflow-x: auto;
-    gap: 10px;
 }
 
-/* CARD */
 .card {
     min-width: 150px;
+    margin: 10px;
 }
 
 .card img {
     width: 100%;
-    border-radius: 12px;
+    border-radius: 10px;
 }
 
-/* BUTTON */
-button {
-    padding: 5px 10px;
-    border-radius: 10px;
-    border: none;
-    background: red;
-    color: white;
+/* MINI PLAYER */
+.mini {
+    position: fixed;
+    bottom: 60px;
+    width: 100%;
+    background: #111;
+    padding: 10px;
+    text-align: center;
 }
 
 /* NAV */
@@ -57,18 +57,9 @@ button {
     position: fixed;
     bottom: 0;
     width: 100%;
-    background: #0a1c3a;
+    background: #000;
     display: flex;
     justify-content: space-around;
     padding: 10px;
-}
-
-/* BACK BUTTON */
-.back {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    background: #222;
-    padding: 8px;
-    border-radius: 10px;
+    font-size: 20px;
 }
