@@ -1,81 +1,36 @@
-const API_KEY = "AIzaSyDdklLjpuYqiQU1akYheP7K3aOLxgQTEtM";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
 
-/* TRENDING */
-function loadTrending() {
-    fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=10&q=trending songs india&key=${API_KEY}`)
-    .then(res => res.json())
-    .then(data => {
+// 🔥 YOUR CONFIG (already correct)
+const firebaseConfig = {
+apiKey: "AIzaSyBND3n2ag9qGZG5SJPOKNVYr2dHNLwoD7Y",
+authDomain: "rhk-music-24bbc.firebaseapp.com",
+projectId: "rhk-music-24bbc",
+storageBucket: "rhk-music-24bbc.firebasestorage.app",
+messagingSenderId: "571438674805",
+appId: "1:571438674805:web:305cdbf3866febf208193c",
+measurementId: "G-52RLVJKBJ9"
+};
 
-        let charts = document.getElementById("charts");
-        charts.innerHTML = "";
+// Init
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
-        data.items.forEach(v => {
-            let id = v.id.videoId;
-            let title = v.snippet.title;
-            let img = v.snippet.thumbnails.medium.url;
+// Button click
+document.getElementById("loginBtn").addEventListener("click", () => {
+signInWithPopup(auth, provider)
+.then((result) => {
+const user = result.user;
 
-            charts.innerHTML += `
-            <div class="card" onclick="play('${id}','${title}','${img}')">
-                <img src="${img}">
-                <p>${title}</p>
-            </div>`;
-        });
-    });
-}
+  // Save user
+  localStorage.setItem("user", user.displayName);
 
-/* SEARCH */
-function searchYT(query) {
-    if (query.length < 2) return;
+  // Redirect
+  window.location.href = "player.html";
+})
+.catch((error) => {
+  alert(error.message);
+});
 
-    fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=${query}&maxResults=10&key=${API_KEY}`)
-    .then(res => res.json())
-    .then(data => {
-
-        let results = document.getElementById("results");
-        results.innerHTML = "";
-
-        data.items.forEach(v => {
-            let id = v.id.videoId;
-            let title = v.snippet.title;
-            let img = v.snippet.thumbnails.medium.url;
-
-            results.innerHTML += `
-            <div class="card" onclick="play('${id}','${title}','${img}')">
-                <img src="${img}">
-                <p>${title}</p>
-            </div>`;
-        });
-    });
-}
-
-/* PLAY */
-function play(id,title,img){
-    localStorage.setItem("vid", id);
-    localStorage.setItem("title", title);
-    localStorage.setItem("img", img);
-
-    document.getElementById("miniImg").src = img;
-    document.getElementById("miniTitle").innerText = title;
-
-    window.location = "player.html";
-}
-
-/* NAV */
-function goHome(){
-    location.reload();
-}
-
-function focusSearch(){
-    document.getElementById("search").focus();
-}
-
-function openFav(){
-    window.location = "fav.html";
-}
-
-function openPlayerPage(){
-    window.location = "player.html";
-}
-
-/* LOAD */
-window.onload = loadTrending;
+});
