@@ -1,71 +1,8 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html><html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RHK MUSIC</title>
-<link rel="stylesheet" href="style.css">
-</head>
+  <title>RHK MUSIC</title>
+  <link rel="stylesheet" href="style.css">
+</head><body><h1>🔥 RHK MUSIC 🔥</h1><button id="loginBtn">Login with Google</button>
 
-<body>
-
-<!-- HEADER -->
-<div class="header">
-    <div class="profile">RH</div>
-    <div>
-        <p class="small">Welcome</p>
-        <h3>RHK MUSIC</h3>
-    </div>
-</div>
-
-<!-- TABS -->
-<div class="tabs">
-    <div class="tab active">All</div>
-    <div class="tab">Charts</div>
-    <div class="tab">Music</div>
-    <div class="tab">Radio</div>
-</div>
-
-<!-- SEARCH -->
-<input type="text" id="search" placeholder="Search songs..." onkeyup="searchYT(this.value)">
-
-<!-- TOP CHARTS -->
-<div class="section">
-    <div class="titleRow">
-        <h2>Top Charts</h2>
-    </div>
-    <div class="row" id="charts"></div>
-</div>
-
-<!-- SEARCH RESULTS -->
-<div class="section">
-    <h2>Results</h2>
-    <div class="row" id="results"></div>
-</div>
-
-<!-- MINI PLAYER -->
-<div id="miniPlayer" onclick="openPlayerPage()">
-    <img id="miniImg">
-    <p id="miniTitle">Play something 🎧</p>
-</div>
-
-<!-- NAV -->
-<div class="nav">
-    <div onclick="goHome()" class="active">🏠<p>Home</p></div>
-    <div onclick="focusSearch()">🔍<p>Search</p></div>
-    <div onclick="openFav()">❤️<p>Library</p></div>
-</div>
-
-<script src="script.js"></script>
-
-<script>
-let img = localStorage.getItem("img");
-let title = localStorage.getItem("title");
-
-if(img){
-    document.getElementById("miniImg").src = img;
-    document.getElementById("miniTitle").innerText = title;
-}
-</script>
-
-</body>
+<script type="module" src="script.js"></script></body>
 </html>
