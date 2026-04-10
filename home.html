@@ -1,20 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RHK MUSIC</title>
-<link rel="stylesheet" href="style.css">
+  <title>RHK MUSIC</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <div class="header">
-  <h2>RHK MUSIC</h2>
+  <input type="text" id="search" placeholder="Search songs...">
+  <button onclick="searchSongs()">Search</button>
 </div>
 
-<input type="text" id="search" class="search-bar" placeholder="Search songs...">
-
-<div id="results" class="video-grid"></div>
+<div id="results" class="grid"></div>
 
 <script src="script.js"></script>
 
