@@ -1,17 +1,97 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial;
+}
+
+/* LOGIN PAGE */
+.login-body {
+  height: 100vh;
+  width: 100%;
+  background: linear-gradient(180deg, #020024, #090979, #000);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.login-container {
+  text-align: center;
+  width: 100%;
+  padding: 20px;
+}
+
+.logo {
+  color: red;
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.tagline {
+  color: #ccc;
+  margin-bottom: 30px;
+}
+
+.google-btn {
+  width: 100%;
+  max-width: 320px;
+  padding: 15px;
+  border-radius: 50px;
+  border: none;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: auto;
+}
+
+.google-btn img {
+  width: 20px;
+}
+
+/* HOME PAGE */
 body {
-text-align: center;
-background: black;
-color: white;
-font-family: Arial;
+  background: #000;
+  color: white;
 }
 
-button {
-padding: 10px;
-background: red;
-color: white;
-border: none;
+.search-bar {
+  width: 95%;
+  margin: 10px auto;
+  padding: 12px;
+  border-radius: 25px;
+  border: none;
+  font-size: 16px;
+  display: block;
 }
 
-input {
-padding: 10px;
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 10px;
+}
+
+.video-card {
+  background: #111;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.video-card img {
+  width: 100%;
+  height: auto;
+}
+
+.video-card p {
+  font-size: 12px;
+  padding: 5px;
+}
+
+/* PLAYER */
+iframe {
+  width: 100vw;
+  height: 100vh;
 }
