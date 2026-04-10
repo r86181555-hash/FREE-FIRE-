@@ -5,11 +5,9 @@
   font-family: Arial;
 }
 
-/* LOGIN PAGE */
 .login-body {
   height: 100vh;
-  width: 100%;
-  background: linear-gradient(180deg, #020024, #090979, #000);
+  background: linear-gradient(#000, #111);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -19,52 +17,29 @@
 .login-container {
   text-align: center;
   width: 100%;
-  padding: 20px;
 }
 
 .logo {
+  font-size: 35px;
   color: red;
-  font-size: 36px;
-  margin-bottom: 10px;
-}
-
-.tagline {
-  color: #ccc;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .google-btn {
-  width: 100%;
-  max-width: 320px;
   padding: 15px;
+  width: 80%;
   border-radius: 50px;
   border: none;
   font-size: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin: auto;
 }
 
-.google-btn img {
-  width: 20px;
-}
-
-/* HOME PAGE */
-body {
-  background: #000;
-  color: white;
-}
-
+/* HOME */
 .search-bar {
   width: 95%;
-  margin: 10px auto;
   padding: 12px;
-  border-radius: 25px;
+  margin: 10px;
+  border-radius: 20px;
   border: none;
-  font-size: 16px;
-  display: block;
 }
 
 .video-grid {
@@ -74,23 +49,11 @@ body {
   padding: 10px;
 }
 
-.video-card {
-  background: #111;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
 .video-card img {
   width: 100%;
-  height: auto;
+  border-radius: 10px;
 }
 
-.video-card p {
-  font-size: 12px;
-  padding: 5px;
-}
-
-/* PLAYER */
 iframe {
   width: 100vw;
   height: 100vh;
