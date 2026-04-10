@@ -8,34 +8,54 @@
 
 <body>
 
+<!-- HEADER -->
 <div class="header">
-    <h2>🎵 RHK MUSIC</h2>
+    <div class="profile">RH</div>
+    <div>
+        <p class="small">Welcome</p>
+        <h3>RHK MUSIC</h3>
+    </div>
 </div>
 
-<input type="text" id="searchInput" placeholder="Search songs..." onkeyup="searchYouTube(this.value)">
+<!-- CATEGORY -->
+<div class="tabs">
+    <div class="tab active">All</div>
+    <div class="tab">Charts</div>
+    <div class="tab">Music</div>
+    <div class="tab">Radio</div>
+</div>
 
-<!-- OFFLINE PAGE -->
-<div id="offline">
-    <h3>📶 No Internet</h3>
-    <p>Please turn on internet</p>
+<!-- SEARCH -->
+<input type="text" id="search" placeholder="Search songs..." onkeyup="searchYT(this.value)">
+
+<!-- TOP CHARTS -->
+<div class="section">
+    <h2>Top Charts</h2>
+    <div class="row" id="charts">
+        <!-- STATIC UI -->
+        <div class="card">
+            <img src="https://i.ytimg.com/vi/2Vv-BfVoq4g/mqdefault.jpg">
+            <p>Kannada Top 50</p>
+        </div>
+
+        <div class="card">
+            <img src="https://i.ytimg.com/vi/JGwWNGJdvx8/mqdefault.jpg">
+            <p>Namma Bengaluru</p>
+        </div>
+    </div>
 </div>
 
 <!-- RESULTS -->
-<div class="scroll" id="results"></div>
-
-<!-- MINI PLAYER -->
-<div id="miniPlayer" class="mini">
-    <p id="miniTitle">No song</p>
-    <button onclick="prev()">⏮</button>
-    <button onclick="playPause()" id="playBtn">▶️</button>
-    <button onclick="next()">⏭</button>
+<div class="section">
+    <h2>Search Results</h2>
+    <div class="row" id="results"></div>
 </div>
 
-<!-- NAV -->
-<div class="bottom-nav">
-    <div onclick="goHome()">🏠</div>
-    <div onclick="focusSearch()">🔍</div>
-    <div onclick="openFav()">❤️</div>
+<!-- BOTTOM NAV -->
+<div class="nav">
+    <div onclick="goHome()" class="active">🏠<p>Home</p></div>
+    <div onclick="focusSearch()">🔍<p>Search</p></div>
+    <div onclick="openFav()">❤️<p>Library</p></div>
 </div>
 
 <script src="script.js"></script>
