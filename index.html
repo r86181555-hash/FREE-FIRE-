@@ -3,70 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RHK MUSIC | YouTube Powered</title>
+    <title>RHK MUSIC | Premium Streaming</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="bg-black text-white font-['Montserrat']">
+<body class="bg-[#050505] text-white font-['Montserrat'] overflow-x-hidden">
 
-    <div class="max-w-md mx-auto min-h-screen relative pb-32 bg-gradient-to-b from-[#1a1a2e] to-black">
+    <div class="max-w-md mx-auto min-h-screen relative pb-40 bg-gradient-to-b from-[#1a1a2e] via-black to-black">
         
-        <header class="p-6 flex justify-between items-center sticky top-0 z-50 backdrop-blur-lg border-b border-white/5">
-            <div class="text-2xl font-bold tracking-tighter">RHK <span class="text-purple-500">MUSIC</span></div>
-            <div class="flex gap-4 items-center">
-                <i class="fa-solid fa-magnifying-glass opacity-70 cursor-pointer" onclick="searchMusic('Trending Songs')"></i>
-                <div class="w-8 h-8 bg-gradient-to-tr from-purple-500 to-pink-500 rounded-full border border-white/20"></div>
+        <header class="p-6 pb-4 sticky top-0 z-50 backdrop-blur-2xl border-b border-white/5">
+            <div class="flex justify-between items-center mb-6">
+                <div class="text-2xl font-black tracking-tighter italic text-white">RHK <span class="text-purple-500">MUSIC</span></div>
+                <div class="w-10 h-10 bg-gradient-to-tr from-purple-600 to-pink-500 rounded-full border-2 border-white/10 shadow-lg shadow-purple-500/30"></div>
+            </div>
+            
+            <div class="relative group">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-purple-400 transition-colors"></i>
+                <input type="text" id="searchInput" placeholder="Search artists or songs..." 
+                    class="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 pl-12 pr-4 text-sm focus:outline-none focus:border-purple-500/50 focus:bg-white/10 transition-all shadow-inner"
+                    onkeyup="if(event.key === 'Enter') searchMusic(this.value)">
             </div>
         </header>
 
         <main class="px-6">
-            <section class="mb-8 pt-4">
-                <h1 class="text-xl font-semibold mb-4 opacity-90">Featured Today</h1>
-                <div id="hero-section" class="premium-card relative h-48 rounded-3xl overflow-hidden flex items-end p-5">
+            <section class="mb-10 pt-6">
+                <h1 class="text-xs uppercase tracking-[0.3em] font-bold text-purple-400 mb-4">Editor's Choice</h1>
+                <div id="hero-section" class="premium-card relative h-52 rounded-[2rem] overflow-hidden flex items-end p-6 border border-white/10 shadow-2xl">
+                    <div class="animate-pulse bg-white/5 w-full h-full absolute inset-0"></div>
+                </div>
+            </section>
+
+            <section class="mb-10">
+                <div class="flex justify-between items-center mb-5">
+                    <h3 class="text-xl font-bold tracking-tight">Your Daily Mixes</h3>
+                    <span class="text-[10px] uppercase text-purple-400 font-bold">See All</span>
+                </div>
+                <div id="daily-mixes" class="flex gap-5 overflow-x-auto no-scrollbar pb-4">
                     </div>
             </section>
 
-            <section class="mb-8">
-                <h3 class="text-lg font-bold mb-4">Your Daily Mixes</h3>
-                <div id="daily-mixes" class="flex gap-4 overflow-x-auto no-scrollbar">
-                    </div>
-            </section>
-
-            <section class="mb-8">
-                <h3 class="text-lg font-bold mb-4">Explore by Vibe</h3>
+            <section class="mb-10">
+                <h3 class="text-xl font-bold tracking-tight mb-5">Explore Vibes</h3>
                 <div class="grid grid-cols-2 gap-4">
-                    <div onclick="searchMusic('Lofi Chill Music')" class="vibe-card bg-indigo-900/40 p-5 rounded-2xl border border-white/5 cursor-pointer">
-                        <i class="fa-solid fa-moon text-indigo-400 mb-2"></i>
-                        <p class="text-xs font-medium">Midnight Focus</p>
+                    <div onclick="searchMusic('Lo-fi focus music')" class="vibe-card bg-indigo-900/20 p-5 rounded-3xl border border-white/5 cursor-pointer hover:bg-indigo-900/40 transition-all">
+                        <i class="fa-solid fa-moon text-indigo-400 text-xl mb-3"></i>
+                        <p class="text-xs font-bold uppercase tracking-wider">Midnight Focus</p>
                     </div>
-                    <div onclick="searchMusic('High Energy EDM')" class="vibe-card bg-purple-600 p-5 rounded-2xl cursor-pointer">
-                        <i class="fa-solid fa-bolt text-white mb-2"></i>
-                        <p class="text-xs font-medium">High Energy</p>
+                    <div onclick="searchMusic('Trending workout hits')" class="vibe-card bg-purple-600/20 p-5 rounded-3xl border border-white/5 cursor-pointer hover:bg-purple-600/40 transition-all">
+                        <i class="fa-solid fa-bolt text-purple-400 text-xl mb-3"></i>
+                        <p class="text-xs font-bold uppercase tracking-wider">High Energy</p>
                     </div>
                 </div>
             </section>
         </main>
 
-        <div id="player" style="display:none"></div>
+        <div id="player"></div>
 
-        <div id="mini-player" class="fixed bottom-28 left-1/2 -translate-x-1/2 w-[92%] glass-player p-3 rounded-2xl flex items-center gap-3 z-50 transform translate-y-20 transition-transform duration-500">
-            <img id="player-thumb" src="" class="w-12 h-12 rounded-xl object-cover">
-            <div class="flex-1 overflow-hidden">
-                <p id="player-title" class="text-[11px] font-bold truncate">Select a song</p>
-                <p id="player-artist" class="text-[9px] opacity-60">RHK Music Player</p>
+        <div id="mini-player" class="fixed bottom-28 left-1/2 -translate-x-1/2 w-[92%] glass-player p-3.5 rounded-3xl flex items-center gap-4 z-50 transform translate-y-40 transition-all duration-700 ease-out shadow-2xl">
+            <div class="relative w-14 h-14 shrink-0">
+                <img id="player-thumb" src="" class="w-full h-full rounded-2xl object-cover border border-white/10">
+                <div class="absolute inset-0 rounded-2xl shadow-inner"></div>
             </div>
-            <div class="flex gap-5 px-3">
-                <i class="fa-solid fa-play text-lg cursor-pointer" id="masterPlay"></i>
+            <div class="flex-1 overflow-hidden">
+                <p id="player-title" class="text-xs font-bold truncate text-white">Select a song</p>
+                <p id="player-artist" class="text-[10px] opacity-50 mt-1 font-medium">RHK Music Experience</p>
+            </div>
+            <div class="flex items-center gap-6 pr-4">
+                <i class="fa-solid fa-play text-xl cursor-pointer hover:text-purple-400 transition-colors" id="masterPlay"></i>
             </div>
         </div>
 
-        <nav class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] h-16 bg-white/5 backdrop-blur-3xl border border-white/10 rounded-full flex justify-around items-center px-6 z-50">
-            <div class="nav-item active text-purple-500"><i class="fa-solid fa-house"></i></div>
-            <div class="nav-item opacity-50"><i class="fa-solid fa-compass"></i></div>
-            <div class="nav-item opacity-50"><i class="fa-solid fa-tower-broadcast"></i></div>
-            <div class="nav-item opacity-50"><i class="fa-solid fa-layer-group"></i></div>
+        <nav class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[85%] h-18 bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] flex justify-around items-center px-8 z-50 shadow-2xl">
+            <div class="nav-item active text-purple-500 text-xl"><i class="fa-solid fa-house"></i></div>
+            <div class="nav-item opacity-40 text-xl hover:opacity-100"><i class="fa-solid fa-compass"></i></div>
+            <div class="nav-item opacity-40 text-xl hover:opacity-100"><i class="fa-solid fa-tower-broadcast"></i></div>
+            <div class="nav-item opacity-40 text-xl hover:opacity-100"><i class="fa-solid fa-layer-group"></i></div>
         </nav>
     </div>
 
