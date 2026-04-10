@@ -1,198 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Music App</title>
-
-<style>
-body {
-    margin: 0;
-    font-family: Arial;
-    background: linear-gradient(to bottom, #0a0a15, #000);
-    color: white;
-}
-
-/* HEADER */
-.header {
-    padding: 15px;
-}
-
-.header h2 {
-    margin: 0;
-}
-
-/* SEARCH */
-.search {
-    margin-top: 10px;
-}
-
-.search input {
-    width: 100%;
-    padding: 10px;
-    border-radius: 20px;
-    border: none;
-    outline: none;
-}
-
-/* SLIDER */
-.slider {
-    display: flex;
-    overflow-x: auto;
-    gap: 10px;
-    padding: 10px;
-}
-
-.slide {
-    min-width: 250px;
-    background: rgba(255,255,255,0.08);
-    padding: 10px;
-    border-radius: 15px;
-    backdrop-filter: blur(10px);
-}
-
-/* MIXES */
-.section {
-    padding: 10px;
-}
-
-.grid {
-    display: flex;
-    overflow-x: auto;
-    gap: 10px;
-}
-
-.card {
-    min-width: 120px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 15px;
-    padding: 10px;
-    text-align: center;
-}
-
-.card img {
-    width: 100%;
-    border-radius: 10px;
-}
-
-/* PLAYER */
-.player {
-    position: fixed;
-    bottom: 60px;
-    left: 0;
-    right: 0;
-    background: rgba(0,0,0,0.8);
-    padding: 10px;
-    text-align: center;
-}
-
-/* NAVBAR */
-.nav {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background: rgba(20,20,20,0.9);
-    display: flex;
-    justify-content: space-around;
-    padding: 10px;
-}
-
-.nav button {
-    background: none;
-    border: none;
-    color: white;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RHK MUSIC | Premium Experience</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+<body class="bg-black text-white font-['Montserrat'] leading-tight">
 
-<body>
+    <div class="max-w-md mx-auto min-h-screen relative pb-24 overflow-x-hidden bg-gradient-to-b from-[#1a1a2e] to-black">
+        
+        <header class="p-6 flex justify-between items-center sticky top-0 z-50 backdrop-blur-md">
+            <div class="text-2xl font-bold tracking-tighter">RHK <span class="text-purple-500">MUSIC</span></div>
+            <div class="flex gap-4">
+                <i class="fa-solid fa-magnifying-glass opacity-70"></i>
+                <div class="w-8 h-8 bg-gradient-to-tr from-purple-500 to-pink-500 rounded-full"></div>
+            </div>
+        </header>
 
-<div class="header">
-    <h2>Good Morning 🔥</h2>
+        <main id="app-content" class="px-6">
+            
+            <section class="mb-8">
+                <h1 class="text-xl font-semibold mb-4 opacity-90">Good Morning, Raghav</h1>
+                <div class="premium-card relative h-44 rounded-3xl overflow-hidden flex items-end p-5">
+                    <img src="https://images.unsplash.com/photo-1493225255756-d9584f8606e9?auto=format&fit=crop&w=800&q=80" class="absolute inset-0 w-full h-full object-cover opacity-50" alt="Artist">
+                    <div class="relative z-10">
+                        <p class="text-xs uppercase tracking-widest opacity-70">Featured Artist</p>
+                        <h2 class="text-3xl font-bold">The Weeknd</h2>
+                        <button class="mt-2 bg-purple-600 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-tighter">Play Now</button>
+                    </div>
+                </div>
+            </section>
 
-    <div class="search">
-        <input type="text" id="search" placeholder="Search songs...">
+            <section class="mb-8">
+                <h3 class="text-lg font-bold mb-4">Your Daily Mixes</h3>
+                <div class="flex gap-4 overflow-x-auto no-scrollbar">
+                    <div class="min-w-[140px] glass-tile p-3 rounded-2xl">
+                        <div class="w-full aspect-square rounded-xl bg-orange-500 mb-3 shadow-lg shadow-orange-500/20"></div>
+                        <p class="font-semibold text-sm">Mix 1</p>
+                        <p class="text-[10px] opacity-50 italic">Pop Hits</p>
+                    </div>
+                    <div class="min-w-[140px] glass-tile p-3 rounded-2xl">
+                        <div class="w-full aspect-square rounded-xl bg-teal-500 mb-3 shadow-lg shadow-teal-500/20"></div>
+                        <p class="font-semibold text-sm">Mix 2</p>
+                        <p class="text-[10px] opacity-50 italic">Indie Chill</p>
+                    </div>
+                    <div class="min-w-[140px] glass-tile p-3 rounded-2xl">
+                        <div class="w-full aspect-square rounded-xl bg-purple-500 mb-3 shadow-lg shadow-purple-500/20"></div>
+                        <p class="font-semibold text-sm">Mix 3</p>
+                        <p class="text-[10px] opacity-50 italic">Night Drive</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-8">
+                <h3 class="text-lg font-bold mb-4">Explore by Vibe</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="vibe-card bg-indigo-900/40 p-4 rounded-2xl border border-white/5 flex flex-col items-center gap-2">
+                        <i class="fa-solid fa-moon text-indigo-400 text-xl"></i>
+                        <span class="text-xs font-medium">Midnight Focus</span>
+                    </div>
+                    <div class="vibe-card bg-purple-600 p-4 rounded-2xl flex flex-col items-center gap-2 shadow-lg shadow-purple-600/30">
+                        <i class="fa-solid fa-bolt text-white text-xl"></i>
+                        <span class="text-xs font-medium">High Energy</span>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <div class="fixed bottom-24 left-1/2 -translate-x-1/2 w-[90%] max-w-sm glass-player p-3 rounded-2xl flex items-center gap-3 z-50">
+            <div class="w-10 h-10 rounded-lg bg-white/10 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=100&q=80" alt="Current">
+            </div>
+            <div class="flex-1">
+                <p class="text-[10px] font-bold truncate">Starboy</p>
+                <p class="text-[8px] opacity-60">The Weeknd</p>
+            </div>
+            <div class="flex gap-4 px-2">
+                <i class="fa-solid fa-backward-step text-xs"></i>
+                <i class="fa-solid fa-play text-xs"></i>
+                <i class="fa-solid fa-forward-step text-xs"></i>
+            </div>
+        </div>
+
+        <nav class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-md h-16 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-full flex justify-around items-center px-6 z-50">
+            <div class="nav-item active flex flex-col items-center gap-1">
+                <i class="fa-solid fa-house"></i>
+                <span class="text-[9px]">Home</span>
+            </div>
+            <div class="nav-item flex flex-col items-center gap-1 opacity-50">
+                <i class="fa-solid fa-compass"></i>
+                <span class="text-[9px]">Browse</span>
+            </div>
+            <div class="nav-item flex flex-col items-center gap-1 opacity-50">
+                <i class="fa-solid fa-tower-broadcast"></i>
+                <span class="text-[9px]">Radio</span>
+            </div>
+            <div class="nav-item flex flex-col items-center gap-1 opacity-50">
+                <i class="fa-solid fa-layer-group"></i>
+                <span class="text-[9px]">Library</span>
+            </div>
+        </nav>
+
     </div>
-</div>
 
-<!-- SLIDER -->
-<div class="slider">
-    <div class="slide">🎧 Trending</div>
-    <div class="slide">🔥 Top Hits</div>
-    <div class="slide">💜 New Songs</div>
-</div>
-
-<!-- MIXES -->
-<div class="section">
-    <h3>Your Mixes</h3>
-    <div class="grid" id="musicList"></div>
-</div>
-
-<!-- PLAYER -->
-<div class="player" id="player">
-    <p id="nowPlaying">No song playing</p>
-    <button onclick="togglePlay()">⏯️ Play/Pause</button>
-</div>
-
-<!-- NAVBAR -->
-<div class="nav">
-    <button>🏠 Home</button>
-    <button>🔍 Search</button>
-    <button>📚 Library</button>
-</div>
-
-<script>
-let totalSongs = 50;
-let currentAudio = null;
-
-function loadSongs() {
-    let container = document.getElementById("musicList");
-
-    for (let i = 1; i <= totalSongs; i++) {
-        let card = document.createElement("div");
-        card.className = "card";
-
-        card.innerHTML = `
-            <img src="images/img${i}.jpg" onerror="this.src='https://via.placeholder.com/150'">
-            <p>Song ${i}</p>
-            <button onclick="playSong(${i})">Play</button>
-        `;
-
-        container.appendChild(card);
-    }
-}
-
-function playSong(id) {
-    if (currentAudio) currentAudio.pause();
-
-    currentAudio = new Audio("songs/song" + id + ".mp3");
-    currentAudio.play();
-
-    document.getElementById("nowPlaying").innerText = "Playing Song " + id;
-}
-
-function togglePlay() {
-    if (!currentAudio) return;
-
-    if (currentAudio.paused) {
-        currentAudio.play();
-    } else {
-        currentAudio.pause();
-    }
-}
-
-/* SEARCH */
-document.getElementById("search").addEventListener("keyup", function() {
-    let value = this.value.toLowerCase();
-    let cards = document.querySelectorAll(".card");
-
-    cards.forEach(card => {
-        let text = card.innerText.toLowerCase();
-        card.style.display = text.includes(value) ? "block" : "none";
-    });
-});
-
-loadSongs();
-</script>
-
+    <script src="script.js"></script>
 </body>
 </html>
+
