@@ -16,14 +16,22 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// 🔥 AUTO LOGIN (NO REPEAT LOGIN)
+const btn = document.getElementById("googleLogin");
+
+// 🔥 CHECK LOCAL LOGIN FIRST
+if (localStorage.getItem("loggedIn") === "true") {
+  window.location.href = "home.html";
+}
+
+// FIREBASE CHECK
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    window.location.replace("home.html");
+    localStorage.setItem("loggedIn", "true"); // save login
+    window.location.href = "home.html";
   }
 });
 
 // LOGIN BUTTON
-document.getElementById("googleLogin").onclick = () => {
+btn.onclick = () => {
   signInWithRedirect(auth, provider);
 };
