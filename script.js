@@ -1,31 +1,28 @@
-const API_KEY = 'AIzaSyDdklLjpuYqiQU1akYheP7K3aOLxgQTEtM';
+const API_KEY = 'AIzaSyAvu92-usbM8TX-3hjgoLGW7rfezz-qKH8';
 let player;
 
 // 1. YouTube Iframe API setup
 function onYouTubeIframeAPIReady() {
-    console.log("YouTube API Player Initializing...");
     player = new YT.Player('player', {
         height: '0',
         width: '0',
         playerVars: { 'autoplay': 0, 'controls': 0 },
-        events: { 
-            'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange 
-        }
+        events: { 'onStateChange': onPlayerStateChange }
     });
 }
 
-function onPlayerReady() {
-    console.log("Player is ready to rock!");
-}
-
-// 2. The Search Function
+// 2. The Search Function with Smart Cache
 async function searchMusic(query) {
     if(!query) return;
-    
-    // Smooth transition: clear the previous results slightly
-    document.getElementById('daily-mixes').style.opacity = "0.5";
-    
+
+    // SMART CACHE: If we searched this before, don't use API "points"
+    const cachedData = localStorage.getItem('rhk_search_' + query);
+    if (cachedData) {
+        console.log("Loading from cache to save your quota...");
+        renderPremiumUI(JSON.parse(cachedData));
+        return;
+    }
+
     const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${encodeURIComponent(query)}&type=video&videoCategoryId=10&key=${API_KEY}`;
     
     try {
@@ -33,13 +30,17 @@ async function searchMusic(query) {
         const data = await response.json();
         
         if (data.error) {
-            console.error("YouTube API Error:", data.error.message);
-            alert("YouTube API Error: " + data.error.message);
+            console.error("API Error:", data.error.message);
+            // If quota is hit again, show this to the user
+            if(data.error.message.includes("quota")) {
+                alert("Quota exceeded. Loading offline favorites...");
+            }
             return;
         }
 
         if (data.items && data.items.length > 0) {
-            document.getElementById('daily-mixes').style.opacity = "1";
+            // Save to LocalStorage for later use
+            localStorage.setItem('rhk_search_' + query, JSON.stringify(data.items));
             renderPremiumUI(data.items);
         }
     } catch (error) {
@@ -52,7 +53,6 @@ function renderPremiumUI(songs) {
     const heroSection = document.getElementById('hero-section');
     const mixContainer = document.getElementById('daily-mixes');
 
-    // Hero Update
     const topSong = songs[0];
     const safeTitle = topSong.snippet.title.replace(/'/g, "").replace(/"/g, "");
     
@@ -68,14 +68,13 @@ function renderPremiumUI(songs) {
         </div>
     `;
 
-    // Mixes Update
     mixContainer.innerHTML = songs.slice(1).map(song => {
         const mixTitle = song.snippet.title.replace(/'/g, "").replace(/"/g, "");
         return `
             <div onclick="playSong('${song.id.videoId}', '${mixTitle}', '${song.snippet.thumbnails.medium.url}')" 
-                 class="min-w-[160px] glass-tile p-3 rounded-[2rem] cursor-pointer">
-                <div class="relative mb-3">
-                    <img src="${song.snippet.thumbnails.medium.url}" class="w-full aspect-square object-cover rounded-2xl shadow-lg">
+                 class="min-w-[160px] glass-tile p-3 rounded-[2rem] cursor-pointer group">
+                <div class="relative mb-3 overflow-hidden rounded-2xl">
+                    <img src="${song.snippet.thumbnails.medium.url}" class="w-full aspect-square object-cover shadow-lg group-hover:scale-110 transition-transform">
                     <div class="absolute bottom-2 right-2 w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
                         <i class="fa-solid fa-play text-[10px] text-white"></i>
                     </div>
@@ -87,13 +86,8 @@ function renderPremiumUI(songs) {
     }).join('');
 }
 
-// 4. Player Controls
+// 4. Play Functionality
 function playSong(id, title, thumb) {
-    if(!player || typeof player.loadVideoById !== 'function') {
-        console.error("Player not ready yet!");
-        return;
-    }
-    
     player.loadVideoById(id);
     document.getElementById('player-title').innerText = title;
     document.getElementById('player-thumb').src = thumb;
@@ -116,8 +110,7 @@ document.getElementById('masterPlay').addEventListener('click', () => {
     state == 1 ? player.pauseVideo() : player.playVideo();
 });
 
-// 5. Initial Startup
+// 5. Start the App
 window.onload = () => {
-    // Search for trending songs automatically
-    searchMusic('Top Trending Songs 2026');
+    searchMusic('Trending Indian Pop 2026');
 };
