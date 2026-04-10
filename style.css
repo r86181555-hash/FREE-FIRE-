@@ -1,45 +1,19 @@
-/* style.css */
-.no-scrollbar::-webkit-scrollbar {
-    display: none;
-}
-
-.no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-
-.premium-card {
-    background: rgba(255, 255, 255, 0.03);
+.glass-player {
+    background: rgba(15, 15, 25, 0.8);
+    backdrop-filter: blur(25px);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 -15px 40px rgba(0,0,0,0.6);
 }
 
 .glass-tile {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.vibe-card {
-    transition: all 0.3s ease;
+.glass-tile:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-8px) scale(1.02);
 }
 
-.vibe-card:hover {
-    transform: scale(1.05);
-}
-
-.glass-player {
-    background: rgba(20, 20, 20, 0.85);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 -10px 25px rgba(0,0,0,0.5);
-}
-
-.nav-item.active i {
-    color: #a855f7; /* Purple-500 */
-    text-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
-}
-
-.nav-item.active span {
-    color: white;
-}
-
+.no-scrollbar::-webkit-scrollbar { display: none; }
