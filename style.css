@@ -1,28 +1,25 @@
-* {
+body {
   margin: 0;
-  padding: 0;
-  box-sizing: border-box;
   font-family: Arial;
-}
-
-.login-body {
-  height: 100vh;
-  background: linear-gradient(#000, #111);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background: #000;
   color: white;
 }
 
-.login-container {
-  text-align: center;
-  width: 100%;
+/* LOGIN */
+.login-body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .logo {
-  font-size: 35px;
   color: red;
-  margin-bottom: 20px;
+  font-size: 36px;
+}
+
+.tagline {
+  color: #aaa;
 }
 
 .google-btn {
@@ -31,9 +28,17 @@
   border-radius: 50px;
   border: none;
   font-size: 16px;
+  margin-top: 20px;
 }
 
-/* HOME */
+/* HEADER */
+.header {
+  padding: 15px;
+  background: #111;
+  text-align: center;
+}
+
+/* SEARCH */
 .search-bar {
   width: 95%;
   padding: 12px;
@@ -42,6 +47,7 @@
   border: none;
 }
 
+/* GRID */
 .video-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -49,12 +55,17 @@
   padding: 10px;
 }
 
+.video-card {
+  background: #111;
+  border-radius: 10px;
+}
+
 .video-card img {
   width: 100%;
   border-radius: 10px;
 }
 
-iframe {
-  width: 100vw;
-  height: 100vh;
+.video-card p {
+  font-size: 12px;
+  padding: 5px;
 }
