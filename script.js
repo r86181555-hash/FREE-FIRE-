@@ -1,60 +1,93 @@
 const API_KEY = "AIzaSyDdklLjpuYqiQU1akYheP7K3aOLxgQTEtM";
 
-function searchYouTube(query) {
-    let empty = document.getElementById("empty");
+let timer;
+
+/* DEBOUNCE SEARCH (SMOOTH) */
+function debounceSearch() {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+        let query = document.getElementById("searchInput").value;
+        searchYouTube(query);
+    }, 500);
+}
+
+/* SEARCH YOUTUBE */
+async function searchYouTube(query) {
+    if (!query || query.length < 2) return;
+
+    let res = await fetch(
+        `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=12&q=${query}&key=${API_KEY}`
+    );
+
+    let data = await res.json();
+    displayResults(data.items);
+}
+
+/* DISPLAY RESULTS */
+function displayResults(videos) {
     let container = document.getElementById("results");
+    container.innerHTML = "";
 
-    if (query.length < 2) {
-        container.innerHTML = "";
-        empty.style.display = "block";
-        return;
-    }
+    videos.forEach(video => {
+        let vid = video.id.videoId;
+        let title = video.snippet.title;
+        let img = video.snippet.thumbnails.high.url;
 
-    empty.style.display = "none";
-
-    fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=10&q=${query}&key=${API_KEY}`)
-    .then(res => res.json())
-    .then(data => {
-
-        container.innerHTML = "";
-
-        data.items.forEach(video => {
-            let vid = video.id.videoId;
-            let title = video.snippet.title;
-            let img = video.snippet.thumbnails.medium.url;
-
-            container.innerHTML += `
-            <div class="card">
-                <img src="${img}" onclick="openPlayer('${vid}','${title}','${img}')">
-                <p>${title}</p>
-                <button onclick="addFav('${vid}','${title}','${img}')">❤️</button>
-            </div>`;
-        });
+        container.innerHTML += `
+        <div class="card" onclick="playVideo('${vid}','${title}','${img}')">
+            <img src="${img}">
+            <p>${title}</p>
+        </div>`;
     });
 }
 
-function openPlayer(id, title, img) {
+/* PLAY VIDEO */
+function playVideo(id, title, img) {
     localStorage.setItem("videoId", id);
     localStorage.setItem("title", title);
     localStorage.setItem("img", img);
+
     window.location.href = "player.html";
 }
 
-function addFav(id, title, img) {
-    let fav = JSON.parse(localStorage.getItem("fav")) || [];
-    fav.push({id, title, img});
-    localStorage.setItem("fav", JSON.stringify(fav));
-    alert("Added ❤️");
+/* LOAD PLAYER */
+if (document.getElementById("ytPlayer")) {
+    let id = localStorage.getItem("videoId");
+    let title = localStorage.getItem("title");
+
+    document.getElementById("ytPlayer").src =
+        `https://www.youtube.com/embed/${id}?autoplay=1`;
+
+    document.getElementById("title").innerText = title;
 }
 
-function openFav() {
-    window.location.href = "fav.html";
+/* FAVORITES */
+function addFavorite() {
+    let favs = JSON.parse(localStorage.getItem("favs")) || [];
+
+    let song = {
+        id: localStorage.getItem("videoId"),
+        title: localStorage.getItem("title"),
+        img: localStorage.getItem("img")
+    };
+
+    favs.push(song);
+    localStorage.setItem("favs", JSON.stringify(favs));
+
+    alert("Added to Favorites ❤️");
 }
 
-function goHome() {
-    window.location.href = "index.html";
-}
+/* MINI PLAYER */
+window.onload = function () {
+    let img = localStorage.getItem("img");
+    let title = localStorage.getItem("title");
 
-function focusSearch() {
-    document.getElementById("searchInput").focus();
+    if (img) {
+        document.getElementById("miniImg").src = img;
+        document.getElementById("miniTitle").innerText = title;
+    }
+};
+
+function openPlayer() {
+    window.location.href = "player.html";
 }
