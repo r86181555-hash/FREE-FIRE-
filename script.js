@@ -1,4 +1,4 @@
-const API_KEY = "YOUR_YOUTUBE_API_KEY";
+const API_KEY = "AIzaSyDdklLjpuYqiQU1akYheP7K3aOLxgQTEtM";
 
 document.getElementById("search").addEventListener("keypress", function(e) {
   if (e.key === "Enter") {
@@ -7,13 +7,11 @@ document.getElementById("search").addEventListener("keypress", function(e) {
 });
 
 function searchVideos(query) {
-  fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&key=${API_KEY}&maxResults=10`)
+  fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&key=${API_KEY}&maxResults=10&type=video`)
     .then(res => res.json())
     .then(data => {
       let html = "";
       data.items.forEach(item => {
-        if (!item.id.videoId) return;
-
         html += `
           <div class="video-card" onclick="playVideo('${item.id.videoId}')">
             <img src="${item.snippet.thumbnails.medium.url}">
