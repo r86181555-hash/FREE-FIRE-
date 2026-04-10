@@ -2,28 +2,40 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Now Playing</title>
-<link rel="stylesheet" href="style.css">
+<title>Player</title>
+
+<style>
+body {
+    margin: 0;
+    background: black;
+    color: white;
+    text-align: center;
+}
+
+iframe {
+    width: 100%;
+    height: 250px;
+}
+</style>
 </head>
 
 <body>
 
-<div class="player">
-
-<iframe id="ytPlayer"
-width="100%"
-height="250"
-frameborder="0"
-allow="autoplay"
-allowfullscreen>
-</iframe>
-
 <h2 id="title"></h2>
 
-<button class="fav-btn" onclick="addFavorite()">❤️ Add to Favorites</button>
+<iframe id="player" frameborder="0" allow="autoplay"></iframe>
 
-</div>
+<script>
 
-<script src="script.js"></script>
+let id = localStorage.getItem("vid");
+let title = localStorage.getItem("title");
+
+document.getElementById("title").innerText = title;
+
+document.getElementById("player").src =
+`https://www.youtube.com/embed/${id}?autoplay=1`;
+
+</script>
+
 </body>
 </html>
