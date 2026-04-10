@@ -14,12 +14,24 @@
 
 <input type="text" id="searchInput" placeholder="Search songs..." onkeyup="searchYouTube(this.value)">
 
-<div id="empty">
-    <p>Search your favorite songs 🎧</p>
+<!-- OFFLINE PAGE -->
+<div id="offline">
+    <h3>📶 No Internet</h3>
+    <p>Please turn on internet</p>
 </div>
 
+<!-- RESULTS -->
 <div class="scroll" id="results"></div>
 
+<!-- MINI PLAYER -->
+<div id="miniPlayer" class="mini">
+    <p id="miniTitle">No song</p>
+    <button onclick="prev()">⏮</button>
+    <button onclick="playPause()" id="playBtn">▶️</button>
+    <button onclick="next()">⏭</button>
+</div>
+
+<!-- NAV -->
 <div class="bottom-nav">
     <div onclick="goHome()">🏠</div>
     <div onclick="focusSearch()">🔍</div>
