@@ -3,58 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RHK MUSIC</title>
+    <title>RHK MUSIC | Premium</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
-    <script src="https://kit.fontawesome.com/your-code.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="bg-black text-white font-sans">
+<body class="bg-black text-white font-sans selection:bg-purple-500">
 
-    <div id="login-overlay" class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-between p-8 transition-opacity duration-500">
-        <div class="mt-20 text-center">
-            <h1 class="text-5xl font-black italic tracking-tighter">RHK <span class="text-purple-600">MUSIC</span></h1>
-            <p class="text-xs uppercase tracking-[0.4em] opacity-50 mt-2 font-bold">Bas Bajna Chahiye Gaana</p>
+    <div id="login-overlay" class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-between p-8 transition-all duration-700">
+        <div class="mt-24 text-center animate-pulse">
+            <h1 class="text-6xl font-black italic tracking-tighter">RHK <span class="text-purple-600">MUSIC</span></h1>
+            <p class="text-[10px] uppercase tracking-[0.5em] opacity-40 mt-3 font-bold">Bas Bajna Chahiye Gaana</p>
         </div>
 
-        <div class="w-full max-w-sm space-y-4 mb-10">
-            <button id="google-login-btn" class="w-full bg-white text-black h-14 rounded-full flex items-center justify-center gap-3 font-bold active:scale-95 transition-transform">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5">
+        <div class="w-full max-w-sm space-y-4 mb-12">
+            <button id="google-login-btn" class="w-full bg-white text-black h-16 rounded-full flex items-center justify-center gap-4 font-black text-lg active:scale-95 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)]">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-6">
                 Continue with Google
             </button>
-            <button class="w-full bg-[#1a1a1a] h-14 rounded-full flex items-center justify-center gap-3 font-bold border border-white/5 active:scale-95 transition-transform">
+
+            <button class="w-full bg-[#111] text-gray-500 h-16 rounded-full flex items-center justify-center gap-3 font-bold border border-white/5 cursor-not-allowed">
                 Continue with Email
             </button>
-            <div class="text-center py-2 opacity-30 text-[10px] font-black">OR SIGN IN WITH</div>
-            <input type="tel" placeholder="+91 Enter your number" class="w-full bg-[#1a1a1a] h-14 rounded-2xl px-6 border border-white/5 outline-none focus:border-purple-600">
-            <p class="text-[10px] text-gray-500 text-center mt-4">By proceeding, you agree to our <span class="text-gray-300">Privacy Policy</span></p>
-        </div>
-    </div>
 
-    <div class="p-6 pb-32">
-        <div class="flex justify-between items-center mb-8">
-            <h1 class="text-2xl font-black italic">RHK <span class="text-purple-500">MUSIC</span></h1>
-            <div id="user-profile" class="w-10 h-10 rounded-full bg-purple-600 bg-cover bg-center"></div>
-        </div>
-
-        <div class="relative mb-8">
-            <input type="text" id="search-input" placeholder="Search songs..." class="w-full bg-[#1a1a1a] h-14 rounded-2xl px-14 outline-none border border-white/5">
-            <i class="fa-solid fa-search absolute left-6 top-1/2 -translate-y-1/2 opacity-50"></i>
-        </div>
-
-        <h2 class="text-xs uppercase tracking-widest font-bold text-purple-500 mb-6">Editor's Choice</h2>
-        <div id="songs-container" class="grid grid-cols-2 gap-4">
+            <div class="flex items-center gap-4 py-4 opacity-20">
+                <div class="h-[1px] bg-white flex-1"></div>
+                <span class="text-[10px] font-black">OR</span>
+                <div class="h-[1px] bg-white flex-1"></div>
             </div>
+
+            <div class="relative">
+                <span class="absolute left-6 top-1/2 -translate-y-1/2 text-gray-500 font-bold">+91</span>
+                <input type="tel" placeholder="Phone Number" class="w-full bg-[#0a0a0a] h-16 rounded-2xl pl-16 pr-6 border border-white/10 outline-none focus:border-purple-600 transition-all">
+            </div>
+        </div>
     </div>
 
-    <div id="mini-player" class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] bg-white/10 backdrop-blur-2xl rounded-[2.5rem] p-3 flex items-center justify-between transition-transform translate-y-40">
-        <div class="flex items-center gap-3">
-            <img id="player-thumb" src="" class="w-12 h-12 rounded-2xl object-cover">
+    <div id="main-app" class="p-6 opacity-0 transition-opacity duration-1000">
+        <header class="flex justify-between items-center mb-10">
             <div>
-                <p id="player-title" class="text-[11px] font-bold truncate w-32"></p>
-                <p class="text-[9px] opacity-50">Now Playing</p>
+                <p class="text-gray-500 text-[10px] font-bold uppercase tracking-widest">Welcome back,</p>
+                <h2 id="user-name" class="text-xl font-black tracking-tight">User</h2>
+            </div>
+            <div id="user-profile" class="w-12 h-12 rounded-full border-2 border-purple-600 bg-cover bg-center shadow-lg shadow-purple-900/20"></div>
+        </header>
+
+        <div class="relative mb-10">
+            <input type="text" id="search-input" placeholder="Search KGF, Hits, Playlists..." class="w-full bg-[#111] h-16 rounded-2xl px-16 outline-none border border-white/5 focus:border-purple-600 focus:bg-black transition-all">
+            <i class="fa-solid fa-magnifying-glass absolute left-7 top-1/2 -translate-y-1/2 text-purple-500"></i>
+        </div>
+
+        <section>
+            <div class="flex justify-between items-end mb-6">
+                <h3 class="text-xs uppercase tracking-[0.2em] font-black text-purple-500">Editor's Choice</h3>
+                <span class="text-[10px] font-bold text-gray-500">SEE ALL</span>
+            </div>
+            <div id="songs-container" class="grid grid-cols-2 gap-5">
+                </div>
+        </section>
+    </div>
+
+    <div id="mini-player" class="fixed bottom-10 left-1/2 -translate-x-1/2 w-[90%] bg-white/10 backdrop-blur-2xl rounded-[2.5rem] p-4 flex items-center justify-between border border-white/10 translate-y-60 transition-all duration-500">
+        <div class="flex items-center gap-4 overflow-hidden">
+            <img id="player-thumb" src="" class="w-12 h-12 rounded-2xl object-cover">
+            <div class="overflow-hidden">
+                <p id="player-title" class="text-xs font-bold truncate w-32"></p>
+                <p class="text-[9px] text-purple-400 font-bold uppercase tracking-widest animate-pulse">Playing Now</p>
             </div>
         </div>
-        <button id="play-pause-btn" class="bg-purple-600 w-10 h-10 rounded-full flex items-center justify-center">
+        <button id="play-btn" class="w-12 h-12 bg-white text-black rounded-full flex items-center justify-center text-xl active:scale-90 transition-transform">
             <i class="fa-solid fa-pause"></i>
         </button>
     </div>
