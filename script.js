@@ -1,60 +1,85 @@
 const API_KEY = "AIzaSyDdklLjpuYqiQU1akYheP7K3aOLxgQTEtM";
 
-function searchYouTube(query) {
-    let empty = document.getElementById("empty");
-    let container = document.getElementById("results");
+let queue = [];
+let currentIndex = 0;
+let player = document.createElement("iframe");
+player.style.display = "none";
+document.body.appendChild(player);
 
-    if (query.length < 2) {
-        container.innerHTML = "";
-        empty.style.display = "block";
-        return;
+/* INTERNET CHECK */
+function checkInternet() {
+    if (!navigator.onLine) {
+        document.getElementById("offline").style.display = "block";
+    } else {
+        document.getElementById("offline").style.display = "none";
     }
+}
+setInterval(checkInternet, 2000);
 
-    empty.style.display = "none";
+/* SEARCH */
+function searchYouTube(query) {
+    if (!navigator.onLine) return;
 
     fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=10&q=${query}&key=${API_KEY}`)
     .then(res => res.json())
     .then(data => {
 
+        let container = document.getElementById("results");
         container.innerHTML = "";
+
+        queue = [];
 
         data.items.forEach(video => {
             let vid = video.id.videoId;
             let title = video.snippet.title;
             let img = video.snippet.thumbnails.medium.url;
 
+            queue.push({vid, title});
+
             container.innerHTML += `
-            <div class="card">
-                <img src="${img}" onclick="openPlayer('${vid}','${title}','${img}')">
+            <div class="card" onclick="playSong(${queue.length-1})">
+                <img src="${img}">
                 <p>${title}</p>
-                <button onclick="addFav('${vid}','${title}','${img}')">❤️</button>
             </div>`;
         });
     });
 }
 
-function openPlayer(id, title, img) {
-    localStorage.setItem("videoId", id);
-    localStorage.setItem("title", title);
-    localStorage.setItem("img", img);
-    window.location.href = "player.html";
+/* PLAY */
+function playSong(index) {
+    currentIndex = index;
+    let song = queue[index];
+
+    document.getElementById("miniTitle").innerText = song.title;
+
+    player.src = `https://www.youtube.com/embed/${song.vid}?autoplay=1`;
 }
 
-function addFav(id, title, img) {
-    let fav = JSON.parse(localStorage.getItem("fav")) || [];
-    fav.push({id, title, img});
-    localStorage.setItem("fav", JSON.stringify(fav));
-    alert("Added ❤️");
+/* CONTROLS */
+function next() {
+    currentIndex = (currentIndex + 1) % queue.length;
+    playSong(currentIndex);
 }
 
-function openFav() {
-    window.location.href = "fav.html";
+function prev() {
+    currentIndex = (currentIndex - 1 + queue.length) % queue.length;
+    playSong(currentIndex);
 }
 
+function playPause() {
+    // YouTube iframe cannot pause easily → reload logic
+    playSong(currentIndex);
+}
+
+/* NAV */
 function goHome() {
-    window.location.href = "index.html";
+    location.reload();
 }
 
 function focusSearch() {
     document.getElementById("searchInput").focus();
+}
+
+function openFav() {
+    alert("Favorites coming next update ❤️");
 }
