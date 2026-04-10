@@ -2,58 +2,64 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RHK MUSIC | Premium Streaming</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RHK MUSIC | Premium</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-[#050505] text-white font-['Montserrat'] overflow-x-hidden">
+<body class="bg-[#050505] text-white font-['Montserrat'] selection:bg-purple-500/30">
 
-    <div class="max-w-md mx-auto min-h-screen relative pb-40 bg-gradient-to-b from-[#1a1a2e] via-black to-black">
+    <div class="max-w-md mx-auto min-h-screen relative pb-44 bg-gradient-to-b from-[#1a1a2e] via-[#050505] to-black">
         
-        <header class="p-6 pb-4 sticky top-0 z-50 backdrop-blur-2xl border-b border-white/5">
+        <header class="p-6 pb-4 sticky top-0 z-50 backdrop-blur-3xl border-b border-white/5">
             <div class="flex justify-between items-center mb-6">
-                <div class="text-2xl font-black tracking-tighter italic text-white">RHK <span class="text-purple-500">MUSIC</span></div>
-                <div class="w-10 h-10 bg-gradient-to-tr from-purple-600 to-pink-500 rounded-full border-2 border-white/10 shadow-lg shadow-purple-500/30"></div>
+                <div class="text-2xl font-black tracking-tighter italic">
+                    RHK <span class="text-purple-500">MUSIC</span>
+                </div>
+                <div class="w-10 h-10 bg-gradient-to-tr from-purple-600 to-pink-500 rounded-full border-2 border-white/10 shadow-[0_0_15px_rgba(168,85,247,0.4)]"></div>
             </div>
             
             <div class="relative group">
-                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-purple-400 transition-colors"></i>
-                <input type="text" id="searchInput" placeholder="Search artists or songs..." 
-                    class="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 pl-12 pr-4 text-sm focus:outline-none focus:border-purple-500/50 focus:bg-white/10 transition-all shadow-inner"
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-purple-400 transition-colors"></i>
+                <input type="text" id="searchInput" placeholder="Search artists, songs..." 
+                    class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm focus:outline-none focus:border-purple-500/50 focus:bg-white/10 transition-all shadow-inner"
                     onkeyup="if(event.key === 'Enter') searchMusic(this.value)">
             </div>
         </header>
 
         <main class="px-6">
             <section class="mb-10 pt-6">
-                <h1 class="text-xs uppercase tracking-[0.3em] font-bold text-purple-400 mb-4">Editor's Choice</h1>
-                <div id="hero-section" class="premium-card relative h-52 rounded-[2rem] overflow-hidden flex items-end p-6 border border-white/10 shadow-2xl">
-                    <div class="animate-pulse bg-white/5 w-full h-full absolute inset-0"></div>
+                <h3 class="text-[10px] uppercase tracking-[0.4em] font-bold text-purple-500 mb-4 ml-1">Editor's Choice</h3>
+                <div id="hero-section" class="premium-card relative h-56 rounded-[2.5rem] overflow-hidden flex items-end p-6 border border-white/10 shadow-2xl">
+                    <div class="animate-pulse bg-white/5 w-full h-full absolute inset-0 rounded-[2.5rem]"></div>
                 </div>
             </section>
 
             <section class="mb-10">
-                <div class="flex justify-between items-center mb-5">
-                    <h3 class="text-xl font-bold tracking-tight">Your Daily Mixes</h3>
-                    <span class="text-[10px] uppercase text-purple-400 font-bold">See All</span>
+                <div class="flex justify-between items-end mb-5 px-1">
+                    <h3 class="text-xl font-extrabold tracking-tight">Your Daily Mixes</h3>
+                    <span class="text-[10px] uppercase text-purple-400 font-bold cursor-pointer hover:text-white transition-colors">See All</span>
                 </div>
-                <div id="daily-mixes" class="flex gap-5 overflow-x-auto no-scrollbar pb-4">
+                <div id="daily-mixes" class="flex gap-5 overflow-x-auto no-scrollbar pb-4 pt-2">
                     </div>
             </section>
 
             <section class="mb-10">
-                <h3 class="text-xl font-bold tracking-tight mb-5">Explore Vibes</h3>
+                <h3 class="text-xl font-extrabold tracking-tight mb-5 px-1">Explore Vibes</h3>
                 <div class="grid grid-cols-2 gap-4">
-                    <div onclick="searchMusic('Lo-fi focus music')" class="vibe-card bg-indigo-900/20 p-5 rounded-3xl border border-white/5 cursor-pointer hover:bg-indigo-900/40 transition-all">
-                        <i class="fa-solid fa-moon text-indigo-400 text-xl mb-3"></i>
-                        <p class="text-xs font-bold uppercase tracking-wider">Midnight Focus</p>
+                    <div onclick="searchMusic('Lofi chill study beats')" class="vibe-card bg-indigo-900/10 p-6 rounded-[2rem] border border-white/5 cursor-pointer hover:bg-indigo-900/30 transition-all flex flex-col items-start gap-3">
+                        <div class="w-10 h-10 bg-indigo-500/20 rounded-xl flex items-center justify-center">
+                            <i class="fa-solid fa-moon text-indigo-400"></i>
+                        </div>
+                        <p class="text-[11px] font-bold uppercase tracking-wider">Midnight Focus</p>
                     </div>
-                    <div onclick="searchMusic('Trending workout hits')" class="vibe-card bg-purple-600/20 p-5 rounded-3xl border border-white/5 cursor-pointer hover:bg-purple-600/40 transition-all">
-                        <i class="fa-solid fa-bolt text-purple-400 text-xl mb-3"></i>
-                        <p class="text-xs font-bold uppercase tracking-wider">High Energy</p>
+                    <div onclick="searchMusic('Global top hits 2026')" class="vibe-card bg-purple-600/10 p-6 rounded-[2rem] border border-white/5 cursor-pointer hover:bg-purple-600/30 transition-all flex flex-col items-start gap-3">
+                        <div class="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center">
+                            <i class="fa-solid fa-bolt text-purple-400"></i>
+                        </div>
+                        <p class="text-[11px] font-bold uppercase tracking-wider">High Energy</p>
                     </div>
                 </div>
             </section>
@@ -61,25 +67,33 @@
 
         <div id="player"></div>
 
-        <div id="mini-player" class="fixed bottom-28 left-1/2 -translate-x-1/2 w-[92%] glass-player p-3.5 rounded-3xl flex items-center gap-4 z-50 transform translate-y-40 transition-all duration-700 ease-out shadow-2xl">
+        <div id="mini-player" class="fixed bottom-28 left-1/2 -translate-x-1/2 w-[92%] glass-player p-3.5 rounded-[2rem] flex items-center gap-4 z-50 transform translate-y-44 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
             <div class="relative w-14 h-14 shrink-0">
-                <img id="player-thumb" src="" class="w-full h-full rounded-2xl object-cover border border-white/10">
-                <div class="absolute inset-0 rounded-2xl shadow-inner"></div>
+                <img id="player-thumb" src="" class="w-full h-full rounded-2xl object-cover border border-white/10 shadow-lg">
+                <div class="absolute inset-0 rounded-2xl shadow-[inset_0_0_10px_rgba(0,0,0,0.5)]"></div>
             </div>
             <div class="flex-1 overflow-hidden">
-                <p id="player-title" class="text-xs font-bold truncate text-white">Select a song</p>
-                <p id="player-artist" class="text-[10px] opacity-50 mt-1 font-medium">RHK Music Experience</p>
+                <p id="player-title" class="text-xs font-bold truncate text-white mb-0.5">Select a track</p>
+                <p id="player-artist" class="text-[10px] text-purple-400/80 font-semibold uppercase tracking-tighter">RHK Music</p>
             </div>
             <div class="flex items-center gap-6 pr-4">
-                <i class="fa-solid fa-play text-xl cursor-pointer hover:text-purple-400 transition-colors" id="masterPlay"></i>
+                <i class="fa-solid fa-play text-2xl text-white hover:text-purple-400 cursor-pointer transition-colors" id="masterPlay"></i>
             </div>
         </div>
 
-        <nav class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[85%] h-18 bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] flex justify-around items-center px-8 z-50 shadow-2xl">
-            <div class="nav-item active text-purple-500 text-xl"><i class="fa-solid fa-house"></i></div>
-            <div class="nav-item opacity-40 text-xl hover:opacity-100"><i class="fa-solid fa-compass"></i></div>
-            <div class="nav-item opacity-40 text-xl hover:opacity-100"><i class="fa-solid fa-tower-broadcast"></i></div>
-            <div class="nav-item opacity-40 text-xl hover:opacity-100"><i class="fa-solid fa-layer-group"></i></div>
+        <nav class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[88%] h-20 bg-white/[0.03] backdrop-blur-3xl border border-white/10 rounded-[3rem] flex justify-around items-center px-8 z-50 shadow-2xl">
+            <div class="nav-item active flex flex-col items-center gap-1">
+                <i class="fa-solid fa-house text-xl"></i>
+                <span class="text-[8px] font-bold uppercase tracking-widest">Home</span>
+            </div>
+            <div onclick="searchMusic('New Releases')" class="nav-item opacity-40 hover:opacity-100 transition-opacity flex flex-col items-center gap-1">
+                <i class="fa-solid fa-compass text-xl"></i>
+                <span class="text-[8px] font-bold uppercase tracking-widest">Explore</span>
+            </div>
+            <div class="nav-item opacity-40 hover:opacity-100 transition-opacity flex flex-col items-center gap-1">
+                <i class="fa-solid fa-layer-group text-xl"></i>
+                <span class="text-[8px] font-bold uppercase tracking-widest">Library</span>
+            </div>
         </nav>
     </div>
 
