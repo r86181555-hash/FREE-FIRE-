@@ -1,49 +1,45 @@
+// 🔥 YOUR YOUTUBE API KEY
 const API_KEY = "AIzaSyDdklLjpuYqiQU1akYheP7K3aOLxgQTEtM";
 
-const searchInput = document.getElementById("search");
+// 🔍 SEARCH
+async function searchSongs() {
+  let query = document.getElementById("search").value;
 
-let timeout;
+  if (!query) {
+    alert("Enter song name");
+    return;
+  }
 
-// 🔥 SMOOTH FAST SEARCH
-searchInput.addEventListener("input", () => {
-  clearTimeout(timeout);
+  let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&type=video&maxResults=10&key=${API_KEY}`;
 
-  timeout = setTimeout(() => {
-    const query = searchInput.value.trim();
+  let res = await fetch(url);
+  let data = await res.json();
 
-    if (query.length < 2) return;
+  displaySongs(data.items);
+}
 
-    fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&key=${API_KEY}&maxResults=10&type=video`)
-      .then(res => res.json())
-      .then(data => {
+// 🎵 DISPLAY
+function displaySongs(videos) {
+  let container = document.getElementById("results");
+  container.innerHTML = "";
 
-        if (!data.items) {
-          document.getElementById("results").innerHTML = "No results";
-          return;
-        }
+  videos.forEach(video => {
+    let vidId = video.id.videoId;
+    let title = video.snippet.title;
+    let thumb = video.snippet.thumbnails.medium.url;
 
-        let html = "";
+    let div = document.createElement("div");
+    div.className = "card";
 
-        data.items.forEach(item => {
-          if (!item.id.videoId) return;
+    div.innerHTML = `
+      <img src="${thumb}">
+      <p>${title}</p>
+    `;
 
-          html += `
-            <div class="video-card" onclick="playVideo('${item.id.videoId}')">
-              <img src="${item.snippet.thumbnails.medium.url}">
-              <p>${item.snippet.title}</p>
-            </div>
-          `;
-        });
+    div.onclick = () => {
+      window.location.href = "player.html?id=" + vidId;
+    };
 
-        document.getElementById("results").innerHTML = html;
-      })
-      .catch(() => {
-        document.getElementById("results").innerHTML = "Error loading songs";
-      });
-
-  }, 400);
-});
-
-function playVideo(id) {
-  window.location.href = "player.html?video=" + id;
+    container.appendChild(div);
+  });
 }
