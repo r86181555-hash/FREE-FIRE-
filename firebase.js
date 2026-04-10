@@ -2,8 +2,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/fireba
 import { 
   getAuth, 
   GoogleAuthProvider, 
-  signInWithRedirect, 
-  getRedirectResult 
+  signInWithRedirect,
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -16,16 +16,14 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
+// 🔥 AUTO LOGIN (NO REPEAT LOGIN)
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    window.location.replace("home.html");
+  }
+});
+
+// LOGIN BUTTON
 document.getElementById("googleLogin").onclick = () => {
   signInWithRedirect(auth, provider);
 };
-
-getRedirectResult(auth)
-  .then((result) => {
-    if (result) {
-      window.location.href = "home.html";
-    }
-  })
-  .catch((error) => {
-    console.log(error);
-  });
