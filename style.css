@@ -1,71 +1,71 @@
 body {
   margin: 0;
   font-family: Arial;
-  background: #000;
+  background: #0b1320;
   color: white;
 }
 
 /* LOGIN */
 .login-body {
-  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100vh;
 }
 
-.logo {
-  color: red;
-  font-size: 36px;
-}
-
-.tagline {
-  color: #aaa;
+.login-box {
+  text-align: center;
 }
 
 .google-btn {
   padding: 15px;
-  width: 80%;
-  border-radius: 50px;
+  width: 250px;
   border: none;
+  border-radius: 30px;
   font-size: 16px;
-  margin-top: 20px;
+  background: white;
+  color: black;
 }
 
-/* HEADER */
+/* HOME */
 .header {
-  padding: 15px;
-  background: #111;
-  text-align: center;
+  display: flex;
+  padding: 10px;
 }
 
-/* SEARCH */
-.search-bar {
-  width: 95%;
-  padding: 12px;
-  margin: 10px;
-  border-radius: 20px;
+#search {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+}
+
+button {
+  margin-left: 10px;
+  padding: 10px;
+  border-radius: 10px;
   border: none;
 }
 
 /* GRID */
-.video-grid {
+.grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
   padding: 10px;
 }
 
-.video-card {
-  background: #111;
+.card {
+  background: #1c2331;
   border-radius: 10px;
+  padding: 5px;
 }
 
-.video-card img {
+.card img {
   width: 100%;
   border-radius: 10px;
 }
 
-.video-card p {
+.card p {
   font-size: 12px;
-  padding: 5px;
 }
