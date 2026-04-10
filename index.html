@@ -1,93 +1,138 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RHK MUSIC</title>
+<title>My Music App</title>
 
 <style>
 body {
     margin: 0;
     font-family: Arial;
-    background: #000;
+    background: linear-gradient(to bottom, #0f0f1a, #000);
     color: white;
 }
 
-/* SEARCH */
+header {
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
 .search-box {
+    margin-top: 15px;
+}
+
+input {
+    width: 80%;
     padding: 10px;
-    display: flex;
-}
-
-.search-box input {
-    flex: 1;
-    padding: 12px;
     border-radius: 20px;
     border: none;
+    outline: none;
+    font-size: 16px;
 }
 
-.search-box button {
-    margin-left: 10px;
-    padding: 12px;
-    border-radius: 20px;
-    border: none;
-    background: red;
-    color: white;
-}
-
-/* RESULTS */
-.cards {
+.container {
     display: grid;
-    grid-template-columns: repeat(2,1fr);
-    gap: 10px;
-    padding: 10px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    padding: 15px;
 }
 
 .card {
-    background: #111;
-    border-radius: 10px;
-    padding: 5px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 15px;
+    padding: 10px;
+    text-align: center;
+    backdrop-filter: blur(10px);
 }
 
 .card img {
     width: 100%;
     border-radius: 10px;
 }
+
+.card h3 {
+    margin: 10px 0;
+    font-size: 14px;
+}
+
+button {
+    background: #a855f7;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    color: white;
+    cursor: pointer;
+}
+
+audio {
+    width: 100%;
+    margin-top: 10px;
+}
 </style>
 </head>
 
 <body>
 
-<h2 style="padding:10px;">🎵 RHK MUSIC</h2>
+<header>
+    <h1>🎵 My Music</h1>
 
-<div class="search-box">
-    <input id="searchInput" placeholder="Search YouTube...">
-    <button onclick="search()">Search</button>
-</div>
+    <div class="search-box">
+        <input type="text" id="search" placeholder="Search songs...">
+    </div>
+</header>
 
-<div id="results" class="cards"></div>
+<div class="container" id="musicList"></div>
 
 <script>
+let totalSongs = 100; // change to 1000 later
 
-const API_KEY = "AIzaSyDdklLjpuYqiQU1akYheP7K3aOLxgQTEtM";
+let container = document.getElementById("musicList");
 
-/* SEARCH FUNCTION (WORKING) */
-async function search() {
-    let query = document.getElementById("searchInput").value;
+function loadSongs() {
+    container.innerHTML = "";
 
-    if (!query) return;
+    for (let i = 1; i <= totalSongs; i++) {
+        let card = document.createElement("div");
+        card.className = "card";
 
-    let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=10&q=${query}&key=${API_KEY}`;
+        card.innerHTML = `
+            <img src="images/img${i}.jpg" onerror="this.src='https://via.placeholder.com/150'">
+            <h3>Song ${i}</h3>
+            <button onclick="playSong(${i})">Play</button>
+            <audio id="audio${i}" src="songs/song${i}.mp3"></audio>
+        `;
 
-    try {
-        let res = await fetch(url);
-        let data = await res.json();
+        container.appendChild(card);
+    }
+}
 
-        if (data.error) {
-            alert(data.error.message);
-            return;
-        }
+function playSong(id) {
+    let audio = document.getElementById("audio" + id);
 
-        show(data.items);
+    // pause all
+    document.querySelectorAll("audio").forEach(a => a.pause());
 
-    } catch (e) {
-        alert("Error
+    audio.play();
+}
+
+document.getElementById("search").addEventListener("keyup", function() {
+    let value = this.value.toLowerCase();
+    let cards = document.querySelectorAll(".card");
+
+    cards.forEach(card => {
+        let text = card.innerText.toLowerCase();
+        card.style.display = text.includes(value) ? "block" : "none";
+    });
+});
+
+loadSongs();
+</script>
+
+</body>
+</html>
