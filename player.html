@@ -1,27 +1,10 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html><html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="style.css">
-</head>
+  <title>Player</title>
+  <link rel="stylesheet" href="style.css">
+</head><body><h2>🎵 Welcome</h2>
+<p id="username"></p><input type="text" id="search" placeholder="Search song">
+<button onclick="searchVideo()">Search</button><br><br>
 
-<body style="background:black; text-align:center; color:white;">
-
-<button onclick="history.back()">⬅ Back</button>
-
-<h3 id="title"></h3>
-<img id="img" width="200">
-
-<iframe id="player" width="100%" height="250"></iframe>
-
-<script>
-let id = localStorage.getItem("vid");
-document.getElementById("title").innerText = localStorage.getItem("title");
-document.getElementById("img").src = localStorage.getItem("img");
-
-document.getElementById("player").src =
-"https://www.youtube.com/embed/" + id;
-</script>
-
-</body>
+<div id="player"></div><script src="https://www.youtube.com/iframe_api"></script><script src="player.js"></script></body>
 </html>
