@@ -3,18 +3,39 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Player</title>
+
+  <style>
+    body {
+      margin: 0;
+      background: black;
+    }
+
+    #player {
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
 </head>
 
-<body style="margin:0;">
+<body>
 
-<iframe id="player" frameborder="0" allowfullscreen></iframe>
+<div id="player"></div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
 
 <script>
+let player;
 const params = new URLSearchParams(window.location.search);
 const videoId = params.get("video");
 
-document.getElementById("player").src =
-  "https://www.youtube.com/embed/" + videoId + "?autoplay=1";
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player('player', {
+    videoId: videoId,
+    playerVars: {
+      autoplay: 1
+    }
+  });
+}
 </script>
 
 </body>
