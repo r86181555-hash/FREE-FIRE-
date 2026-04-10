@@ -17,7 +17,7 @@
     </div>
 </div>
 
-<!-- CATEGORY -->
+<!-- TABS -->
 <div class="tabs">
     <div class="tab active">All</div>
     <div class="tab">Charts</div>
@@ -30,28 +30,25 @@
 
 <!-- TOP CHARTS -->
 <div class="section">
-    <h2>Top Charts</h2>
-    <div class="row" id="charts">
-        <!-- STATIC UI -->
-        <div class="card">
-            <img src="https://i.ytimg.com/vi/2Vv-BfVoq4g/mqdefault.jpg">
-            <p>Kannada Top 50</p>
-        </div>
-
-        <div class="card">
-            <img src="https://i.ytimg.com/vi/JGwWNGJdvx8/mqdefault.jpg">
-            <p>Namma Bengaluru</p>
-        </div>
+    <div class="titleRow">
+        <h2>Top Charts</h2>
     </div>
+    <div class="row" id="charts"></div>
 </div>
 
-<!-- RESULTS -->
+<!-- SEARCH RESULTS -->
 <div class="section">
-    <h2>Search Results</h2>
+    <h2>Results</h2>
     <div class="row" id="results"></div>
 </div>
 
-<!-- BOTTOM NAV -->
+<!-- MINI PLAYER -->
+<div id="miniPlayer" onclick="openPlayerPage()">
+    <img id="miniImg">
+    <p id="miniTitle">Play something 🎧</p>
+</div>
+
+<!-- NAV -->
 <div class="nav">
     <div onclick="goHome()" class="active">🏠<p>Home</p></div>
     <div onclick="focusSearch()">🔍<p>Search</p></div>
@@ -59,5 +56,16 @@
 </div>
 
 <script src="script.js"></script>
+
+<script>
+let img = localStorage.getItem("img");
+let title = localStorage.getItem("title");
+
+if(img){
+    document.getElementById("miniImg").src = img;
+    document.getElementById("miniTitle").innerText = title;
+}
+</script>
+
 </body>
 </html>
