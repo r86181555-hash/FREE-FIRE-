@@ -1,54 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Music App</title>
+<title>Music App</title>
 
 <style>
 body {
     margin: 0;
     font-family: Arial;
-    background: linear-gradient(to bottom, #0f0f1a, #000);
+    background: linear-gradient(to bottom, #0a0a15, #000);
     color: white;
 }
 
-header {
-    padding: 20px;
-    text-align: center;
+/* HEADER */
+.header {
+    padding: 15px;
 }
 
-h1 {
+.header h2 {
     margin: 0;
-    font-size: 24px;
 }
 
-.search-box {
-    margin-top: 15px;
+/* SEARCH */
+.search {
+    margin-top: 10px;
 }
 
-input {
-    width: 80%;
+.search input {
+    width: 100%;
     padding: 10px;
     border-radius: 20px;
     border: none;
     outline: none;
-    font-size: 16px;
 }
 
-.container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-    padding: 15px;
+/* SLIDER */
+.slider {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    padding: 10px;
+}
+
+.slide {
+    min-width: 250px;
+    background: rgba(255,255,255,0.08);
+    padding: 10px;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+}
+
+/* MIXES */
+.section {
+    padding: 10px;
+}
+
+.grid {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
 }
 
 .card {
-    background: rgba(255,255,255,0.05);
+    min-width: 120px;
+    background: rgba(255,255,255,0.08);
     border-radius: 15px;
     padding: 10px;
     text-align: center;
-    backdrop-filter: blur(10px);
 }
 
 .card img {
@@ -56,46 +74,78 @@ input {
     border-radius: 10px;
 }
 
-.card h3 {
-    margin: 10px 0;
-    font-size: 14px;
+/* PLAYER */
+.player {
+    position: fixed;
+    bottom: 60px;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,0.8);
+    padding: 10px;
+    text-align: center;
 }
 
-button {
-    background: #a855f7;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 20px;
-    color: white;
-    cursor: pointer;
-}
-
-audio {
+/* NAVBAR */
+.nav {
+    position: fixed;
+    bottom: 0;
     width: 100%;
-    margin-top: 10px;
+    background: rgba(20,20,20,0.9);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+}
+
+.nav button {
+    background: none;
+    border: none;
+    color: white;
 }
 </style>
 </head>
 
 <body>
 
-<header>
-    <h1>🎵 My Music</h1>
+<div class="header">
+    <h2>Good Morning 🔥</h2>
 
-    <div class="search-box">
+    <div class="search">
         <input type="text" id="search" placeholder="Search songs...">
     </div>
-</header>
+</div>
 
-<div class="container" id="musicList"></div>
+<!-- SLIDER -->
+<div class="slider">
+    <div class="slide">🎧 Trending</div>
+    <div class="slide">🔥 Top Hits</div>
+    <div class="slide">💜 New Songs</div>
+</div>
+
+<!-- MIXES -->
+<div class="section">
+    <h3>Your Mixes</h3>
+    <div class="grid" id="musicList"></div>
+</div>
+
+<!-- PLAYER -->
+<div class="player" id="player">
+    <p id="nowPlaying">No song playing</p>
+    <button onclick="togglePlay()">⏯️ Play/Pause</button>
+</div>
+
+<!-- NAVBAR -->
+<div class="nav">
+    <button>🏠 Home</button>
+    <button>🔍 Search</button>
+    <button>📚 Library</button>
+</div>
 
 <script>
-let totalSongs = 100; // change to 1000 later
-
-let container = document.getElementById("musicList");
+let totalSongs = 50;
+let currentAudio = null;
 
 function loadSongs() {
-    container.innerHTML = "";
+    let container = document.getElementById("musicList");
 
     for (let i = 1; i <= totalSongs; i++) {
         let card = document.createElement("div");
@@ -103,9 +153,8 @@ function loadSongs() {
 
         card.innerHTML = `
             <img src="images/img${i}.jpg" onerror="this.src='https://via.placeholder.com/150'">
-            <h3>Song ${i}</h3>
+            <p>Song ${i}</p>
             <button onclick="playSong(${i})">Play</button>
-            <audio id="audio${i}" src="songs/song${i}.mp3"></audio>
         `;
 
         container.appendChild(card);
@@ -113,14 +162,25 @@ function loadSongs() {
 }
 
 function playSong(id) {
-    let audio = document.getElementById("audio" + id);
+    if (currentAudio) currentAudio.pause();
 
-    // pause all
-    document.querySelectorAll("audio").forEach(a => a.pause());
+    currentAudio = new Audio("songs/song" + id + ".mp3");
+    currentAudio.play();
 
-    audio.play();
+    document.getElementById("nowPlaying").innerText = "Playing Song " + id;
 }
 
+function togglePlay() {
+    if (!currentAudio) return;
+
+    if (currentAudio.paused) {
+        currentAudio.play();
+    } else {
+        currentAudio.pause();
+    }
+}
+
+/* SEARCH */
 document.getElementById("search").addEventListener("keyup", function() {
     let value = this.value.toLowerCase();
     let cards = document.querySelectorAll(".card");
