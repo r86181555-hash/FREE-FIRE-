@@ -1,10 +1,21 @@
-<!DOCTYPE html><html>
+<!DOCTYPE html>
+<html>
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Player</title>
-  <link rel="stylesheet" href="style.css">
-</head><body><h2>🎵 Welcome</h2>
-<p id="username"></p><input type="text" id="search" placeholder="Search song">
-<button onclick="searchVideo()">Search</button><br><br>
+</head>
 
-<div id="player"></div><script src="https://www.youtube.com/iframe_api"></script><script src="player.js"></script></body>
+<body style="margin:0;">
+
+<iframe id="player" frameborder="0" allowfullscreen></iframe>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const videoId = params.get("video");
+
+document.getElementById("player").src =
+  "https://www.youtube.com/embed/" + videoId + "?autoplay=1";
+</script>
+
+</body>
 </html>
