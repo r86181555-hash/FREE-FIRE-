@@ -1,40 +1,70 @@
 body {
-    margin: 0;
     background: #04142c;
     color: white;
     font-family: sans-serif;
-    padding-bottom: 120px;
+    margin: 0;
+    padding: 10px;
 }
 
+/* HEADER */
 .header {
-    text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.profile {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: linear-gradient(pink, purple);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* TABS */
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.tab {
+    padding: 10px 15px;
+    border-radius: 20px;
+    background: #0a1c3a;
+}
+
+.tab.active {
+    background: white;
+    color: black;
 }
 
 /* SEARCH */
 input {
-    width: 90%;
-    margin: 10px;
+    width: 100%;
     padding: 12px;
-    border-radius: 30px;
+    border-radius: 25px;
     border: none;
+    margin-bottom: 15px;
 }
 
-/* OFFLINE */
-#offline {
-    display: none;
-    text-align: center;
-    color: red;
+/* SECTION */
+.section {
+    margin-bottom: 20px;
 }
 
-/* CARDS */
-.scroll {
+/* ROW */
+.row {
     display: flex;
     overflow-x: auto;
+    gap: 10px;
 }
 
+/* CARD */
 .card {
-    min-width: 150px;
-    margin: 10px;
+    min-width: 140px;
 }
 
 .card img {
@@ -42,24 +72,22 @@ input {
     border-radius: 10px;
 }
 
-/* MINI PLAYER */
-.mini {
-    position: fixed;
-    bottom: 60px;
-    width: 100%;
-    background: #111;
-    padding: 10px;
-    text-align: center;
-}
-
 /* NAV */
-.bottom-nav {
+.nav {
     position: fixed;
     bottom: 0;
     width: 100%;
-    background: #000;
+    background: #0a1c3a;
     display: flex;
     justify-content: space-around;
     padding: 10px;
-    font-size: 20px;
+}
+
+.nav div {
+    text-align: center;
+    font-size: 12px;
+}
+
+.nav .active {
+    color: red;
 }
