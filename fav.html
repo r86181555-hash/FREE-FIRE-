@@ -7,28 +7,28 @@
 
 <body>
 
-<div class="back" onclick="history.back()">⬅</div>
+<button onclick="history.back()">⬅ Back</button>
 
-<h2>❤️ Favorites</h2>
-<div id="favList"></div>
+<h2>Favorites</h2>
+<div id="list"></div>
 
 <script>
 let fav = JSON.parse(localStorage.getItem("fav")) || [];
-let container = document.getElementById("favList");
+let list = document.getElementById("list");
 
-fav.forEach(song => {
-    container.innerHTML += `
-    <div onclick="play('${song.id}','${song.title}','${song.img}')">
-        <img src="${song.img}" width="100">
-        <p>${song.title}</p>
+fav.forEach(s => {
+    list.innerHTML += `
+    <div onclick="play('${s.id}','${s.title}','${s.img}')">
+        <img src="${s.img}" width="100">
+        <p>${s.title}</p>
     </div>`;
 });
 
 function play(id,title,img){
-    localStorage.setItem("videoId", id);
+    localStorage.setItem("vid", id);
     localStorage.setItem("title", title);
     localStorage.setItem("img", img);
-    window.location.href = "player.html";
+    window.location = "player.html";
 }
 </script>
 
