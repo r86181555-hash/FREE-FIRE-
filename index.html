@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RHK MUSIC</title>
@@ -8,22 +8,29 @@
 
 <body>
 
+<!-- HEADER -->
 <div class="header">
-    <h2>🎵 RHK MUSIC</h2>
+    <div class="profile">RH</div>
+    <div>
+        <small>Welcome</small><br>
+        <b>RHK MUSIC</b>
+    </div>
 </div>
 
-<input type="text" id="searchInput" placeholder="Search songs..." onkeyup="searchYouTube(this.value)">
-
-<div id="empty">
-    <p>Search your favorite songs 🎧</p>
+<!-- SEARCH -->
+<div class="search-box">
+    <input type="text" id="searchInput" placeholder="Search songs, artists..." onkeyup="debounceSearch()">
 </div>
 
-<div class="scroll" id="results"></div>
+<!-- RESULTS -->
+<div id="results" class="cards"></div>
 
-<div class="bottom-nav">
-    <div onclick="goHome()">🏠</div>
-    <div onclick="focusSearch()">🔍</div>
-    <div onclick="openFav()">❤️</div>
+<!-- MINI PLAYER -->
+<div id="miniPlayer" class="mini-player" onclick="openPlayer()">
+    <img id="miniImg">
+    <div>
+        <p id="miniTitle">Play something...</p>
+    </div>
 </div>
 
 <script src="script.js"></script>
