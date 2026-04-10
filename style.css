@@ -1,74 +1,101 @@
 body {
-    background: #04142c;
-    color: white;
-    font-family: sans-serif;
     margin: 0;
-    padding: 10px;
+    font-family: 'Segoe UI';
+    background: linear-gradient(to bottom, #020817, #000);
+    color: white;
 }
 
+/* HEADER */
 .header {
-    text-align: center;
+    display: flex;
+    padding: 15px;
+    align-items: center;
+}
+
+.profile {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #ff004f, #7a00ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 10px;
 }
 
 /* SEARCH */
-input {
+.search-box {
+    padding: 10px;
+}
+
+.search-box input {
     width: 100%;
     padding: 14px;
     border-radius: 30px;
     border: none;
-    margin: 15px 0;
+    background: #111;
+    color: white;
+    font-size: 16px;
 }
 
-/* EMPTY */
-#empty {
-    text-align: center;
-    color: gray;
-    margin-top: 50px;
+/* CARDS GRID */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 10px;
 }
 
-/* SCROLL */
-.scroll {
-    display: flex;
-    overflow-x: auto;
-    gap: 10px;
-}
-
-/* CARD */
 .card {
-    min-width: 150px;
+    background: #0d1117;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: scale(1.05);
 }
 
 .card img {
     width: 100%;
-    border-radius: 12px;
 }
 
-/* BUTTON */
-button {
-    padding: 5px 10px;
-    border-radius: 10px;
+.card p {
+    padding: 8px;
+    font-size: 14px;
+}
+
+/* PLAYER */
+.player {
+    text-align: center;
+    padding: 20px;
+}
+
+.fav-btn {
+    padding: 10px 20px;
+    border-radius: 20px;
     border: none;
     background: red;
     color: white;
 }
 
-/* NAV */
-.bottom-nav {
+/* MINI PLAYER */
+.mini-player {
     position: fixed;
-    bottom: 0;
-    width: 100%;
-    background: #0a1c3a;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    background: #111;
+    border-radius: 15px;
     display: flex;
-    justify-content: space-around;
+    align-items: center;
     padding: 10px;
 }
 
-/* BACK BUTTON */
-.back {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    background: #222;
-    padding: 8px;
+.mini-player img {
+    width: 50px;
     border-radius: 10px;
+    margin-right: 10px;
 }
