@@ -1,0 +1,45 @@
+/* style.css */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.premium-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-tile {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.vibe-card {
+    transition: all 0.3s ease;
+}
+
+.vibe-card:hover {
+    transform: scale(1.05);
+}
+
+.glass-player {
+    background: rgba(20, 20, 20, 0.85);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 -10px 25px rgba(0,0,0,0.5);
+}
+
+.nav-item.active i {
+    color: #a855f7; /* Purple-500 */
+    text-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+}
+
+.nav-item.active span {
+    color: white;
+}
+
