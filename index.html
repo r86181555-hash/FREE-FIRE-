@@ -1,23 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>RHK MUSIC</title>
-  <link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RHK MUSIC</title>
+<link rel="stylesheet" href="style.css">
 </head>
 
-<body class="login-body">
+<body>
 
-<div class="login-box">
-  <h1>RHK MUSIC</h1>
-
-  <button onclick="googleLogin()" class="google-btn">
-    Continue with Google
-  </button>
+<div class="header">
+    <h2>🎵 RHK MUSIC</h2>
 </div>
 
-<!-- Firebase -->
-<script type="module" src="firebase.js"></script>
-<script type="module" src="script.js"></script>
+<input type="text" id="searchInput" placeholder="Search songs..." onkeyup="searchYouTube(this.value)">
 
+<div id="empty">
+    <p>Search your favorite songs 🎧</p>
+</div>
+
+<div class="scroll" id="results"></div>
+
+<div class="bottom-nav">
+    <div onclick="goHome()">🏠</div>
+    <div onclick="focusSearch()">🔍</div>
+    <div onclick="openFav()">❤️</div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
