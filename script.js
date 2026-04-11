@@ -1,95 +1,103 @@
-const musicData = [
-    { title: "Loneliness", artist: "Putri Ariani", mood: "#1DB954" },
-    { title: "Quantum", artist: "RHK Studio", mood: "#8a2be2" },
-    { title: "Afterlife", artist: "Unknown", mood: "#ff0055" }
+const music = [
+    { title: "NEURAL_LINK", artist: "RHK_01", thumb: "32786.jpg" },
+    { title: "GHOST_SHELL", artist: "CYBER_02", thumb: "32787.jpg" },
+    { title: "VOID_WALKER", artist: "TITAN_03", thumb: "32812.jpg" }
 ];
 
-const allSongs = Array.from({ length: 60 }, (_, i) => ({
+const allSongs = Array.from({ length: 40 }, (_, i) => ({
     id: i + 1,
-    title: musicData[i]?.title || `System Vibe ${i+1}`,
-    artist: musicData[i]?.artist || "Nebula Producer",
-    color: musicData[i]?.mood || (i % 3 === 0 ? "#1DB954" : "#8a2be2"),
-    file: `${i + 1}.mp3`,
-    thumb: `${i + 1}.jpg`
+    title: music[i % 3].title,
+    artist: music[i % 3].artist,
+    thumb: music[i % 3].thumb,
+    file: `${i + 1}.mp3`
 }));
 
 const audio = document.getElementById('main-audio');
 const playBtn = document.getElementById('masterPlay');
 let currentIdx = -1;
 
-function renderHome(list = allSongs) {
-    const grid = document.getElementById('home-grid');
-    grid.innerHTML = list.map((s, idx) => `
-        <div class="song-card group cursor-pointer" onclick="playTrack(${s.id - 1})">
-            <div class="relative rounded-[2.5rem] overflow-hidden mb-5">
-                <img src="${s.thumb}" class="w-full aspect-square object-cover grayscale group-hover:grayscale-0 transition-all duration-700" onerror="this.src='https://via.placeholder.com/400/111/333?text=RHK'">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
-                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-black">
-                        <i class="fa-solid fa-play ml-1"></i>
-                    </div>
-                </div>
-            </div>
-            <h4 class="text-sm font-bold truncate tracking-tight">${s.title}</h4>
-            <p class="text-[10px] text-white/20 font-bold uppercase tracking-widest mt-1">${s.artist}</p>
-        </div>
-    `).join('');
+function renderHelix() {
+    const container = document.getElementById('helix-container');
+    const total = 15; // Show 15 orbiting nodes
+    
+    for (let i = 0; i < total; i++) {
+        const angle = (i / total) * Math.PI * 2;
+        const radius = 600;
+        const x = Math.cos(angle) * radius;
+        const z = Math.sin(angle) * radius;
+        
+        const card = document.createElement('div');
+        card.className = 'helix-card flex flex-col justify-end';
+        card.style.transform = `translateX(${x}px) translateZ(${z}px) rotateY(${-angle}rad)`;
+        card.innerHTML = `
+            <img src="${allSongs[i].thumb}" class="absolute inset-0 w-full h-full object-cover opacity-20 rounded-lg">
+            <h4 class="text-xs font-black tracking-widest">${allSongs[i].title}</h4>
+            <p class="text-[6px] text-[#1DB954] font-bold mt-1 uppercase">${allSongs[i].artist}</p>
+        `;
+        card.onclick = () => playNode(i);
+        container.appendChild(card);
+    }
 }
 
-function playTrack(idx) {
+function playNode(idx) {
     currentIdx = idx;
     const s = allSongs[idx];
     audio.src = s.file;
     audio.play();
     
-    // Dynamic Background Change
-    document.querySelector('.blob-1').style.background = s.color;
-    document.querySelector('.blob-1').style.transform = `scale(${1.2}) translate(${Math.random()*100}px)`;
-
+    document.getElementById('center-well').style.opacity = "1";
+    document.getElementById('center-well').style.transform = "scale(1)";
     document.getElementById('player-title').innerText = s.title;
     document.getElementById('player-artist').innerText = s.artist;
     document.getElementById('player-thumb').src = s.thumb;
-    document.getElementById('mini-player').style.transform = "translateY(0) translateX(-50%)";
-    document.body.classList.add('playing');
-    playBtn.innerHTML = '<i class="fa-solid fa-pause text-black"></i>';
+    playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
 }
-
-function nextTrack() {
-    currentIdx = (currentIdx + 1) % allSongs.length;
-    playTrack(currentIdx);
-}
-
-function prevTrack() {
-    currentIdx = (currentIdx - 1 + allSongs.length) % allSongs.length;
-    playTrack(currentIdx);
-}
-
-playBtn.onclick = () => {
-    if (audio.paused) { audio.play(); playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>'; }
-    else { audio.pause(); playBtn.innerHTML = '<i class="fa-solid fa-play ml-1"></i>'; }
-};
 
 audio.ontimeupdate = () => {
-    const val = (audio.currentTime / audio.duration) * 100 || 0;
-    document.getElementById('progress-line').style.width = val + '%';
-    document.getElementById('current-time').innerText = fmt(audio.currentTime);
+    const dash = 1000;
+    const progress = (audio.currentTime / audio.duration) * dash;
+    document.getElementById('progress-circle').style.strokeDashoffset = dash - progress;
 };
 
-const fmt = s => `${Math.floor(s/60)}:${Math.floor(s%60).toString().padStart(2,'0')}`;
+// Simple Particle System
+const canvas = document.getElementById('particle-canvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-function searchMusic() {
-    const q = document.getElementById('searchInput').value.toLowerCase();
-    const filtered = allSongs.filter(s => s.title.toLowerCase().includes(q));
-    renderHome(filtered);
+let particles = [];
+for(let i=0; i<100; i++) {
+    particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        v: Math.random() * 0.5 + 0.1
+    });
 }
 
-function saveUser() {
-    const n = document.getElementById('userNameInput').value;
-    if(n) { localStorage.setItem('rhk_user_name', n); location.reload(); }
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "rgba(29, 185, 84, 0.2)";
+    particles.forEach(p => {
+        p.y -= p.v;
+        if(p.y < 0) p.y = canvas.height;
+        ctx.fillRect(p.x, p.y, 1, 1);
+    });
+    requestAnimationFrame(draw);
 }
+draw();
 
 window.onload = () => {
     const n = localStorage.getItem('rhk_user_name');
-    if (!n) document.getElementById('name-modal').classList.remove('hidden');
-    else document.getElementById('user-display').innerText = `Greetings, ${n}`;
-    renderHome();
+    if (!n) {
+        document.getElementById('name-modal').classList.remove('hidden');
+        document.getElementById('userNameInput').addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') {
+                localStorage.setItem('rhk_user_name', e.target.value);
+                location.reload();
+            }
+        });
+    } else {
+        document.getElementById('user-display').innerText = `NODE_${n}_LINKED`;
+        renderHelix();
+    }
 };
