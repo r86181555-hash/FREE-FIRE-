@@ -3,68 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RHK MUSIC | STUDIO</title>
+    <title>RHK MUSIC | PRO</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-[#050505] text-white font-['Montserrat'] overflow-x-hidden">
+<body class="bg-[#0D0D0D] text-white font-['Plus_Jakarta_Sans'] overflow-x-hidden">
 
     <audio id="main-audio"></audio>
 
-    <div id="name-modal" class="fixed inset-0 z-[200] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-8 hidden">
-        <div class="max-w-xs text-center">
-            <div class="w-16 h-16 bg-purple-600 rounded-full mx-auto mb-6 flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.4)]">
-                <i class="fa-solid fa-bolt-lightning text-2xl"></i>
-            </div>
-            <h2 class="text-xl font-black mb-2 tracking-tighter uppercase">RHK Studio</h2>
-            <input type="text" id="userNameInput" placeholder="YOUR NAME" 
-                class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-center text-lg font-bold focus:outline-none focus:border-purple-500 mb-4 transition-all">
-            <button onclick="saveUser()" class="w-full bg-purple-600 py-4 rounded-2xl font-bold uppercase tracking-widest text-[10px]">Enter Studio</button>
+    <div id="name-modal" class="fixed inset-0 z-[200] bg-[#0D0D0D] flex items-center justify-center p-10 hidden">
+        <div class="w-full max-w-sm text-center">
+            <h1 class="text-3xl font-extrabold mb-6">RHK Studio</h1>
+            <input type="text" id="userNameInput" placeholder="Enter your name" 
+                class="w-full bg-[#1A1A1A] border border-white/5 rounded-2xl py-5 px-6 mb-6 focus:outline-none focus:border-[#1DB954]">
+            <button onclick="saveUser()" class="w-full bg-[#1DB954] text-black font-bold py-5 rounded-full">Enter Studio</button>
         </div>
     </div>
 
-    <div class="max-w-md mx-auto min-h-screen relative pb-44 bg-gradient-to-b from-[#0a0a0f] to-black">
-        <header class="p-8 sticky top-0 bg-[#0a0a0f]/80 backdrop-blur-xl z-40">
-            <div class="flex justify-between items-center">
-                <div class="text-xl font-black italic tracking-tighter">RHK <span class="text-purple-500">MUSIC</span></div>
-                <div id="user-display" class="text-[10px] font-black uppercase opacity-40 tracking-widest">Guest</div>
+    <div class="max-w-md mx-auto min-h-screen relative pb-44">
+        <header class="p-6 sticky top-0 bg-[#0D0D0D]/90 backdrop-blur-md z-40">
+            <div class="flex justify-between items-center mb-6">
+                <h2 id="user-display" class="text-xl font-bold italic text-[#1DB954]">RHK User</h2>
+                <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
+                    <i class="fa-solid fa-user text-xs"></i>
+                </div>
+            </div>
+
+            <div class="relative mb-6">
+                <i class="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 text-sm"></i>
+                <input type="text" id="searchInput" oninput="searchContent()" placeholder="Search songs or podcasts..." 
+                    class="w-full bg-[#1A1A1A] border border-white/5 rounded-full py-4 pl-12 pr-6 text-sm focus:outline-none focus:border-[#1DB954]/50 transition-all">
+            </div>
+
+            <div class="flex gap-3 overflow-x-auto no-scrollbar">
+                <button onclick="filterType('music')" id="tab-music" class="pill active">Music</button>
+                <button onclick="filterType('podcast')" id="tab-podcast" class="pill">Podcast</button>
             </div>
         </header>
 
         <main class="px-6">
-            <div id="home-view">
-                <h3 class="text-[10px] font-black uppercase tracking-[0.3em] text-white/30 mb-6">Studio Collection</h3>
-                <div id="home-grid" class="grid grid-cols-2 gap-4">
-                    </div>
-            </div>
+            <section id="home-view">
+                <h3 id="view-title" class="text-lg font-bold mb-4">Trending Now</h3>
+                <div id="home-grid" class="grid grid-cols-2 gap-4"></div>
+            </section>
 
-            <div id="library-view" class="hidden">
-                <h3 class="text-2xl font-black mb-6 uppercase">Library</h3>
-                <div id="library-list" class="flex flex-col gap-3"></div>
-            </div>
+            <section id="library-view" class="hidden">
+                <h3 class="text-2xl font-bold mb-6">Liked Content</h3>
+                <div id="library-list" class="space-y-4"></div>
+            </section>
         </main>
 
-        <div id="mini-player" class="fixed bottom-28 left-1/2 -translate-x-1/2 w-[92%] glass-player p-4 rounded-[2.5rem] z-50 transform translate-y-64 transition-all duration-500 shadow-2xl">
-            <div class="absolute top-0 left-8 right-8 -translate-y-1/2">
-                <input type="range" id="progress-bar" value="0" class="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-purple-500">
-            </div>
+        <div id="mini-player" class="fixed bottom-28 left-4 right-4 bg-[#1A1A1A] rounded-[2.5rem] p-4 z-50 transform translate-y-64 transition-all duration-500 shadow-2xl border border-white/5">
             <div class="flex items-center gap-4">
-                <img id="player-thumb" src="" class="w-12 h-12 rounded-xl object-cover bg-white/5 shadow-lg">
+                <img id="player-thumb" src="" class="w-14 h-14 rounded-[1.5rem] object-cover bg-black">
                 <div class="flex-1 overflow-hidden">
-                    <p id="player-title" class="text-[11px] font-bold truncate tracking-tight">Select Track</p>
-                    <p id="current-time" class="text-[8px] opacity-40 mt-1 font-black">0:00 / 0:00</p>
+                    <p id="player-title" class="font-bold truncate text-sm">Select Track</p>
+                    <p id="player-artist" class="text-[10px] text-gray-400">RHK Music</p>
                 </div>
-                <button id="masterPlay" class="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center shadow-lg active:scale-90 transition-transform">
-                    <i class="fa-solid fa-play text-xs text-white"></i>
-                </button>
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-backward-step cursor-pointer" onclick="prevTrack()"></i>
+                    <button id="masterPlay" class="w-10 h-10 bg-[#1DB954] rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-play text-black text-xs"></i>
+                    </button>
+                    <i class="fa-solid fa-forward-step cursor-pointer" onclick="nextTrack()"></i>
+                </div>
+            </div>
+            <div class="px-2 mt-4">
+                <input type="range" id="progress-bar" value="0" class="w-full h-1 bg-white/10 rounded-full appearance-none accent-[#1DB954]">
+                <div class="flex justify-between text-[8px] text-gray-500 mt-2 font-bold uppercase tracking-widest">
+                    <span id="current-time">0:00</span>
+                    <span id="duration-time">0:00</span>
+                </div>
             </div>
         </div>
 
-        <nav class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[80%] h-20 bg-white/[0.03] backdrop-blur-3xl border border-white/5 rounded-[3rem] flex justify-around items-center z-50 shadow-2xl">
-            <div onclick="showView('home')" class="nav-btn active" id="btn-home"><i class="fa-solid fa-house-chimney"></i></div>
-            <div onclick="showView('library')" class="nav-btn" id="btn-lib"><i class="fa-solid fa-layer-group"></i></div>
+        <nav class="fixed bottom-0 left-0 right-0 h-24 bg-[#0D0D0D]/95 border-t border-white/5 flex justify-around items-center z-40">
+            <div onclick="showView('home')" class="nav-item active" id="btn-home">
+                <i class="fa-solid fa-compass text-xl"></i>
+                <span class="text-[8px] mt-1 font-bold uppercase tracking-tighter">Explore</span>
+            </div>
+            <div onclick="showView('library')" class="nav-item" id="btn-lib">
+                <i class="fa-solid fa-heart text-xl"></i>
+                <span class="text-[8px] mt-1 font-bold uppercase tracking-tighter">Favorites</span>
+            </div>
         </nav>
     </div>
 
