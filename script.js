@@ -1,40 +1,44 @@
 const GEMINI_KEY = 'AIzaSyD07yH_6W-x1eNNaJEG0-cHGrGuvkaDsLs';
 
-// 1. Just list the names of your songs here in order.
-// The first name will link to 1.mp3 and 1.jpg
-const songList = [
-    "First Song Title", 
-    "Second Song Title",
-    "Third Song Title"
+// 1. ADD REAL NAMES HERE. 
+// If you only add 2 names, the rest (3-100) will show as "RHK Track #"
+const realNames = [
+    "My First Song", 
+    "My Second Song"
 ];
 
-// 2. This part creates the links correctly for your GitHub layout
-const allSongs = songList.map((name, index) => ({
-    id: index + 1,
-    title: name,
-    file: `${index + 1}.mp3`, // No "songs/" folder, just the file
-    thumb: `${index + 1}.jpg`  // No "covers/" folder, just the file
-}));
+// 2. AUTO-GENERATOR (Creates 100 slots automatically)
+const allSongs = [];
+for (let i = 1; i <= 100; i++) {
+    allSongs.push({
+        id: i,
+        title: realNames[i-1] || `RHK Track ${i}`,
+        file: `${i}.mp3`,
+        thumb: `${i}.jpg`
+    });
+}
 
 let audio = document.getElementById('main-audio');
 let library = JSON.parse(localStorage.getItem('rhk_library')) || [];
 
-// 3. UI RENDERING
+// 3. UI RENDERER
 function renderHome() {
     const grid = document.getElementById('home-grid');
     grid.innerHTML = allSongs.map((s, idx) => `
-        <div class="song-card-ui p-3 rounded-[2rem] flex flex-col animate-fade-in">
-            <img src="${s.thumb}" class="w-full aspect-square object-cover rounded-[1.5rem] mb-3 shadow-xl" onerror="this.src='https://via.placeholder.com/150?text=RHK'">
-            <p class="text-[10px] font-black truncate uppercase tracking-tighter mb-3">${s.title}</p>
+        <div class="song-card-ui p-3 rounded-[2rem] flex flex-col animate-fade-in bg-white/5 border border-white/10">
+            <img src="${s.thumb}" 
+                 class="w-full aspect-square object-cover rounded-[1.5rem] mb-3 shadow-2xl" 
+                 onerror="this.src='https://via.placeholder.com/300/a855f7/ffffff?text=RHK+MUSIC'">
+            <p class="text-[11px] font-black truncate uppercase tracking-tighter mb-3 px-1">${s.title}</p>
             <div class="flex gap-2">
-                <button onclick="playTrack(${idx})" class="flex-1 bg-white text-black py-2.5 rounded-xl text-[9px] font-black uppercase">Play</button>
-                <button onclick="addToLibrary(${idx})" class="w-10 bg-white/5 rounded-xl flex items-center justify-center"><i class="fa-solid fa-heart text-[10px]"></i></button>
+                <button onclick="playTrack(${idx})" class="flex-1 bg-purple-600 text-white py-3 rounded-2xl text-[10px] font-black uppercase shadow-lg active:scale-95 transition-all">Play</button>
+                <button onclick="addToLibrary(${idx})" class="w-12 bg-white/10 rounded-2xl flex items-center justify-center active:scale-95"><i class="fa-solid fa-plus text-[10px]"></i></button>
             </div>
         </div>
     `).join('');
 }
 
-// 4. PLAYBACK ENGINE
+// 4. PLAYER LOGIC
 function playTrack(idx) {
     const track = allSongs[idx];
     audio.src = track.file;
@@ -57,19 +61,11 @@ audio.ontimeupdate = () => {
     document.getElementById('current-time').innerText = `${fmt(audio.currentTime)} / ${fmt(audio.duration || 0)}`;
 };
 
-document.getElementById('progress-bar').oninput = function() {
-    audio.currentTime = (this.value / 100) * audio.duration;
-};
-
-document.getElementById('masterPlay').onclick = togglePlay;
-
-// 5. VIEWS & LIBRARY
-function showView(view) {
-    document.getElementById('home-view').classList.toggle('hidden', view !== 'home');
-    document.getElementById('library-view').classList.toggle('hidden', view !== 'library');
-    document.getElementById('btn-home').classList.toggle('active', view === 'home');
-    document.getElementById('btn-lib').classList.toggle('active', view === 'library');
-    if(view === 'library') updateLibraryUI();
+// 5. NAV & INITIALIZATION
+function showView(v) {
+    document.getElementById('home-view').classList.toggle('hidden', v !== 'home');
+    document.getElementById('library-view').classList.toggle('hidden', v !== 'library');
+    document.getElementById('btn-home').classList.add('active'); // Simple toggle
 }
 
 function addToLibrary(idx) {
@@ -80,44 +76,12 @@ function addToLibrary(idx) {
     }
 }
 
-function updateLibraryUI() {
-    const list = document.getElementById('library-list');
-    list.innerHTML = library.length ? library.map((s) => `
-        <div class="flex items-center gap-4 p-3 rounded-2xl bg-white/5">
-            <img src="${s.thumb}" class="w-10 h-10 rounded-lg object-cover">
-            <p class="flex-1 text-xs font-bold truncate">${s.title}</p>
-            <button onclick="playTrack(${s.id - 1})" class="text-purple-500"><i class="fa-solid fa-play"></i></button>
-        </div>`).join('') : '<p class="text-center opacity-30 py-10">Library is empty</p>';
-}
-
-// 6. INITIALIZATION
-function saveUser() {
-    const name = document.getElementById('userNameInput').value;
-    if(!name) return;
-    localStorage.setItem('rhk_user_name', name);
-    location.reload();
-}
-
-async function welcomeAI(name) {
-    document.getElementById('user-display').innerText = name;
-    const welcomeArea = document.getElementById('ai-welcome');
-    welcomeArea.classList.remove('hidden');
-    
-    try {
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`, {
-            method: 'POST',
-            body: JSON.stringify({ contents: [{ parts: [{ text: `Welcome ${name} back to RHK Music. Short cool greeting.` }] }] })
-        });
-        const data = await res.json();
-        document.getElementById('welcome-text').innerText = data.candidates[0].content.parts[0].text;
-    } catch (e) { document.getElementById('welcome-text').innerText = `Welcome back, ${name}!`; }
-}
-
 const fmt = s => `${Math.floor(s/60)}:${Math.floor(s%60).toString().padStart(2,'0')}`;
 
 window.onload = () => {
-    const name = localStorage.getItem('rhk_user_name');
-    if (!name) document.getElementById('name-modal').classList.remove('hidden');
-    else welcomeAI(name);
+    const name = localStorage.getItem('rhk_user_name') || "Guest";
+    document.getElementById('user-display').innerText = name;
     renderHome();
 };
+
+document.getElementById('masterPlay').onclick = togglePlay;
