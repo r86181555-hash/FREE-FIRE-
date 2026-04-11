@@ -1,4 +1,4 @@
-const YT_KEY = 'AIzaSyBRXp8HhBSu7Ugcbi4EfieYuvup8nbuOO4'; // Using your active YT Key
+const YT_KEY = 'AIzaSyAZ9_GEyt945IbkZMb7NKIO-8og5hUebhY'; // Using your active YT Key
 const GEMINI_KEY = 'AIzaSyD07yH_6W-x1eNNaJEG0-cHGrGuvkaDsLs'; 
 
 let player, currentTrackIndex = -1, currentPlaylist = [];
