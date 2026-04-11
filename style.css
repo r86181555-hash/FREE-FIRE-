@@ -1,39 +1,8 @@
-body { -webkit-tap-highlight-color: transparent; }
-
-.glass-player {
-    background: rgba(15, 15, 20, 0.95);
-    backdrop-filter: blur(40px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.nav-btn {
-    opacity: 0.25;
-    transition: 0.4s;
-    width: 45px;
-    height: 45px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.1rem;
-}
-
-.nav-btn.active {
-    opacity: 1;
-    color: #a855f7;
-    background: rgba(168, 85, 247, 0.15);
-    border-radius: 20px;
-}
-
-.song-card-ui { 
-    background: rgba(255,255,255,0.02); 
-    border: 1px solid rgba(255,255,255,0.04);
-}
-
-#progress-bar { appearance: none; background: rgba(255,255,255,0.05); }
-#progress-bar::-webkit-slider-thumb { 
-    appearance: none; width: 10px; height: 10px; 
-    background: #a855f7; border-radius: 50%; box-shadow: 0 0 10px #a855f7;
-}
-
-@keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-.animate-fade-in { animation: fadeIn 0.6s ease-out forwards; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.pill { padding: 10px 24px; background: #1A1A1A; border-radius: 99px; font-size: 11px; font-weight: 700; color: #666; transition: 0.3s; }
+.pill.active { background: #1DB954; color: black; }
+.nav-item { display: flex; flex-direction: column; align-items: center; color: #444; transition: 0.3s; }
+.nav-item.active { color: #1DB954; }
+.song-card { background: #1A1A1A; border-radius: 2rem; padding: 12px; border: 1px solid rgba(255,255,255,0.03); }
+#progress-bar { appearance: none; background: rgba(255,255,255,0.05); cursor: pointer; }
+#progress-bar::-webkit-slider-thumb { appearance: none; width: 8px; height: 8px; background: #1DB954; border-radius: 50%; }
