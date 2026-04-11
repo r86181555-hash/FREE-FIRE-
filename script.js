@@ -1,78 +1,68 @@
-// CONFIG: Mix of Music and Podcasts
-const contentData = [
-    { title: "Vibe Mix 1", artist: "Music", type: "music" },
-    { title: "The RHK Podcast", artist: "Podcast EP.1", type: "podcast" },
-    { title: "Late Night Chill", artist: "Music", type: "music" },
-    { title: "Success Talk", artist: "Podcast EP.2", type: "podcast" }
+// 1. DATA SETUP
+const songNames = [
+    { title: "Loneliness", artist: "Putri Ariani" },
+    { title: "Whispering Embers", artist: "Luna Nova" },
+    { title: "Break Again", artist: "Rony Nugraha" }
 ];
 
-// Generate 100 slots (even = music, odd = podcast for variety)
-const allContent = Array.from({ length: 100 }, (_, i) => ({
+const allSongs = Array.from({ length: 100 }, (_, i) => ({
     id: i + 1,
-    title: contentData[i]?.title || (i % 2 === 0 ? `Music Track ${i+1}` : `Podcast Ep ${Math.ceil(i/2)}`),
-    artist: contentData[i]?.artist || (i % 2 === 0 ? "Artist Name" : "Show Name"),
-    type: contentData[i]?.type || (i % 2 === 0 ? "music" : "podcast"),
+    title: songNames[i]?.title || `RHK Track ${i + 1}`,
+    artist: songNames[i]?.artist || "Premium Music",
     file: `${i + 1}.mp3`,
     thumb: `${i + 1}.jpg`
 }));
 
 const audio = document.getElementById('main-audio');
 const playBtn = document.getElementById('masterPlay');
-let currentFilteredList = [...allContent];
 let currentTrackIndex = -1;
-let currentView = 'home';
 let library = JSON.parse(localStorage.getItem('rhk_library')) || [];
+let isPlayingFromLibrary = false;
 
-// 1. RENDERER
-function renderContent(list = currentFilteredList) {
+// 2. RENDERING
+function renderMusic(list = allSongs) {
     const grid = document.getElementById('home-grid');
     grid.innerHTML = list.map((s) => {
         const isLiked = library.some(l => l.id === s.id);
         return `
         <div class="song-card">
-            <div class="relative mb-3 group" onclick="playFromList('${s.id}', 'home')">
-                <img src="${s.thumb}" class="w-full aspect-square object-cover rounded-[1.5rem]" onerror="this.src='https://via.placeholder.com/150/111/444?text=${s.type.toUpperCase()}'">
+            <div class="relative mb-3 group" onclick="startPlay('${s.id}', false)">
+                <img src="${s.thumb}" class="w-full aspect-square object-cover rounded-[1.5rem]" onerror="this.src='https://via.placeholder.com/150/111/333?text=MUSIC'">
                 <div class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 rounded-[1.5rem] transition-all">
                     <i class="fa-solid fa-play text-[#1DB954] text-xl"></i>
                 </div>
             </div>
             <div class="flex justify-between items-start px-1">
-                <div class="overflow-hidden" onclick="playFromList('${s.id}', 'home')">
-                    <p class="text-[12px] font-bold truncate">${s.title}</p>
-                    <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">${s.artist}</p>
+                <div class="overflow-hidden" onclick="startPlay('${s.id}', false)">
+                    <p class="text-[11px] font-bold truncate">${s.title}</p>
+                    <p class="text-[8px] text-gray-500 font-bold uppercase">${s.artist}</p>
                 </div>
-                <i class="fa-${isLiked ? 'solid' : 'regular'} fa-heart text-[10px] mt-1 ${isLiked ? 'text-[#1DB954]' : 'opacity-20'}" onclick="toggleLibrary(${s.id-1})"></i>
+                <i class="fa-${isLiked ? 'solid' : 'regular'} fa-heart text-[10px] mt-1 ${isLiked ? 'text-[#1DB954]' : 'opacity-20'}" onclick="toggleLike(${s.id-1})"></i>
             </div>
         </div>`;
     }).join('');
 }
 
-// 2. SEARCH & FILTER
-function searchContent() {
+// 3. SEARCH
+function searchMusic() {
     const query = document.getElementById('searchInput').value.toLowerCase();
-    const filtered = allContent.filter(s => s.title.toLowerCase().includes(query) || s.artist.toLowerCase().includes(query));
-    renderContent(filtered);
+    const filtered = allSongs.filter(s => s.title.toLowerCase().includes(query) || s.artist.toLowerCase().includes(query));
+    renderMusic(filtered);
 }
 
-function filterType(type) {
-    document.getElementById('tab-music').classList.toggle('active', type === 'music');
-    document.getElementById('tab-podcast').classList.toggle('active', type === 'podcast');
-    document.getElementById('view-title').innerText = type === 'music' ? "Music Tracks" : "Podcasts";
-    currentFilteredList = allContent.filter(s => s.type === type);
-    renderContent();
-}
-
-// 3. PLAYBACK (Handles "One by One" from any list)
-function playFromList(id, source) {
-    const listToUse = (source === 'library') ? library : currentFilteredList;
+// 4. PLAYBACK ENGINE (Handles Auto-play "One by One")
+function startPlay(id, fromLibrary) {
+    isPlayingFromLibrary = fromLibrary;
+    const listToUse = fromLibrary ? library : allSongs;
     const idx = listToUse.findIndex(s => s.id == id);
-    if (idx === -1) return;
     
-    currentTrackIndex = idx;
-    playTrack(listToUse[idx], source);
+    if (idx !== -1) {
+        currentTrackIndex = idx;
+        loadAndPlay(listToUse[idx]);
+    }
 }
 
-function playTrack(track, source) {
+function loadAndPlay(track) {
     audio.src = track.file;
     audio.play();
     document.getElementById('player-title').innerText = track.title;
@@ -80,58 +70,57 @@ function playTrack(track, source) {
     document.getElementById('player-thumb').src = track.thumb;
     document.getElementById('mini-player').style.transform = "translateY(0)";
     playBtn.innerHTML = '<i class="fa-solid fa-pause text-black text-xs"></i>';
-    
-    // Logic for "One by One" Auto-play
-    audio.onended = () => {
-        const listToUse = (source === 'library') ? library : currentFilteredList;
-        currentTrackIndex = (currentTrackIndex + 1) % listToUse.length;
-        playTrack(listToUse[currentTrackIndex], source);
-    };
 }
 
-function nextTrack() {
-    const listToUse = (document.getElementById('library-view').classList.contains('hidden')) ? currentFilteredList : library;
+audio.onended = () => {
+    const listToUse = isPlayingFromLibrary ? library : allSongs;
     currentTrackIndex = (currentTrackIndex + 1) % listToUse.length;
-    playTrack(listToUse[currentTrackIndex]);
+    loadAndPlay(listToUse[currentTrackIndex]);
+};
+
+function nextTrack() {
+    const listToUse = isPlayingFromLibrary ? library : allSongs;
+    currentTrackIndex = (currentTrackIndex + 1) % listToUse.length;
+    loadAndPlay(listToUse[currentTrackIndex]);
 }
 
 function prevTrack() {
-    const listToUse = (document.getElementById('library-view').classList.contains('hidden')) ? currentFilteredList : library;
+    const listToUse = isPlayingFromLibrary ? library : allSongs;
     currentTrackIndex = (currentTrackIndex - 1 + listToUse.length) % listToUse.length;
-    playTrack(listToUse[currentTrackIndex]);
+    loadAndPlay(listToUse[currentTrackIndex]);
 }
 
-// 4. LIBRARY UI
-function toggleLibrary(idx) {
-    const track = allContent[idx];
+playBtn.onclick = () => {
+    if (audio.paused) { audio.play(); playBtn.innerHTML = '<i class="fa-solid fa-pause text-black text-xs"></i>'; }
+    else { audio.pause(); playBtn.innerHTML = '<i class="fa-solid fa-play text-black text-xs"></i>'; }
+};
+
+// 5. LIBRARY SYSTEM
+function toggleLike(idx) {
+    const track = allSongs[idx];
     const foundIdx = library.findIndex(s => s.id === track.id);
     if (foundIdx > -1) library.splice(foundIdx, 1);
     else library.push(track);
     
     localStorage.setItem('rhk_library', JSON.stringify(library));
-    renderContent();
+    renderMusic();
     if(!document.getElementById('library-view').classList.contains('hidden')) updateLibraryUI();
 }
 
 function updateLibraryUI() {
     const list = document.getElementById('library-list');
     list.innerHTML = library.length ? library.map(s => `
-        <div class="flex items-center gap-4 p-4 bg-[#1A1A1A] rounded-3xl" onclick="playFromList('${s.id}', 'library')">
+        <div class="flex items-center gap-4 p-4 bg-[#1A1A1A] rounded-3xl" onclick="startPlay('${s.id}', true)">
             <img src="${s.thumb}" class="w-12 h-12 rounded-xl object-cover">
             <div class="flex-1">
                 <p class="text-xs font-bold">${s.title}</p>
                 <p class="text-[9px] text-gray-500 font-bold">${s.artist}</p>
             </div>
             <i class="fa-solid fa-play text-[#1DB954] text-xs"></i>
-        </div>`).join('') : '<p class="text-center opacity-20 py-20">Your library is empty</p>';
+        </div>`).join('') : '<p class="text-center opacity-20 py-20 text-xs">No liked songs yet</p>';
 }
 
-// 5. BOILERPLATE
-playBtn.onclick = () => {
-    if (audio.paused) { audio.play(); playBtn.innerHTML = '<i class="fa-solid fa-pause text-black text-xs"></i>'; }
-    else { audio.pause(); playBtn.innerHTML = '<i class="fa-solid fa-play text-black text-xs"></i>'; }
-};
-
+// 6. SYSTEM UI
 function showView(v) {
     document.getElementById('home-view').classList.toggle('hidden', v !== 'home');
     document.getElementById('library-view').classList.toggle('hidden', v !== 'library');
@@ -157,5 +146,5 @@ window.onload = () => {
     const name = localStorage.getItem('rhk_user_name');
     if (!name) document.getElementById('name-modal').classList.remove('hidden');
     else document.getElementById('user-display').innerText = name;
-    filterType('music');
+    renderMusic();
 };
