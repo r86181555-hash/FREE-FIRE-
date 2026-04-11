@@ -3,87 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RHK NEBULA | ULTRA</title>
+    <title>RHK | SINGULARITY</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;500;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Major+Mono+Display&family=Outfit:wght@100;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-[#030303] text-white font-['Inter'] overflow-hidden">
+<body class="bg-[#000] text-white font-['Outfit'] overflow-hidden">
 
-    <div id="nebula">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
-    </div>
+    <div id="core-bg"></div>
+    <canvas id="particle-canvas"></canvas>
 
     <audio id="main-audio"></audio>
 
-    <div class="flex h-screen w-full relative z-10">
-        <aside class="hidden md:flex w-24 flex-col items-center py-10 border-r border-white/5 bg-black/20 backdrop-blur-3xl">
-            <div class="text-[#1DB954] text-2xl font-bold mb-20 tracking-tighter">R.</div>
-            <nav class="flex flex-col gap-10">
-                <i class="fa-solid fa-house-chimney text-xl cursor-pointer hover:text-[#1DB954] transition-all"></i>
-                <i class="fa-solid fa-compass text-xl cursor-pointer opacity-30 hover:opacity-100"></i>
-                <i class="fa-solid fa-heart text-xl cursor-pointer opacity-30 hover:opacity-100"></i>
-            </nav>
-        </aside>
+    <div class="relative z-10 h-screen flex flex-col items-center justify-center">
+        
+        <div class="fixed top-12 left-12 mix-blend-difference">
+            <h1 class="font-['Major_Mono_Display'] text-2xl tracking-tighter">rhk_systm</h1>
+            <p id="user-display" class="text-[8px] tracking-[0.8em] font-black uppercase mt-2 opacity-50">NODE_CONNECTED</p>
+        </div>
 
-        <main class="flex-1 h-full overflow-y-auto no-scrollbar relative p-6 md:p-12">
-            <header class="flex justify-between items-center mb-12">
-                <div>
-                    <h1 class="font-['Syncopate'] text-xs font-bold tracking-[0.5em] text-[#1DB954] mb-2">NEBULA STREAM</h1>
-                    <p id="user-display" class="text-3xl font-800 tracking-tighter">Welcome, Artist</p>
-                </div>
-                <div class="search-pill group flex items-center bg-white/5 border border-white/10 rounded-full px-6 py-3 transition-all focus-within:w-64 w-48">
-                    <i class="fa-solid fa-magnifying-glass text-[10px] mr-3 opacity-40"></i>
-                    <input type="text" id="searchInput" oninput="searchMusic()" placeholder="Find vibe..." class="bg-transparent text-xs outline-none w-full">
-                </div>
-            </header>
-
-            <div id="home-view">
-                <div class="flex gap-4 mb-10 overflow-x-auto no-scrollbar pb-2">
-                    <button class="chip active">All</button>
-                    <button class="chip">Chill</button>
-                    <button class="chip">Focus</button>
-                    <button class="chip">Energy</button>
-                </div>
-                <div id="home-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8"></div>
+        <div id="helix-container" class="absolute inset-0 flex items-center justify-center perspective-2000">
             </div>
-        </main>
 
-        <div id="mini-player" class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[92%] max-w-2xl bg-black/40 backdrop-blur-3xl border border-white/10 rounded-[3rem] p-4 translate-y-64 transition-all duration-1000">
-            <div class="flex items-center gap-6">
-                <div class="relative group">
-                    <img id="player-thumb" src="" class="w-16 h-16 rounded-[2rem] object-cover transition-transform duration-700 group-hover:rotate-12">
-                    <div class="absolute inset-0 bg-[#1DB954]/20 blur-xl rounded-full -z-10 animate-pulse"></div>
-                </div>
-                <div class="flex-1">
-                    <h4 id="player-title" class="font-bold truncate text-sm tracking-tight">Vibe Name</h4>
-                    <p id="player-artist" class="text-[9px] font-bold text-[#1DB954] uppercase tracking-widest mt-1">Creator</p>
-                    <div class="mt-4 flex items-center gap-3">
-                        <div class="flex-1 h-[2px] bg-white/10 rounded-full overflow-hidden">
-                            <div id="progress-line" class="h-full bg-white shadow-[0_0_10px_white] transition-all duration-300"></div>
-                        </div>
-                        <span id="current-time" class="text-[8px] font-bold opacity-40">0:00</span>
+        <div id="center-well" class="relative group cursor-pointer transition-all duration-1000 scale-75 opacity-20 hover:opacity-100">
+            <div class="absolute inset-0 bg-[#1DB954] blur-[120px] rounded-full opacity-20 group-hover:opacity-40 transition-all animate-pulse"></div>
+            
+            <div class="relative z-20 w-80 h-80 rounded-full border border-white/10 p-2 flex items-center justify-center overflow-hidden bg-black/40 backdrop-blur-3xl">
+                <img id="player-thumb" src="" class="absolute inset-0 w-full h-full object-cover opacity-30 transition-transform duration-[3s] group-hover:scale-125">
+                
+                <div class="text-center z-30 px-6">
+                    <h2 id="player-title" class="text-3xl font-900 tracking-tighter leading-none mb-2">VOID</h2>
+                    <p id="player-artist" class="text-[9px] font-black tracking-[0.4em] text-[#1DB954] uppercase">In_Standby</p>
+                    
+                    <div class="mt-8 flex items-center justify-center gap-6">
+                        <button id="masterPlay" class="w-16 h-16 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-black transition-all">
+                            <i class="fa-solid fa-play ml-1"></i>
+                        </button>
                     </div>
                 </div>
-                <div class="flex items-center gap-4">
-                    <i class="fa-solid fa-backward-step text-xs opacity-40 hover:opacity-100" onclick="prevTrack()"></i>
-                    <button id="masterPlay" class="w-14 h-14 bg-white text-black rounded-full flex items-center justify-center hover:scale-105 transition-all">
-                        <i class="fa-solid fa-play ml-1"></i>
-                    </button>
-                    <i class="fa-solid fa-forward-step text-xs opacity-40 hover:opacity-100" onclick="nextTrack()"></i>
-                </div>
+
+                <svg class="absolute inset-0 w-full h-full -rotate-90">
+                    <circle cx="160" cy="160" r="158" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                    <circle id="progress-circle" cx="160" cy="160" r="158" fill="none" stroke="#1DB954" stroke-width="2" stroke-dasharray="1000" stroke-dashoffset="1000"/>
+                </svg>
             </div>
+        </div>
+
+        <div class="fixed bottom-12 flex gap-12 font-['Major_Mono_Display'] text-[10px] tracking-widest opacity-20 hover:opacity-100 transition-opacity">
+            <span class="cursor-pointer" onclick="prevTrack()">prev_</span>
+            <span class="cursor-pointer" onclick="nextTrack()">next_</span>
         </div>
     </div>
 
-    <div id="name-modal" class="fixed inset-0 z-[1000] bg-black flex flex-col items-center justify-center hidden p-10">
-        <div class="absolute inset-0 opacity-20" id="matrix-bg"></div>
-        <h2 class="font-['Syncopate'] text-[10px] tracking-[1em] mb-20 animate-pulse">INITIATING SEQUENCE</h2>
-        <input type="text" id="userNameInput" placeholder="ENTER ID" class="bg-transparent border-b border-white/20 text-4xl text-center outline-none focus:border-[#1DB954] transition-all py-4 mb-10 w-full max-w-md">
-        <button onclick="saveUser()" class="hover:text-[#1DB954] transition-all font-bold tracking-widest text-sm">PRESS TO ENTER</button>
+    <div id="name-modal" class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center hidden">
+        <div class="text-[10px] tracking-[2em] font-black opacity-10 mb-20">SINGULARITY_V1</div>
+        <input type="text" id="userNameInput" placeholder="ENTER_USER_KEY" class="bg-transparent border-none text-center text-5xl font-900 tracking-tighter outline-none focus:placeholder-transparent uppercase italic">
+        <div class="h-px w-24 bg-[#1DB954] mt-12 animate-width"></div>
     </div>
 
     <script src="script.js"></script>
