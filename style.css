@@ -1,22 +1,63 @@
-body {
-    background-color: #000;
-    -webkit-tap-highlight-color: transparent;
-}
+/* style.css */
 
-#login-overlay {
-    background: radial-gradient(circle at 50% 10%, #2a1b3d 0%, #000 80%);
+/* Hide Scrollbar but allow scrolling */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Premium Glass Effects */
+.premium-card {
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(12px);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .glass-tile {
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.4s ease;
 }
 
-#mini-player {
-    border: 1px solid rgba(255, 255, 255, 0.1);
+.glass-tile:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-8px);
+    border-color: rgba(168, 85, 247, 0.3);
 }
 
-/* Fix for smooth scrolling */
-::-webkit-scrollbar {
-    display: none;
+.glass-player {
+    background: rgba(15, 15, 25, 0.85);
+    backdrop-filter: blur(50px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Nav Item Active State */
+.nav-item.active {
+    color: #a855f7;
+    filter: drop-shadow(0 0 12px rgba(168, 85, 247, 0.5));
+}
+
+/* Custom Text Truncation */
+.truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Hero Gradient Overlay */
+#hero-section::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, #050505 5%, transparent 70%);
+    z-index: 1;
+}
+
+#hero-section * {
+    z-index: 2;
+}
+
+/* Vibrancy for Vibe Cards */
+.vibe-card:active {
+    transform: scale(0.95);
 }
