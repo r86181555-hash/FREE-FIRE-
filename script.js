@@ -1,20 +1,19 @@
 const GEMINI_KEY = 'AIzaSyD07yH_6W-x1eNNaJEG0-cHGrGuvkaDsLs';
 
-// 1. ADD YOUR SONG NAMES HERE (Order matters: 1st name = 1.mp3)
+// 1. Just list the names of your songs here in order.
+// The first name will link to 1.mp3 and 1.jpg
 const songList = [
-    "Song One Name",
-    "Song Two Name",
-    "Song Three Name",
-    "Song Four Name"
-    // Keep adding names here up to 100
+    "First Song Title", 
+    "Second Song Title",
+    "Third Song Title"
 ];
 
-// 2. AUTO-GENERATE DATA OBJECTS
+// 2. This part creates the links correctly for your GitHub layout
 const allSongs = songList.map((name, index) => ({
     id: index + 1,
     title: name,
-    file: `songs/${index + 1}.mp3`,
-    thumb: `covers/${index + 1}.jpg`
+    file: `${index + 1}.mp3`, // No "songs/" folder, just the file
+    thumb: `${index + 1}.jpg`  // No "covers/" folder, just the file
 }));
 
 let audio = document.getElementById('main-audio');
@@ -25,7 +24,7 @@ function renderHome() {
     const grid = document.getElementById('home-grid');
     grid.innerHTML = allSongs.map((s, idx) => `
         <div class="song-card-ui p-3 rounded-[2rem] flex flex-col animate-fade-in">
-            <img src="${s.thumb}" class="w-full aspect-square object-cover rounded-[1.5rem] mb-3 shadow-xl">
+            <img src="${s.thumb}" class="w-full aspect-square object-cover rounded-[1.5rem] mb-3 shadow-xl" onerror="this.src='https://via.placeholder.com/150?text=RHK'">
             <p class="text-[10px] font-black truncate uppercase tracking-tighter mb-3">${s.title}</p>
             <div class="flex gap-2">
                 <button onclick="playTrack(${idx})" class="flex-1 bg-white text-black py-2.5 rounded-xl text-[9px] font-black uppercase">Play</button>
@@ -35,7 +34,7 @@ function renderHome() {
     `).join('');
 }
 
-// 4. CORE ENGINE
+// 4. PLAYBACK ENGINE
 function playTrack(idx) {
     const track = allSongs[idx];
     audio.src = track.file;
@@ -83,12 +82,12 @@ function addToLibrary(idx) {
 
 function updateLibraryUI() {
     const list = document.getElementById('library-list');
-    list.innerHTML = library.map((s) => `
+    list.innerHTML = library.length ? library.map((s) => `
         <div class="flex items-center gap-4 p-3 rounded-2xl bg-white/5">
             <img src="${s.thumb}" class="w-10 h-10 rounded-lg object-cover">
             <p class="flex-1 text-xs font-bold truncate">${s.title}</p>
             <button onclick="playTrack(${s.id - 1})" class="text-purple-500"><i class="fa-solid fa-play"></i></button>
-        </div>`).join('');
+        </div>`).join('') : '<p class="text-center opacity-30 py-10">Library is empty</p>';
 }
 
 // 6. INITIALIZATION
@@ -107,7 +106,7 @@ async function welcomeAI(name) {
     try {
         const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`, {
             method: 'POST',
-            body: JSON.stringify({ contents: [{ parts: [{ text: `Welcome ${name} back to RHK Music Studio. 1 short sentence.` }] }] })
+            body: JSON.stringify({ contents: [{ parts: [{ text: `Welcome ${name} back to RHK Music. Short cool greeting.` }] }] })
         });
         const data = await res.json();
         document.getElementById('welcome-text').innerText = data.candidates[0].content.parts[0].text;
