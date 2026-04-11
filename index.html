@@ -3,103 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RHK MUSIC | Premium</title>
+    <title>RHK MUSIC</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-[#050505] text-white font-['Montserrat'] selection:bg-purple-500/30">
-    <div class="max-w-md mx-auto min-h-screen relative pb-44 bg-gradient-to-b from-[#1a1a2e] via-[#050505] to-black">
+<body class="bg-[#050505] text-white font-['Montserrat'] overflow-x-hidden">
+
+    <div id="name-modal" class="fixed inset-0 z-[200] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-8 hidden">
+        <div class="max-w-xs text-center">
+            <div class="w-16 h-16 bg-purple-600 rounded-full mx-auto mb-6 flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.4)]">
+                <i class="fa-solid fa-bolt-lightning text-2xl"></i>
+            </div>
+            <h2 class="text-xl font-black mb-2 uppercase tracking-tighter">Welcome to RHK</h2>
+            <p class="text-[9px] text-white/40 uppercase tracking-widest mb-6">Identify yourself to start</p>
+            <input type="text" id="userNameInput" placeholder="YOUR NAME" 
+                class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-center text-lg font-bold focus:outline-none focus:border-purple-500 mb-4 transition-all">
+            <button onclick="saveUser()" class="w-full bg-purple-600 py-4 rounded-2xl font-bold uppercase text-[10px] tracking-[0.2em] shadow-lg">Enter Studio</button>
+        </div>
+    </div>
+
+    <div id="search-overlay" class="fixed inset-0 z-[100] bg-black/98 backdrop-blur-3xl p-6 transform translate-y-full transition-transform duration-500">
+        <div class="flex items-center justify-between mb-8">
+            <h2 class="text-xl font-black uppercase italic">Search <span class="text-purple-500">Music</span></h2>
+            <i class="fa-solid fa-xmark text-2xl p-2 opacity-40" onclick="toggleSearch()"></i>
+        </div>
         
-        <header class="p-6 pb-4 sticky top-0 z-50 backdrop-blur-3xl border-b border-white/5">
+        <div class="mb-6 p-4 bg-purple-600/5 border border-purple-500/10 rounded-3xl">
+            <p class="text-[8px] uppercase font-black text-purple-400 mb-3 tracking-[0.2em]">RHK Mood AI</p>
+            <div class="flex gap-2">
+                <input type="text" id="moodInput" placeholder="I'm feeling..." 
+                    class="flex-1 bg-white/5 border border-white/5 rounded-xl py-3 px-4 text-xs focus:outline-none focus:border-purple-500/30">
+                <button onclick="analyzeMoodAI()" class="bg-purple-600 w-12 h-11 rounded-xl flex items-center justify-center shadow-lg active:scale-90 transition-transform">
+                    <i id="ai-icon" class="fa-solid fa-brain text-sm"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="relative mb-6">
+            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-white/20 text-xs"></i>
+            <input type="text" id="searchInput" placeholder="Search artists or tracks..." 
+                class="w-full bg-white/5 border border-white/5 rounded-2xl py-4 pl-12 pr-4 text-xs focus:outline-none focus:border-purple-500/50"
+                onkeyup="if(event.key === 'Enter') searchMusic(this.value, 'search-results')">
+        </div>
+        <div id="search-results" class="grid grid-cols-2 gap-4 overflow-y-auto max-h-[60vh] pb-20 no-scrollbar"></div>
+    </div>
+
+    <div class="max-w-md mx-auto min-h-screen relative pb-44 bg-gradient-to-b from-[#0a0a0f] to-black">
+        
+        <header class="p-8 pb-4 sticky top-0 bg-[#0a0a0f]/80 backdrop-blur-xl z-40">
             <div class="flex justify-between items-center mb-6">
-                <div class="text-2xl font-black tracking-tighter italic">
-                    RHK <span class="text-purple-500">MUSIC</span>
+                <div class="text-xl font-black tracking-tighter italic">RHK <span class="text-purple-500">MUSIC</span></div>
+                <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
+                    <i class="fa-solid fa-user text-[10px] opacity-40"></i>
                 </div>
-                <div class="w-10 h-10 bg-gradient-to-tr from-purple-600 to-pink-500 rounded-full border-2 border-white/10 shadow-[0_0_15px_rgba(168,85,247,0.4)]"></div>
+            </div>
+
+            <div id="ai-welcome" class="mb-6 p-4 bg-white/5 rounded-3xl border-l-2 border-purple-500 hidden animate-fade-in">
+                <p id="welcome-text" class="text-[11px] leading-relaxed opacity-60 italic font-medium"></p>
             </div>
             
-            <div class="relative group">
-                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-purple-400 transition-colors"></i>
-                <input type="text" id="searchInput" placeholder="Search artists, songs..." 
-                    class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm focus:outline-none focus:border-purple-500/50 focus:bg-white/10 transition-all shadow-inner"
-                    onkeyup="if(event.key === 'Enter') searchMusic(this.value)">
+            <div id="home-categories" class="flex gap-2 overflow-x-auto no-scrollbar">
+                <button onclick="fetchCategory('New Hits')" class="cat-chip active">Discovery</button>
+                <button onclick="fetchCategory('Kannada Hits')" class="cat-chip">Kannada</button>
+                <button onclick="fetchCategory('Phonk')" class="cat-chip">Phonk</button>
+                <button onclick="fetchCategory('Lofi')" class="cat-chip">Lofi</button>
             </div>
         </header>
 
         <main class="px-6">
-            <section class="mb-10 pt-6">
-                <h3 class="text-[10px] uppercase tracking-[0.4em] font-bold text-purple-500 mb-4 ml-1">Editor's Choice</h3>
-                <div id="hero-section" class="premium-card relative h-56 rounded-[2.5rem] overflow-hidden flex items-end p-6 border border-white/10 shadow-2xl">
-                    <div class="animate-pulse bg-white/5 w-full h-full absolute inset-0 rounded-[2.5rem]"></div>
-                </div>
-            </section>
+            <div id="home-view">
+                <h3 id="view-title" class="text-sm font-black uppercase tracking-widest text-white/40 mb-4 mt-4">For You</h3>
+                <div id="home-grid" class="grid grid-cols-2 gap-4"></div>
+            </div>
 
-            <section class="mb-10">
-                <div class="flex justify-between items-end mb-5 px-1">
-                    <h3 class="text-xl font-extrabold tracking-tight">Your Daily Mixes</h3>
-                    <span class="text-[10px] uppercase text-purple-400 font-bold cursor-pointer hover:text-white transition-colors">See All</span>
+            <div id="library-view" class="hidden">
+                <div class="flex justify-between items-end mt-6 mb-6">
+                    <h3 class="text-2xl font-black tracking-tighter">My <span class="text-purple-500">Library</span></h3>
+                    <span id="lib-count" class="text-[10px] bg-purple-600/20 text-purple-400 px-3 py-1 rounded-full font-black">0</span>
                 </div>
-                <div id="daily-mixes" class="flex gap-5 overflow-x-auto no-scrollbar pb-4 pt-2"></div>
-            </section>
-
-            <section class="mb-10">
-                <div class="flex justify-between items-end mb-5 px-1">
-                    <h3 class="text-xl font-extrabold tracking-tight">Up Next</h3>
-                    <span onclick="clearQueue()" class="text-[10px] uppercase text-red-400 font-bold cursor-pointer hover:text-red-200 transition-colors">Clear List</span>
-                </div>
-                <div id="playlist-queue" class="flex flex-col gap-3">
-                    <p class="text-[10px] opacity-30 italic px-2">Your playlist is empty...</p>
-                </div>
-            </section>
-
-            <section class="mb-10">
-                <h3 class="text-xl font-extrabold tracking-tight mb-5 px-1">Explore Vibes</h3>
-                <div class="grid grid-cols-2 gap-4">
-                    <div onclick="searchMusic('Lofi chill study beats')" class="vibe-card bg-indigo-900/10 p-6 rounded-[2rem] border border-white/5 cursor-pointer hover:bg-indigo-900/30 transition-all flex flex-col items-start gap-3">
-                        <div class="w-10 h-10 bg-indigo-500/20 rounded-xl flex items-center justify-center">
-                            <i class="fa-solid fa-moon text-indigo-400"></i>
-                        </div>
-                        <p class="text-[11px] font-bold uppercase tracking-wider">Midnight Focus</p>
-                    </div>
-                    <div onclick="searchMusic('Global top hits 2026')" class="vibe-card bg-purple-600/10 p-6 rounded-[2rem] border border-white/5 cursor-pointer hover:bg-purple-600/30 transition-all flex flex-col items-start gap-3">
-                        <div class="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center">
-                            <i class="fa-solid fa-bolt text-purple-400"></i>
-                        </div>
-                        <p class="text-[11px] font-bold uppercase tracking-wider">High Energy</p>
-                    </div>
-                </div>
-            </section>
+                <div id="library-list" class="flex flex-col gap-3"></div>
+            </div>
         </main>
 
-        <div id="player"></div>
+        <div id="player" class="hidden"></div>
 
-        <div id="mini-player" class="fixed bottom-28 left-1/2 -translate-x-1/2 w-[92%] glass-player p-3.5 rounded-[2rem] flex items-center gap-4 z-50 transform translate-y-44 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
-            <div class="relative w-14 h-14 shrink-0">
-                <img id="player-thumb" src="" class="w-full h-full rounded-2xl object-cover border border-white/10 shadow-lg">
+        <div id="mini-player" class="fixed bottom-28 left-1/2 -translate-x-1/2 w-[92%] glass-player p-4 rounded-[2.5rem] z-50 transform translate-y-64 transition-all duration-500 shadow-2xl">
+            <div class="absolute top-0 left-6 right-6 -translate-y-1/2">
+                <input type="range" id="progress-bar" value="0" class="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-purple-500">
             </div>
-            <div class="flex-1 overflow-hidden">
-                <p id="player-title" class="text-xs font-bold truncate text-white mb-0.5">Select a track</p>
-                <p id="player-artist" class="text-[10px] text-purple-400/80 font-semibold uppercase tracking-tighter">RHK Music</p>
-            </div>
-            <div class="flex items-center gap-6 pr-4">
-                <i class="fa-solid fa-play text-2xl text-white hover:text-purple-400 cursor-pointer transition-colors" id="masterPlay"></i>
+            <div class="flex items-center gap-4">
+                <img id="player-thumb" src="" class="w-12 h-12 rounded-xl object-cover bg-white/5">
+                <div class="flex-1 overflow-hidden">
+                    <p id="player-title" class="text-[11px] font-bold truncate">Not Playing</p>
+                    <p id="current-time" class="text-[8px] opacity-40 mt-1 uppercase font-black tracking-tighter">0:00 / 0:00</p>
+                </div>
+                <button id="masterPlay" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center">
+                    <i class="fa-solid fa-play text-xs"></i>
+                </button>
             </div>
         </div>
 
-        <nav class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[88%] h-20 bg-white/[0.03] backdrop-blur-3xl border border-white/10 rounded-[3rem] flex justify-around items-center px-8 z-50 shadow-2xl">
-            <div class="nav-item active flex flex-col items-center gap-1">
-                <i class="fa-solid fa-house text-xl"></i>
-                <span class="text-[8px] font-bold uppercase tracking-widest">Home</span>
+        <nav class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[85%] h-20 bg-white/[0.02] backdrop-blur-3xl border border-white/5 rounded-[3rem] flex justify-around items-center z-50 shadow-2xl">
+            <div onclick="showView('home')" class="nav-btn active" id="btn-home">
+                <i class="fa-solid fa-house-chimney text-lg"></i>
             </div>
-            <div onclick="searchMusic('New Releases')" class="nav-item opacity-40 hover:opacity-100 transition-opacity flex flex-col items-center gap-1 cursor-pointer">
-                <i class="fa-solid fa-compass text-xl"></i>
-                <span class="text-[8px] font-bold uppercase tracking-widest">Explore</span>
+            <div onclick="toggleSearch()" class="nav-btn">
+                <i class="fa-solid fa-magnifying-glass text-lg"></i>
             </div>
-            <div class="nav-item opacity-40 hover:opacity-100 transition-opacity flex flex-col items-center gap-1 cursor-pointer">
-                <i class="fa-solid fa-layer-group text-xl"></i>
-                <span class="text-[8px] font-bold uppercase tracking-widest">Library</span>
+            <div onclick="showView('library')" class="nav-btn" id="btn-lib">
+                <i class="fa-solid fa-layer-group text-lg"></i>
             </div>
         </nav>
     </div>
