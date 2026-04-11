@@ -1,27 +1,22 @@
 body {
     background-color: #000;
-    user-select: none;
     -webkit-tap-highlight-color: transparent;
 }
 
 #login-overlay {
-    background: radial-gradient(circle at 50% 20%, #211333 0%, #000 80%);
+    background: radial-gradient(circle at 50% 10%, #2a1b3d 0%, #000 80%);
 }
 
-#songs-container div {
-    animation: fadeIn 0.5s ease forwards;
+.glass-tile {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+#mini-player {
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Glass effect for the search and player */
-input, #mini-player {
-    backdrop-filter: blur(20px);
-}
-
+/* Fix for smooth scrolling */
 ::-webkit-scrollbar {
     display: none;
 }
