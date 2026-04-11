@@ -1,4 +1,4 @@
-const YT_KEY = 'AIzaSyAZ9_GEyt945IbkZMb7NKIO-8og5hUebhY'; // Using your active YT Key
+const YT_KEY = 'AIzaSyAZ9_GEyt945IbkZMb7NKIO-8og5hUebhY'; 
 const GEMINI_KEY = 'AIzaSyD07yH_6W-x1eNNaJEG0-cHGrGuvkaDsLs'; 
 
 let player, currentTrackIndex = -1, currentPlaylist = [];
@@ -7,7 +7,13 @@ let library = JSON.parse(localStorage.getItem('rhk_library')) || [];
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
         height: '0', width: '0',
-        events: { 'onStateChange': onPlayerStateChange, 'onReady': startClock }
+        events: { 
+            'onStateChange': onPlayerStateChange, 
+            'onReady': () => {
+                startClock();
+                console.log("YouTube Player Ready");
+            } 
+        }
     });
 }
 
@@ -34,7 +40,9 @@ async function generateAIWelcome(name) {
         const data = await res.json();
         const msg = data.candidates[0].content.parts[0].text;
         typeWriter(msg, textEl);
-    } catch (e) { textEl.innerText = `Welcome back, ${name}. Your studio is ready.`; }
+    } catch (e) { 
+        textEl.innerText = `Welcome back, ${name}. Your studio is ready.`; 
+    }
 }
 
 function typeWriter(text, el) {
@@ -63,7 +71,9 @@ async function analyzeMoodAI() {
         const query = data.candidates[0].content.parts[0].text.trim();
         searchMusic(query, 'search-results');
         icon.className = "fa-solid fa-brain";
-    } catch (e) { icon.className = "fa-solid fa-circle-exclamation"; }
+    } catch (e) { 
+        icon.className = "fa-solid fa-circle-exclamation"; 
+    }
 }
 
 // 3. CORE MUSIC ENGINE
@@ -80,7 +90,10 @@ function toggleSearch() {
 }
 
 async function fetchCategory(q) {
-    document.querySelectorAll('.cat-chip').forEach(c => c.classList.toggle('active', c.innerText === q || (q==='Discovery'&&c.innerText==='Discovery')));
+    document.querySelectorAll('.cat-chip').forEach(c => {
+        const isMatch = c.innerText.toLowerCase() === q.toLowerCase() || (q === 'New Hits' && c.innerText === 'Discovery');
+        c.classList.toggle('active', isMatch);
+    });
     document.getElementById('view-title').innerText = q;
     searchMusic(q, 'home-grid');
 }
@@ -91,11 +104,17 @@ async function searchMusic(q, target) {
         const res = await fetch(url);
         const data = await res.json();
         renderSongs(data.items, target === 'home-grid' ? 'home' : 'search');
-    } catch(e) { console.error("YT API Error"); }
+    } catch(e) { 
+        console.error("YT API Error"); 
+    }
 }
 
 function renderSongs(songs, ctx) {
     const container = ctx === 'home' ? document.getElementById('home-grid') : document.getElementById('search-results');
+    if (!songs) {
+        container.innerHTML = `<p class="col-span-2 text-center py-10 opacity-50">No results found</p>`;
+        return;
+    }
     container.innerHTML = songs.map(s => {
         const t = s.snippet.title.replace(/'/g,"").replace(/"/g,"");
         return `
@@ -143,27 +162,38 @@ function updateLibraryUI() {
 }
 
 function playDirect(id, title, thumb) {
-    currentPlaylist = [{id, title, thumb}]; currentTrackIndex = 0; executePlay(currentPlaylist[0]);
+    currentPlaylist = [{id, title, thumb}]; 
+    currentTrackIndex = 0; 
+    executePlay(currentPlaylist[0]);
 }
+
 function playLibraryTrack(i) {
-    currentPlaylist = library; currentTrackIndex = i; executePlay(currentPlaylist[i]);
+    currentPlaylist = library; 
+    currentTrackIndex = i; 
+    executePlay(currentPlaylist[i]);
 }
+
 function executePlay(track) {
-    player.loadVideoById(track.id);
-    document.getElementById('player-title').innerText = track.title;
-    document.getElementById('player-thumb').src = track.thumb;
-    document.getElementById('mini-player').style.transform = "translate(-50%, 0)";
-    updateLibraryUI();
+    if (player && player.loadVideoById) {
+        player.loadVideoById(track.id);
+        document.getElementById('player-title').innerText = track.title;
+        document.getElementById('player-thumb').src = track.thumb;
+        document.getElementById('mini-player').style.transform = "translate(-50%, 0)";
+        updateLibraryUI();
+    }
 }
 
 function onPlayerStateChange(e) {
-    if (e.data === 0 && currentTrackIndex + 1 < currentPlaylist.length) playLibraryTrack(currentTrackIndex + 1);
-    document.getElementById('masterPlay').innerHTML = (e.data === 1) ? '<i class="fa-solid fa-pause text-xs"></i>' : '<i class="fa-solid fa-play text-xs"></i>';
+    if (e.data === 0 && currentTrackIndex + 1 < currentPlaylist.length) {
+        playLibraryTrack(currentTrackIndex + 1);
+    }
+    const playBtn = document.getElementById('masterPlay');
+    playBtn.innerHTML = (e.data === 1) ? '<i class="fa-solid fa-pause text-xs"></i>' : '<i class="fa-solid fa-play text-xs"></i>';
 }
 
 function startClock() {
     setInterval(() => {
-        if(player && player.getCurrentTime) {
+        if(player && player.getCurrentTime && player.getPlayerState() === 1) {
             const cur = player.getCurrentTime(), dur = player.getDuration();
             document.getElementById('progress-bar').value = (cur/dur)*100 || 0;
             document.getElementById('current-time').innerText = `${fmt(cur)} / ${fmt(dur)}`;
@@ -171,13 +201,26 @@ function startClock() {
     }, 1000);
 }
 
-document.getElementById('progress-bar').oninput = function() { player.seekTo((this.value/100) * player.getDuration(), true); };
-document.getElementById('masterPlay').onclick = () => player.getPlayerState() === 1 ? player.pauseVideo() : player.playVideo();
+document.getElementById('progress-bar').oninput = function() { 
+    if (player && player.getDuration) {
+        player.seekTo((this.value/100) * player.getDuration(), true); 
+    }
+};
+
+document.getElementById('masterPlay').onclick = () => {
+    const state = player.getPlayerState();
+    state === 1 ? player.pauseVideo() : player.playVideo();
+};
+
 const fmt = s => `${Math.floor(s/60)}:${Math.floor(s%60).toString().padStart(2,'0')}`;
 
 window.onload = () => {
     const name = localStorage.getItem('rhk_user_name');
-    if (!name) document.getElementById('name-modal').classList.remove('hidden');
-    else generateAIWelcome(name);
+    if (!name) {
+        document.getElementById('name-modal').classList.remove('hidden');
+    } else {
+        generateAIWelcome(name);
+    }
     fetchCategory('New Hits');
 };
+        
