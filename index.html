@@ -18,48 +18,56 @@
             <div class="w-16 h-16 bg-purple-600 rounded-full mx-auto mb-6 flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.4)]">
                 <i class="fa-solid fa-bolt-lightning text-2xl"></i>
             </div>
-            <h2 class="text-xl font-black mb-2 uppercase tracking-tighter">Welcome to RHK</h2>
+            <h2 class="text-xl font-black mb-2 tracking-tighter uppercase">RHK Studio</h2>
             <input type="text" id="userNameInput" placeholder="YOUR NAME" 
                 class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-center text-lg font-bold focus:outline-none focus:border-purple-500 mb-4 transition-all">
-            <button onclick="saveUser()" class="w-full bg-purple-600 py-4 rounded-2xl font-bold uppercase text-[10px] tracking-[0.2em]">Enter Studio</button>
+            <button onclick="saveUser()" class="w-full bg-purple-600 py-4 rounded-2xl font-bold uppercase tracking-widest text-[10px]">Enter Studio</button>
         </div>
     </div>
 
     <div class="max-w-md mx-auto min-h-screen relative pb-44 bg-gradient-to-b from-[#0a0a0f] to-black">
-        
-        <header class="p-8 pb-4 sticky top-0 bg-[#0a0a0f]/80 backdrop-blur-xl z-40">
-            <div class="flex justify-between items-center mb-6">
-                <div class="text-xl font-black tracking-tighter italic">RHK <span class="text-purple-500">MUSIC</span></div>
-                <div id="user-display" class="text-[10px] font-bold uppercase opacity-40">Guest</div>
-            </div>
-
-            <div id="ai-welcome" class="mb-6 p-4 bg-white/5 rounded-3xl border-l-2 border-purple-500 hidden">
-                <p id="welcome-text" class="text-[11px] leading-relaxed opacity-60 italic"></p>
+        <header class="p-8 sticky top-0 bg-[#0a0a0f]/80 backdrop-blur-xl z-40">
+            <div class="flex justify-between items-center">
+                <div class="text-xl font-black italic tracking-tighter">RHK <span class="text-purple-500">MUSIC</span></div>
+                <div id="user-display" class="text-[10px] font-black uppercase opacity-40 tracking-widest">Guest</div>
             </div>
         </header>
 
         <main class="px-6">
             <div id="home-view">
-                <h3 class="text-sm font-black uppercase tracking-widest text-white/40 mb-4">Studio Collection</h3>
+                <h3 class="text-[10px] font-black uppercase tracking-[0.3em] text-white/30 mb-6">Studio Collection</h3>
                 <div id="home-grid" class="grid grid-cols-2 gap-4">
                     </div>
             </div>
 
             <div id="library-view" class="hidden">
-                <h3 class="text-2xl font-black mb-6">My <span class="text-purple-500">Library</span></h3>
+                <h3 class="text-2xl font-black mb-6 uppercase">Library</h3>
                 <div id="library-list" class="flex flex-col gap-3"></div>
             </div>
         </main>
 
         <div id="mini-player" class="fixed bottom-28 left-1/2 -translate-x-1/2 w-[92%] glass-player p-4 rounded-[2.5rem] z-50 transform translate-y-64 transition-all duration-500 shadow-2xl">
-            <div class="absolute top-0 left-6 right-6 -translate-y-1/2">
+            <div class="absolute top-0 left-8 right-8 -translate-y-1/2">
                 <input type="range" id="progress-bar" value="0" class="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-purple-500">
             </div>
             <div class="flex items-center gap-4">
-                <img id="player-thumb" src="" class="w-12 h-12 rounded-xl object-cover bg-white/5">
+                <img id="player-thumb" src="" class="w-12 h-12 rounded-xl object-cover bg-white/5 shadow-lg">
                 <div class="flex-1 overflow-hidden">
-                    <p id="player-title" class="text-[11px] font-bold truncate">Select a song</p>
-                    <p id="current-time" class="text-[8px] opacity-40 mt-1">0:00 / 0:00</p>
+                    <p id="player-title" class="text-[11px] font-bold truncate tracking-tight">Select Track</p>
+                    <p id="current-time" class="text-[8px] opacity-40 mt-1 font-black">0:00 / 0:00</p>
                 </div>
-                <button id="masterPlay
-                    
+                <button id="masterPlay" class="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center shadow-lg active:scale-90 transition-transform">
+                    <i class="fa-solid fa-play text-xs text-white"></i>
+                </button>
+            </div>
+        </div>
+
+        <nav class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[80%] h-20 bg-white/[0.03] backdrop-blur-3xl border border-white/5 rounded-[3rem] flex justify-around items-center z-50 shadow-2xl">
+            <div onclick="showView('home')" class="nav-btn active" id="btn-home"><i class="fa-solid fa-house-chimney"></i></div>
+            <div onclick="showView('library')" class="nav-btn" id="btn-lib"><i class="fa-solid fa-layer-group"></i></div>
+        </nav>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
