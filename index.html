@@ -3,87 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RHK MUSIC | PREMIUM</title>
+    <title>RHK NEBULA | ULTRA</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;500;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-[#0D0D0D] text-white font-['Plus_Jakarta_Sans'] overflow-x-hidden">
+<body class="bg-[#030303] text-white font-['Inter'] overflow-hidden">
+
+    <div id="nebula">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
 
     <audio id="main-audio"></audio>
 
-    <div id="name-modal" class="fixed inset-0 z-[200] bg-[#0D0D0D] flex items-center justify-center p-10 hidden">
-        <div class="w-full max-w-sm text-center">
-            <h1 class="text-3xl font-extrabold mb-6">RHK Studio</h1>
-            <input type="text" id="userNameInput" placeholder="Enter your name" 
-                class="w-full bg-[#1A1A1A] border border-white/5 rounded-2xl py-5 px-6 mb-6 focus:outline-none focus:border-[#1DB954]">
-            <button onclick="saveUser()" class="w-full bg-[#1DB954] text-black font-bold py-5 rounded-full">Enter Studio</button>
+    <div class="flex h-screen w-full relative z-10">
+        <aside class="hidden md:flex w-24 flex-col items-center py-10 border-r border-white/5 bg-black/20 backdrop-blur-3xl">
+            <div class="text-[#1DB954] text-2xl font-bold mb-20 tracking-tighter">R.</div>
+            <nav class="flex flex-col gap-10">
+                <i class="fa-solid fa-house-chimney text-xl cursor-pointer hover:text-[#1DB954] transition-all"></i>
+                <i class="fa-solid fa-compass text-xl cursor-pointer opacity-30 hover:opacity-100"></i>
+                <i class="fa-solid fa-heart text-xl cursor-pointer opacity-30 hover:opacity-100"></i>
+            </nav>
+        </aside>
+
+        <main class="flex-1 h-full overflow-y-auto no-scrollbar relative p-6 md:p-12">
+            <header class="flex justify-between items-center mb-12">
+                <div>
+                    <h1 class="font-['Syncopate'] text-xs font-bold tracking-[0.5em] text-[#1DB954] mb-2">NEBULA STREAM</h1>
+                    <p id="user-display" class="text-3xl font-800 tracking-tighter">Welcome, Artist</p>
+                </div>
+                <div class="search-pill group flex items-center bg-white/5 border border-white/10 rounded-full px-6 py-3 transition-all focus-within:w-64 w-48">
+                    <i class="fa-solid fa-magnifying-glass text-[10px] mr-3 opacity-40"></i>
+                    <input type="text" id="searchInput" oninput="searchMusic()" placeholder="Find vibe..." class="bg-transparent text-xs outline-none w-full">
+                </div>
+            </header>
+
+            <div id="home-view">
+                <div class="flex gap-4 mb-10 overflow-x-auto no-scrollbar pb-2">
+                    <button class="chip active">All</button>
+                    <button class="chip">Chill</button>
+                    <button class="chip">Focus</button>
+                    <button class="chip">Energy</button>
+                </div>
+                <div id="home-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8"></div>
+            </div>
+        </main>
+
+        <div id="mini-player" class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[92%] max-w-2xl bg-black/40 backdrop-blur-3xl border border-white/10 rounded-[3rem] p-4 translate-y-64 transition-all duration-1000">
+            <div class="flex items-center gap-6">
+                <div class="relative group">
+                    <img id="player-thumb" src="" class="w-16 h-16 rounded-[2rem] object-cover transition-transform duration-700 group-hover:rotate-12">
+                    <div class="absolute inset-0 bg-[#1DB954]/20 blur-xl rounded-full -z-10 animate-pulse"></div>
+                </div>
+                <div class="flex-1">
+                    <h4 id="player-title" class="font-bold truncate text-sm tracking-tight">Vibe Name</h4>
+                    <p id="player-artist" class="text-[9px] font-bold text-[#1DB954] uppercase tracking-widest mt-1">Creator</p>
+                    <div class="mt-4 flex items-center gap-3">
+                        <div class="flex-1 h-[2px] bg-white/10 rounded-full overflow-hidden">
+                            <div id="progress-line" class="h-full bg-white shadow-[0_0_10px_white] transition-all duration-300"></div>
+                        </div>
+                        <span id="current-time" class="text-[8px] font-bold opacity-40">0:00</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <i class="fa-solid fa-backward-step text-xs opacity-40 hover:opacity-100" onclick="prevTrack()"></i>
+                    <button id="masterPlay" class="w-14 h-14 bg-white text-black rounded-full flex items-center justify-center hover:scale-105 transition-all">
+                        <i class="fa-solid fa-play ml-1"></i>
+                    </button>
+                    <i class="fa-solid fa-forward-step text-xs opacity-40 hover:opacity-100" onclick="nextTrack()"></i>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="max-w-md mx-auto min-h-screen relative pb-44">
-        <header class="p-6 sticky top-0 bg-[#0D0D0D]/90 backdrop-blur-md z-40">
-            <div class="flex justify-between items-center mb-6">
-                <h2 id="user-display" class="text-xl font-bold italic text-[#1DB954]">RHK User</h2>
-                <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
-                    <i class="fa-solid fa-music text-[10px] text-[#1DB954]"></i>
-                </div>
-            </div>
-
-            <div class="relative mb-4">
-                <i class="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 text-sm"></i>
-                <input type="text" id="searchInput" oninput="searchMusic()" placeholder="Search your library..." 
-                    class="w-full bg-[#1A1A1A] border border-white/5 rounded-full py-4 pl-12 pr-6 text-sm focus:outline-none focus:border-[#1DB954]/50 transition-all">
-            </div>
-        </header>
-
-        <main class="px-6">
-            <section id="home-view">
-                <h3 class="text-lg font-bold mb-4">Studio Collection</h3>
-                <div id="home-grid" class="grid grid-cols-2 gap-4"></div>
-            </section>
-
-            <section id="library-view" class="hidden">
-                <h3 class="text-2xl font-bold mb-6">Liked Songs</h3>
-                <div id="library-list" class="space-y-4"></div>
-            </section>
-        </main>
-
-        <div id="mini-player" class="fixed bottom-28 left-4 right-4 bg-[#1A1A1A] rounded-[2.5rem] p-4 z-50 transform translate-y-64 transition-all duration-500 shadow-2xl border border-white/5">
-            <div class="flex items-center gap-4">
-                <img id="player-thumb" src="" class="w-14 h-14 rounded-[1.5rem] object-cover bg-black">
-                <div class="flex-1 overflow-hidden">
-                    <p id="player-title" class="font-bold truncate text-sm">Select Track</p>
-                    <p id="player-artist" class="text-[10px] text-gray-400">RHK Music</p>
-                </div>
-                <div class="flex items-center gap-3">
-                    <i class="fa-solid fa-backward-step cursor-pointer text-gray-400" onclick="prevTrack()"></i>
-                    <button id="masterPlay" class="w-10 h-10 bg-[#1DB954] rounded-full flex items-center justify-center">
-                        <i class="fa-solid fa-play text-black text-xs"></i>
-                    </button>
-                    <i class="fa-solid fa-forward-step cursor-pointer" onclick="nextTrack()"></i>
-                </div>
-            </div>
-            <div class="px-2 mt-4">
-                <input type="range" id="progress-bar" value="0" class="w-full h-1 bg-white/10 rounded-full appearance-none accent-[#1DB954]">
-                <div class="flex justify-between text-[8px] text-gray-500 mt-2 font-bold uppercase tracking-widest">
-                    <span id="current-time">0:00</span>
-                    <span id="duration-time">0:00</span>
-                </div>
-            </div>
-        </div>
-
-        <nav class="fixed bottom-0 left-0 right-0 h-24 bg-[#0D0D0D]/95 border-t border-white/5 flex justify-around items-center z-40">
-            <div onclick="showView('home')" class="nav-item active" id="btn-home">
-                <i class="fa-solid fa-compass text-xl"></i>
-                <span class="text-[8px] mt-1 font-bold uppercase">Explore</span>
-            </div>
-            <div onclick="showView('library')" class="nav-item" id="btn-lib">
-                <i class="fa-solid fa-heart text-xl"></i>
-                <span class="text-[8px] mt-1 font-bold uppercase">Liked</span>
-            </div>
-        </nav>
+    <div id="name-modal" class="fixed inset-0 z-[1000] bg-black flex flex-col items-center justify-center hidden p-10">
+        <div class="absolute inset-0 opacity-20" id="matrix-bg"></div>
+        <h2 class="font-['Syncopate'] text-[10px] tracking-[1em] mb-20 animate-pulse">INITIATING SEQUENCE</h2>
+        <input type="text" id="userNameInput" placeholder="ENTER ID" class="bg-transparent border-b border-white/20 text-4xl text-center outline-none focus:border-[#1DB954] transition-all py-4 mb-10 w-full max-w-md">
+        <button onclick="saveUser()" class="hover:text-[#1DB954] transition-all font-bold tracking-widest text-sm">PRESS TO ENTER</button>
     </div>
 
     <script src="script.js"></script>
