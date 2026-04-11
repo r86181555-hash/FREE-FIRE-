@@ -1,7 +1,5 @@
 .no-scrollbar::-webkit-scrollbar { display: none; }
-.pill { padding: 10px 24px; background: #1A1A1A; border-radius: 99px; font-size: 11px; font-weight: 700; color: #666; transition: 0.3s; }
-.pill.active { background: #1DB954; color: black; }
-.nav-item { display: flex; flex-direction: column; align-items: center; color: #444; transition: 0.3s; }
+.nav-item { display: flex; flex-direction: column; align-items: center; color: #333; transition: 0.3s; cursor: pointer; }
 .nav-item.active { color: #1DB954; }
 .song-card { background: #1A1A1A; border-radius: 2rem; padding: 12px; border: 1px solid rgba(255,255,255,0.03); }
 #progress-bar { appearance: none; background: rgba(255,255,255,0.05); cursor: pointer; }
