@@ -17,13 +17,13 @@
             <p class="text-[10px] not-italic font-bold tracking-[0.3em] text-white/40 mt-2 uppercase">Premium Experience</p>
         </div>
         
-        <div class="w-full space-y-4">
-            <input type="email" id="email" placeholder="Email Address" class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-sm focus:outline-none focus:border-purple-500 transition-all">
-            <input type="password" id="password" placeholder="Password" class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-sm focus:outline-none focus:border-purple-500 transition-all">
-            <button id="btnLogin" class="w-full bg-purple-600 py-4 rounded-2xl font-bold uppercase tracking-widest text-sm shadow-lg shadow-purple-500/20 active:scale-95 transition-all">Login</button>
-            <button id="btnSignup" class="w-full bg-transparent border border-white/10 py-4 rounded-2xl font-bold uppercase tracking-widest text-[10px] text-white/60 active:scale-95 transition-all">Create Account</button>
+        <div class="w-full max-w-xs">
+            <button id="btnGoogle" class="w-full bg-white text-black py-4 rounded-2xl font-bold uppercase tracking-widest text-[11px] flex items-center justify-center gap-3 shadow-xl active:scale-95 transition-all">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5">
+                Continue with Google
+            </button>
         </div>
-        <p id="auth-error" class="text-red-500 text-[10px] mt-4 font-bold uppercase"></p>
+        <p id="auth-error" class="text-red-500 text-[10px] mt-6 font-bold uppercase text-center max-w-[200px]"></p>
     </div>
 
     <div id="app-content" class="max-w-md mx-auto min-h-screen relative pb-44 bg-gradient-to-b from-[#1a1a2e] via-[#050505] to-black opacity-0 pointer-events-none transition-opacity duration-700">
@@ -32,8 +32,10 @@
                 <div class="text-2xl font-black tracking-tighter italic">
                     RHK <span class="text-purple-500">MUSIC</span>
                 </div>
-                <button id="btnLogout" class="text-[10px] font-bold text-white/40 uppercase hover:text-red-400">Logout</button>
-                <div class="w-10 h-10 bg-gradient-to-tr from-purple-600 to-pink-500 rounded-full border-2 border-white/10 shadow-[0_0_15px_rgba(168,85,247,0.4)]"></div>
+                <div class="flex items-center gap-4">
+                    <button id="btnLogout" class="text-[10px] font-bold text-white/30 uppercase hover:text-red-400 transition-colors">Logout</button>
+                    <div id="user-avatar" class="w-10 h-10 bg-purple-600 rounded-full border-2 border-white/10 shadow-lg bg-cover bg-center"></div>
+                </div>
             </div>
             
             <div class="relative group">
@@ -113,7 +115,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBND3n2ag9qGZG5SJPOKNVYr2dHNLwoD7Y",
@@ -127,38 +129,33 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
 
-        // UI Elements
         const loginScreen = document.getElementById('login-screen');
         const appContent = document.getElementById('app-content');
         const authError = document.getElementById('auth-error');
+        const userAvatar = document.getElementById('user-avatar');
 
-        // Check Auth State
+        // Watch Login State
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 loginScreen.classList.add('opacity-0', 'pointer-events-none');
                 appContent.classList.remove('opacity-0', 'pointer-events-none');
+                userAvatar.style.backgroundImage = `url('${user.photoURL}')`;
             } else {
                 loginScreen.classList.remove('opacity-0', 'pointer-events-none');
                 appContent.classList.add('opacity-0', 'pointer-events-none');
             }
         });
 
-        // Login Logic
-        document.getElementById('btnLogin').onclick = () => {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            signInWithEmailAndPassword(auth, email, password).catch(e => authError.innerText = e.message);
+        // Google Login Action
+        document.getElementById('btnGoogle').onclick = () => {
+            signInWithPopup(auth, provider).catch(e => {
+                authError.innerText = "Error: " + e.message;
+            });
         };
 
-        // Signup Logic
-        document.getElementById('btnSignup').onclick = () => {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            createUserWithEmailAndPassword(auth, email, password).catch(e => authError.innerText = e.message);
-        };
-
-        // Logout Logic
+        // Logout Action
         document.getElementById('btnLogout').onclick = () => signOut(auth);
     </script>
 
