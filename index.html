@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RHK MUSIC | Premium</title>
+    <title>RHK MUSIC | Premium Studio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -11,110 +11,73 @@
 </head>
 <body class="bg-[#050505] text-white font-['Montserrat'] overflow-x-hidden">
 
-    <div id="auth-modal" class="fixed inset-0 z-[200] bg-black flex items-center justify-center p-6">
+    <div id="auth-modal" class="fixed inset-0 z-[200] bg-[#050505] flex items-center justify-center p-6">
         <div class="w-full max-w-sm text-center">
-            <div class="mb-8">
-                <div class="w-20 h-20 bg-purple-600 rounded-3xl mx-auto flex items-center justify-center shadow-2xl rotate-12">
-                    <i class="fa-solid fa-bolt-lightning text-3xl -rotate-12"></i>
+            <div class="mb-10">
+                <div class="w-20 h-20 bg-purple-600 rounded-[2rem] mx-auto flex items-center justify-center shadow-[0_0_30px_rgba(168,85,247,0.4)]">
+                    <i class="fa-solid fa-bolt text-3xl"></i>
                 </div>
-                <h1 class="text-2xl font-black mt-6 tracking-tighter italic">RHK <span class="text-purple-500">MUSIC</span></h1>
-                <p class="text-[10px] text-white/40 uppercase tracking-[0.3em] mt-2">Login to your studio</p>
+                <h1 class="text-3xl font-black mt-6 italic">RHK <span class="text-purple-500">MUSIC</span></h1>
+                <p class="text-[9px] text-white/30 uppercase tracking-[0.4em] mt-2 font-bold">The Cloud Music Experience</p>
             </div>
 
-            <div id="login-form" class="space-y-3">
+            <div id="login-form" class="space-y-4">
                 <input type="email" id="email" placeholder="Email Address" class="auth-input">
                 <input type="password" id="password" placeholder="Password" class="auth-input">
-                <button onclick="loginEmail()" class="w-full py-4 bg-purple-600 rounded-2xl font-black text-xs uppercase tracking-widest">Sign In</button>
+                <button onclick="loginEmail()" class="w-full py-4 bg-purple-600 rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-lg active:scale-95 transition-all">Sign In</button>
                 
-                <div class="flex items-center gap-4 my-6 opacity-20">
+                <div class="flex items-center gap-4 my-8 opacity-20">
                     <div class="h-[1px] flex-1 bg-white"></div>
-                    <span class="text-[10px]">OR</span>
+                    <span class="text-[10px] font-bold">OR</span>
                     <div class="h-[1px] flex-1 bg-white"></div>
                 </div>
 
-                <button onclick="loginGoogle()" class="w-full py-4 bg-white text-black rounded-2xl font-black text-xs uppercase flex items-center justify-center gap-3">
+                <button onclick="loginGoogle()" class="w-full py-4 bg-white text-black rounded-2xl font-black text-[11px] uppercase flex items-center justify-center gap-3 active:scale-95 transition-all">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_Logo.svg" class="w-4"> Google Login
                 </button>
                 
-                <button onclick="showPhoneLogin()" class="text-[10px] font-bold text-purple-400 uppercase tracking-widest pt-4">Login with Phone</button>
+                <div id="phone-container" class="mt-4">
+                    <input type="text" id="phone-number" placeholder="+1234567890" class="auth-input hidden mb-2">
+                    <button id="phone-login-btn" onclick="showPhoneInput()" class="text-[10px] font-bold text-purple-400 uppercase tracking-widest hover:text-white transition-colors">Login with Phone</button>
+                </div>
             </div>
+            <div id="recaptcha-container"></div>
         </div>
     </div>
 
     <div id="app-content" class="max-w-md mx-auto min-h-screen relative pb-44 bg-gradient-to-b from-[#0a0a0f] to-black hidden">
         
-        <header class="p-8 pb-4 sticky top-0 bg-[#0a0a0f]/80 backdrop-blur-xl z-40">
+        <header class="p-8 pb-4 sticky top-0 bg-[#0a0a0f]/90 backdrop-blur-2xl z-40">
             <div class="flex justify-between items-center mb-6">
-                <div class="text-xl font-black tracking-tighter italic">RHK <span class="text-purple-500">MUSIC</span></div>
-                <button onclick="logout()" class="text-[10px] bg-white/5 px-4 py-2 rounded-full font-bold opacity-50">LOGOUT</button>
+                <div class="text-xl font-black italic tracking-tighter">RHK <span class="text-purple-500">MUSIC</span></div>
+                <div class="flex items-center gap-3">
+                    <span id="user-initials" class="w-8 h-8 rounded-full bg-purple-600/20 text-purple-400 flex items-center justify-center text-[10px] font-black border border-purple-500/30">U</span>
+                </div>
             </div>
 
             <div id="home-filters" class="flex gap-2 overflow-x-auto no-scrollbar">
-                <button onclick="filterGrid('all')" class="cat-chip active" id="f-all">All</button>
+                <button onclick="filterGrid('all')" class="cat-chip active" id="f-all">Discovery</button>
                 <button onclick="filterGrid('trending')" class="cat-chip" id="f-trending">Trending</button>
-                <button onclick="filterGrid('recent')" class="cat-chip" id="f-recent">Recent</button>
+                <button onclick="filterGrid('recent')" class="cat-chip" id="f-recent">New Release</button>
             </div>
         </header>
 
         <main class="px-6">
             <section id="view-home" class="app-view">
-                <h3 class="view-label">Cloud Studio</h3>
-                <div id="track-grid" class="grid grid-cols-2 gap-4"></div>
+                <h3 class="view-label">Top Studio Tracks</h3>
+                <div id="track-grid" class="grid grid-cols-2 gap-4 pb-10"></div>
             </section>
 
             <section id="view-search" class="app-view hidden">
-                <h3 class="view-label">Find Music</h3>
-                <input type="text" id="searchInput" onkeyup="searchSongs()" placeholder="Search track name..." class="auth-input mb-6">
+                <h3 class="view-label">Search Library</h3>
+                <div class="relative mb-8">
+                    <i class="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 opacity-30 text-xs"></i>
+                    <input type="text" id="searchInput" onkeyup="searchSongs()" placeholder="Search track name..." class="auth-input pl-12 bg-white/5 border-none">
+                </div>
                 <div id="search-results" class="grid grid-cols-2 gap-4"></div>
             </section>
 
             <section id="view-fav" class="app-view hidden">
-                <h3 class="view-label">Your Favorites</h3>
-                <div id="fav-grid" class="grid grid-cols-2 gap-4"></div>
-            </section>
-
-            <section id="view-settings" class="app-view hidden">
-                <h3 class="view-label">Account Settings</h3>
-                <div class="space-y-4">
-                    <div class="p-6 bg-white/5 rounded-[2rem] border border-white/5">
-                        <p class="text-[10px] opacity-40 uppercase mb-1">Signed in as</p>
-                        <p id="user-email-display" class="font-bold">user@rhkmusic.com</p>
-                    </div>
-                    <div class="p-6 bg-white/5 rounded-[2rem] border border-white/5 flex justify-between items-center">
-                        <p class="font-bold">Dark Mode</p>
-                        <div class="w-10 h-5 bg-purple-600 rounded-full"></div>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <audio id="main-audio"></audio>
-        <div id="mini-player" class="fixed bottom-28 left-1/2 -translate-x-1/2 w-[92%] glass-player p-4 rounded-[2.5rem] z-50">
-            <div class="absolute top-0 left-8 right-8 -translate-y-1/2">
-                <input type="range" id="progress-bar" value="0" class="w-full h-1 bg-white/10 appearance-none cursor-pointer accent-purple-500">
-            </div>
-            <div class="flex items-center gap-4">
-                <img id="player-thumb" src="img1.jpg" class="w-14 h-14 rounded-2xl object-cover">
-                <div class="flex-1 overflow-hidden">
-                    <p id="player-title" class="text-[11px] font-bold truncate">Not Playing</p>
-                    <p id="player-meta" class="text-[9px] opacity-40 uppercase tracking-tighter">00:00 / 00:00</p>
-                </div>
-                <button id="masterPlay" class="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center">
-                    <i class="fa-solid fa-play text-xs ml-1"></i>
-                </button>
-            </div>
-        </div>
-
-        <nav class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[85%] h-20 bg-white/[0.03] backdrop-blur-3xl border border-white/10 rounded-[3rem] flex justify-around items-center z-50">
-            <div onclick="showView('home')" class="nav-btn active" id="nb-home"><i class="fa-solid fa-house"></i></div>
-            <div onclick="showView('search')" class="nav-btn" id="nb-search"><i class="fa-solid fa-magnifying-glass"></i></div>
-            <div onclick="showView('fav')" class="nav-btn" id="nb-fav"><i class="fa-solid fa-heart"></i></div>
-            <div onclick="showView('settings')" class="nav-btn" id="nb-settings"><i class="fa-solid fa-gear"></i></div>
-        </nav>
-    </div>
-
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="script.js"></script>
-</body>
-</html>
+                <h3 class="view-label">Liked Songs</h3>
+                <div id="fav-grid" class="grid grid-cols-2 gap-4">
+                    
