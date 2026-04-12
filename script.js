@@ -1,5 +1,4 @@
-// --- FIREBASE SETUP ---
-// REPLACE THIS WITH YOUR OWN CONFIG FROM FIREBASE CONSOLE
+// REPLACE WITH YOUR FIREBASE KEYS
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_PROJECT.firebaseapp.com",
@@ -10,128 +9,125 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-
-// --- GLOBAL VARIABLES ---
-const totalSongs = 100;
-let favorites = JSON.parse(localStorage.getItem('rhk_favorites')) || [];
-let currentTrack = 1;
+const auth = firebase.auth();
 const audio = document.getElementById('audio-engine');
+let favorites = JSON.parse(localStorage.getItem('rhk_favs')) || [];
 
-// --- AUTH HANDLERS ---
-function handleGoogleLogin() {
+// --- AUTH FUNCTIONS ---
+function loginWithGoogle() {
     const provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithPopup(provider);
+    auth.signInWithPopup(provider).catch(e => alert(e.message));
 }
 
-function handleEmailLogin() {
+function loginWithEmail() {
     const email = document.getElementById('email').value;
     const pass = document.getElementById('password').value;
-    firebase.auth().signInWithEmailAndPassword(email, pass).catch(e => alert(e.message));
+    auth.signInWithEmailAndPassword(email, pass).catch(e => alert(e.message));
 }
 
-firebase.auth().onAuthStateChanged(user => {
+function loginWithPhone() {
+    const num = prompt("Enter phone with country code (+91...):");
+    if(!num) return;
+    const recaptcha = new firebase.auth.RecaptchaVerifier('recaptcha-container');
+    auth.signInWithPhoneNumber(num, recaptcha).then(res => {
+        const code = prompt("Enter OTP:");
+        res.confirm(code);
+    }).catch(e => alert(e.message));
+}
+
+function logout() { auth.signOut(); }
+
+auth.onAuthStateChanged(user => {
     if (user) {
-        document.getElementById('auth-overlay').style.display = 'none';
+        document.getElementById('auth-overlay').classList.add('hidden');
         document.getElementById('main-app').classList.remove('hidden');
-        document.getElementById('display-email').innerText = user.email || user.phoneNumber;
-        if(user.photoURL) document.getElementById('user-avatar').innerHTML = `<img src="${user.photoURL}">`;
-        buildGrid('all');
+        document.getElementById('user-info').innerText = user.email || user.phoneNumber;
+        renderGrid('all');
     } else {
-        document.getElementById('auth-overlay').style.display = 'flex';
+        document.getElementById('auth-overlay').classList.remove('hidden');
         document.getElementById('main-app').classList.add('hidden');
     }
 });
 
-// --- CORE NAVIGATION ---
-function openTab(tab) {
-    document.querySelectorAll('.view-sec').forEach(s => s.classList.add('hidden'));
-    document.querySelectorAll('.nav-icon').forEach(i => i.classList.remove('active'));
-    
-    document.getElementById(`sec-${tab}`).classList.remove('hidden');
-    document.getElementById(`ni-${tab}`).classList.add('active');
-    
-    if(tab === 'fav') buildFavs();
+// --- NAVIGATION ---
+function showTab(tab) {
+    document.querySelectorAll('.app-view').forEach(v => v.classList.add('hidden'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(`view-${tab}`).classList.remove('hidden');
+    document.getElementById(`nb-${tab}`).classList.add('active');
+    if(tab === 'favs') renderFavs();
 }
 
-function changeCategory(cat) {
+function changeFilter(type) {
     document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
-    document.getElementById(`tab-${cat}`).classList.add('active');
-    buildGrid(cat);
+    document.getElementById(`tab-${type}`).classList.add('active');
+    renderGrid(type);
 }
 
-// --- MUSIC ENGINE ---
-function buildGrid(type) {
-    const container = document.getElementById('music-grid');
-    container.innerHTML = '';
-    
-    // Simulate Trending/Recent by splitting the 100 songs
-    let start = 1, end = totalSongs;
-    if(type === 'trending') end = 30;
-    if(type === 'recent') start = 70;
-
-    for(let i=start; i<=end; i++) {
-        container.innerHTML += createCard(i);
+// --- CORE LOGIC ---
+function renderGrid(type) {
+    const grid = document.getElementById('main-grid');
+    grid.innerHTML = '';
+    // Manual 100 songs logic
+    for(let i=1; i<=100; i++) {
+        if(type === 'trending' && i > 20) continue;
+        if(type === 'recent' && i < 80) continue;
+        grid.innerHTML += createSongCard(i);
     }
 }
 
-function createCard(id) {
-    const loved = favorites.includes(id) ? 'is-loved' : '';
+function createSongCard(id) {
+    const isFav = favorites.includes(id) ? 'active' : '';
     return `
-    <div class="song-item p-3 rounded-[2.2rem] flex flex-col" onclick="playMusic(${id})">
-        <div class="fav-heart ${loved}" onclick="toggleFav(event, ${id})"><i class="fa-solid fa-heart"></i></div>
-        <img src="${id}.jpg" class="w-full aspect-square object-cover rounded-[1.8rem] mb-3 shadow-lg">
+    <div class="song-card p-3 rounded-[2rem] flex flex-col" onclick="playMusic(${id})">
+        <div class="fav-icon ${isFav}" onclick="toggleFav(event, ${id})"><i class="fa-solid fa-heart"></i></div>
+        <img src="${id}.jpg" class="w-full aspect-square object-cover rounded-[1.5rem] mb-3">
         <p class="text-[10px] font-black truncate px-2 uppercase tracking-tighter">Track #${id}</p>
-        <p class="text-[8px] opacity-30 px-2 uppercase font-bold">RHK Original</p>
+        <p class="text-[8px] opacity-30 px-2 uppercase font-bold italic">RHK Cloud</p>
     </div>`;
 }
 
 function playMusic(id) {
-    currentTrack = id;
     audio.src = `${id}.mp3`;
     audio.play();
     document.getElementById('p-img').src = `${id}.jpg`;
     document.getElementById('p-title').innerText = `Playing Track #${id}`;
-    document.getElementById('play-trigger').innerHTML = '<i class="fa-solid fa-pause text-xs"></i>';
+    document.getElementById('master-play').innerHTML = '<i class="fa-solid fa-pause text-xs"></i>';
 }
 
-document.getElementById('play-trigger').onclick = () => {
-    if(audio.paused) { audio.play(); document.getElementById('play-trigger').innerHTML = '<i class="fa-solid fa-pause text-xs"></i>'; }
-    else { audio.pause(); document.getElementById('play-trigger').innerHTML = '<i class="fa-solid fa-play text-xs ml-1"></i>'; }
-};
+function toggleFav(e, id) {
+    e.stopPropagation();
+    if(favorites.includes(id)) favorites = favorites.filter(x => x !== id);
+    else favorites.push(id);
+    localStorage.setItem('rhk_favs', JSON.stringify(favorites));
+    renderGrid('all');
+    renderFavs();
+}
 
-// Next/Prev
-function nextTrack() { if(currentTrack < totalSongs) playMusic(currentTrack + 1); }
-function prevTrack() { if(currentTrack > 1) playMusic(currentTrack - 1); }
+function renderFavs() {
+    const grid = document.getElementById('fav-grid');
+    grid.innerHTML = favorites.length ? favorites.map(id => createSongCard(id)).join('') : '<p class="col-span-2 text-center py-20 opacity-20 text-[10px] font-black uppercase tracking-widest">No Favorites</p>';
+}
 
-// Time Update
+function searchTracks() {
+    const q = document.getElementById('search-input').value.toLowerCase();
+    const grid = document.getElementById('search-grid');
+    grid.innerHTML = '';
+    for(let i=1; i<=100; i++) {
+        if(`track #${i}`.includes(q)) grid.innerHTML += createSongCard(i);
+    }
+}
+
+// Player Events
 audio.ontimeupdate = () => {
-    const progress = (audio.currentTime / audio.duration) * 100;
-    document.getElementById('seek-slider').value = progress || 0;
+    const prog = (audio.currentTime / audio.duration) * 100;
+    document.getElementById('seek-bar').value = prog || 0;
     document.getElementById('p-time').innerText = `${fmt(audio.currentTime)} / ${fmt(audio.duration || 0)}`;
 };
 
 const fmt = s => `${Math.floor(s/60)}:${Math.floor(s%60).toString().padStart(2,'0')}`;
 
-// Favorites Logic
-function toggleFav(e, id) {
-    e.stopPropagation();
-    if(favorites.includes(id)) favorites = favorites.filter(x => x !== id);
-    else favorites.push(id);
-    localStorage.setItem('rhk_favorites', JSON.stringify(favorites));
-    buildGrid('all');
-    if(!document.getElementById('sec-fav').classList.contains('hidden')) buildFavs();
-}
-
-function buildFavs() {
-    const container = document.getElementById('fav-grid');
-    container.innerHTML = favorites.length ? favorites.map(id => createCard(id)).join('') : '<p class="col-span-2 text-center opacity-20 py-20 uppercase font-black text-[10px]">No Liked Songs</p>';
-}
-
-function runSearch() {
-    const q = document.getElementById('search-bar').value.toLowerCase();
-    const container = document.getElementById('search-grid');
-    container.innerHTML = '';
-    for(let i=1; i<=totalSongs; i++) {
-        if(`track #${i}`.toLowerCase().includes(q)) container.innerHTML += createCard(i);
-    }
-}
+document.getElementById('master-play').onclick = () => {
+    if(audio.paused) { audio.play(); document.getElementById('master-play').innerHTML = '<i class="fa-solid fa-pause text-xs"></i>'; }
+    else { audio.pause(); document.getElementById('master-play').innerHTML = '<i class="fa-solid fa-play text-xs ml-1"></i>'; }
+};
