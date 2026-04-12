@@ -1,31 +1,20 @@
-/* Custom Animations */
-@keyframes bounce-slow { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-30px); } }
-.animate-bounce-slow { animation: bounce-slow 10s ease-in-out infinite; }
-
-.text-gradient {
-    background: linear-gradient(to right, #1DB954, #34d399);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.nav-btn {
-    font-size: 1.4rem;
-    color: rgba(255,255,255,0.2);
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.nav-btn.active {
-    color: #1DB954;
-    transform: scale(1.2) translateY(-2px);
-    text-shadow: 0 0 20px rgba(29, 185, 84, 0.5);
-}
+.nav-btn { font-size: 1.4rem; color: rgba(255,255,255,0.2); transition: 0.4s; }
+.nav-btn.active { color: #a78bfa; transform: scale(1.1); }
 
 .song-card {
-    background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
-    border-radius: 2.5rem;
-    padding: 10px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+    border-radius: 2rem;
+    padding: 12px;
     border: 1px solid rgba(255,255,255,0.05);
-    transition: all 0.4s ease;
 }
-.song-card:hover { border-color: rgba(29, 185, 84, 0.3); transform: translateY(-5px); }
 
-input::placeholder { color: rgba(255,255,255,0.2); }
+.vault-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 1.5rem;
+    padding: 15px;
+}
+
+#progress-line { box-shadow: 0 0 10px #fff; }
+
+::-webkit-scrollbar { width: 0; }
