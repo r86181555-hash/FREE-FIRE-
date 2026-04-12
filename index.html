@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RHK MUSIC | Studio</title>
+    <title>RHK MUSIC | Premium</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -14,24 +14,26 @@
     <div id="auth-overlay" class="fixed inset-0 z-[200] bg-black flex items-center justify-center p-6">
         <div class="w-full max-w-sm text-center">
             <div class="mb-10">
-                <div class="w-20 h-20 bg-purple-600 rounded-[2rem] mx-auto flex items-center justify-center shadow-[0_0_30px_rgba(168,85,247,0.4)] rotate-12">
+                <div class="w-20 h-20 bg-purple-600 rounded-[2rem] mx-auto flex items-center justify-center shadow-lg rotate-12">
                     <i class="fa-solid fa-bolt text-3xl -rotate-12"></i>
                 </div>
-                <h1 class="text-3xl font-black mt-6 tracking-tighter italic">RHK <span class="text-purple-500">STUDIO</span></h1>
-                <p class="text-[9px] text-white/30 uppercase tracking-[0.4em] mt-2">Premium Audio Experience</p>
+                <h1 class="text-3xl font-black mt-6 italic">RHK <span class="text-purple-500">STUDIO</span></h1>
+                <p class="text-[9px] text-white/30 uppercase tracking-[0.4em] mt-2">Sign in to start listening</p>
             </div>
 
-            <div class="space-y-3">
-                <input type="email" id="email" placeholder="Email" class="auth-field">
+            <div class="space-y-3" id="auth-ui">
+                <input type="email" id="email" placeholder="Email Address" class="auth-field">
                 <input type="password" id="password" placeholder="Password" class="auth-field">
-                <button onclick="handleEmailLogin()" class="w-full py-4 bg-purple-600 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-lg">Sign In</button>
+                <button onclick="loginWithEmail()" class="w-full py-4 bg-purple-600 rounded-2xl font-black text-[10px] uppercase tracking-widest">Sign In</button>
                 
                 <div class="py-4 flex items-center gap-4 opacity-20"><div class="h-px flex-1 bg-white"></div><span class="text-[8px] font-bold">OR</span><div class="h-px flex-1 bg-white"></div></div>
 
-                <button onclick="handleGoogleLogin()" class="w-full py-4 bg-white text-black rounded-2xl font-black text-[10px] uppercase flex items-center justify-center gap-3">
-                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-4"> Google
+                <button onclick="loginWithGoogle()" class="w-full py-4 bg-white text-black rounded-2xl font-black text-[10px] uppercase flex items-center justify-center gap-3">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-4"> Continue with Google
                 </button>
-                <button onclick="handlePhoneLogin()" class="w-full py-4 bg-white/5 border border-white/10 rounded-2xl font-black text-[10px] uppercase">Phone Login</button>
+
+                <button onclick="loginWithPhone()" class="w-full py-4 bg-white/5 border border-white/10 rounded-2xl font-black text-[10px] uppercase">Phone Number</button>
+                <div id="recaptcha-container"></div>
             </div>
         </div>
     </div>
@@ -41,68 +43,53 @@
         <header class="p-8 pb-4 sticky top-0 bg-[#0a0a0f]/90 backdrop-blur-2xl z-40">
             <div class="flex justify-between items-center mb-6">
                 <div class="text-xl font-black italic tracking-tighter">RHK <span class="text-purple-500">MUSIC</span></div>
-                <div id="user-avatar" class="w-10 h-10 rounded-full border border-purple-500/30 overflow-hidden bg-purple-600/20 flex items-center justify-center">
-                    <i class="fa-solid fa-user text-xs opacity-50"></i>
-                </div>
+                <button onclick="logout()" class="text-[10px] font-bold opacity-40 uppercase bg-white/5 px-4 py-2 rounded-full">Logout</button>
             </div>
 
-            <div id="home-nav" class="flex gap-2 overflow-x-auto no-scrollbar">
-                <button onclick="changeCategory('all')" class="cat-tab active" id="tab-all">Discovery</button>
-                <button onclick="changeCategory('trending')" class="cat-tab" id="tab-trending">Trending</button>
-                <button onclick="changeCategory('recent')" class="cat-tab" id="tab-recent">Recent</button>
+            <div id="home-tabs" class="flex gap-2 overflow-x-auto no-scrollbar">
+                <button onclick="changeFilter('all')" class="cat-tab active" id="tab-all">All Tracks</button>
+                <button onclick="changeFilter('trending')" class="cat-tab" id="tab-trending">Trending</button>
+                <button onclick="changeFilter('recent')" class="cat-tab" id="tab-recent">Recent</button>
             </div>
         </header>
 
         <main class="px-6">
-            <div id="sec-home" class="view-sec">
-                <div id="music-grid" class="grid grid-cols-2 gap-4 pt-4"></div>
-            </div>
-
-            <div id="sec-search" class="view-sec hidden">
-                <div class="relative mb-6">
-                    <i class="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 opacity-30 text-xs"></i>
-                    <input type="text" id="search-bar" onkeyup="runSearch()" placeholder="Search 100+ tracks..." class="w-full bg-white/5 border border-white/5 rounded-2xl py-5 pl-12 pr-6 text-xs font-bold outline-none focus:border-purple-500/50">
-                </div>
+            <div id="view-home" class="app-view"><div id="main-grid" class="grid grid-cols-2 gap-4"></div></div>
+            <div id="view-search" class="app-view hidden">
+                <input type="text" id="search-input" onkeyup="searchTracks()" placeholder="Search music..." class="auth-field mb-6">
                 <div id="search-grid" class="grid grid-cols-2 gap-4"></div>
             </div>
-
-            <div id="sec-fav" class="view-sec hidden">
-                <h2 class="text-[10px] font-black uppercase tracking-[0.3em] opacity-30 mb-6">Saved Tracks</h2>
-                <div id="fav-grid" class="grid grid-cols-2 gap-4"></div>
-            </div>
-
-            <div id="sec-settings" class="view-sec hidden">
-                <div class="space-y-4">
-                    <div class="p-6 bg-white/5 rounded-[2rem] border border-white/5">
-                        <p class="text-[9px] font-black uppercase opacity-30 mb-2">Account</p>
-                        <p id="display-email" class="font-bold text-sm">Guest User</p>
-                    </div>
-                    <button onclick="firebase.auth().signOut()" class="w-full p-6 bg-red-500/10 border border-red-500/20 rounded-[2.5rem] text-red-500 font-black text-xs uppercase tracking-widest">Logout Session</button>
+            <div id="view-favs" class="app-view hidden"><div id="fav-grid" class="grid grid-cols-2 gap-4"></div></div>
+            <div id="view-settings" class="app-view hidden">
+                <div class="p-8 bg-white/5 rounded-[2.5rem] text-center border border-white/5">
+                    <p class="text-[10px] uppercase opacity-40 mb-2">Connected Account</p>
+                    <p id="user-info" class="font-bold mb-4">User Email</p>
+                    <div class="h-px bg-white/10 w-full mb-4"></div>
+                    <p class="text-[10px] uppercase opacity-40">Storage Version</p>
+                    <p class="font-bold">RHK Cloud v2.0</p>
                 </div>
             </div>
         </main>
 
         <div id="player-bar" class="fixed bottom-28 left-1/2 -translate-x-1/2 w-[92%] glass-ui p-4 rounded-[2.5rem] z-50">
-            <input type="range" id="seek-slider" value="0" class="absolute top-0 left-8 right-8 -translate-y-1/2 h-1 accent-purple-500 bg-white/10 appearance-none cursor-pointer rounded-full">
+            <input type="range" id="seek-bar" value="0" class="absolute top-0 left-8 right-8 -translate-y-1/2 h-1 accent-purple-500 bg-white/10 appearance-none cursor-pointer">
             <div class="flex items-center gap-4">
                 <img id="p-img" src="1.jpg" class="w-14 h-14 rounded-2xl object-cover">
                 <div class="flex-1 overflow-hidden">
                     <p id="p-title" class="text-[11px] font-black truncate">Not Playing</p>
-                    <p id="p-time" class="text-[9px] opacity-40 font-bold uppercase">0:00 / 0:00</p>
+                    <p id="p-time" class="text-[9px] opacity-40 font-bold">0:00 / 0:00</p>
                 </div>
-                <div class="flex items-center gap-2">
-                    <button onclick="prevTrack()"><i class="fa-solid fa-backward-step opacity-40"></i></button>
-                    <button id="play-trigger" class="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center shadow-lg"><i class="fa-solid fa-play text-xs ml-1"></i></button>
-                    <button onclick="nextTrack()"><i class="fa-solid fa-forward-step opacity-40"></i></button>
-                </div>
+                <button id="master-play" class="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center">
+                    <i class="fa-solid fa-play text-xs ml-1"></i>
+                </button>
             </div>
         </div>
 
-        <nav class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[85%] h-20 bg-white/[0.02] backdrop-blur-3xl border border-white/5 rounded-[3rem] flex justify-around items-center z-50 shadow-2xl">
-            <div onclick="openTab('home')" class="nav-icon active" id="ni-home"><i class="fa-solid fa-house"></i></div>
-            <div onclick="openTab('search')" class="nav-icon" id="ni-search"><i class="fa-solid fa-magnifying-glass"></i></div>
-            <div onclick="openTab('fav')" class="nav-icon" id="ni-fav"><i class="fa-solid fa-heart"></i></div>
-            <div onclick="openTab('settings')" class="nav-icon" id="ni-settings"><i class="fa-solid fa-gear"></i></div>
+        <nav class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[85%] h-20 bg-white/[0.02] backdrop-blur-3xl border border-white/5 rounded-[3rem] flex justify-around items-center z-50">
+            <div onclick="showTab('home')" class="nav-btn active" id="nb-home"><i class="fa-solid fa-house"></i></div>
+            <div onclick="showTab('search')" class="nav-btn" id="nb-search"><i class="fa-solid fa-magnifying-glass"></i></div>
+            <div onclick="showTab('favs')" class="nav-btn" id="nb-favs"><i class="fa-solid fa-heart"></i></div>
+            <div onclick="showTab('settings')" class="nav-btn" id="nb-settings"><i class="fa-solid fa-gear"></i></div>
         </nav>
     </div>
 
