@@ -3,65 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RHK | SINGULARITY</title>
+    <title>RHK MUSIC | Premium</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Major+Mono+Display&family=Outfit:wght@100;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-[#000] text-white font-['Outfit'] overflow-hidden">
+<body class="bg-[#050505] text-white font-['Montserrat'] overflow-x-hidden">
 
-    <div id="core-bg"></div>
-    <canvas id="particle-canvas"></canvas>
-
-    <audio id="main-audio"></audio>
-
-    <div class="relative z-10 h-screen flex flex-col items-center justify-center">
-        
-        <div class="fixed top-12 left-12 mix-blend-difference">
-            <h1 class="font-['Major_Mono_Display'] text-2xl tracking-tighter">rhk_systm</h1>
-            <p id="user-display" class="text-[8px] tracking-[0.8em] font-black uppercase mt-2 opacity-50">NODE_CONNECTED</p>
-        </div>
-
-        <div id="helix-container" class="absolute inset-0 flex items-center justify-center perspective-2000">
+    <div id="auth-modal" class="fixed inset-0 z-[200] bg-black flex items-center justify-center p-6">
+        <div class="w-full max-w-sm text-center">
+            <div class="mb-8">
+                <div class="w-20 h-20 bg-purple-600 rounded-3xl mx-auto flex items-center justify-center shadow-2xl rotate-12">
+                    <i class="fa-solid fa-bolt-lightning text-3xl -rotate-12"></i>
+                </div>
+                <h1 class="text-2xl font-black mt-6 tracking-tighter italic">RHK <span class="text-purple-500">MUSIC</span></h1>
+                <p class="text-[10px] text-white/40 uppercase tracking-[0.3em] mt-2">Login to your studio</p>
             </div>
 
-        <div id="center-well" class="relative group cursor-pointer transition-all duration-1000 scale-75 opacity-20 hover:opacity-100">
-            <div class="absolute inset-0 bg-[#1DB954] blur-[120px] rounded-full opacity-20 group-hover:opacity-40 transition-all animate-pulse"></div>
-            
-            <div class="relative z-20 w-80 h-80 rounded-full border border-white/10 p-2 flex items-center justify-center overflow-hidden bg-black/40 backdrop-blur-3xl">
-                <img id="player-thumb" src="" class="absolute inset-0 w-full h-full object-cover opacity-30 transition-transform duration-[3s] group-hover:scale-125">
+            <div id="login-form" class="space-y-3">
+                <input type="email" id="email" placeholder="Email Address" class="auth-input">
+                <input type="password" id="password" placeholder="Password" class="auth-input">
+                <button onclick="loginEmail()" class="w-full py-4 bg-purple-600 rounded-2xl font-black text-xs uppercase tracking-widest">Sign In</button>
                 
-                <div class="text-center z-30 px-6">
-                    <h2 id="player-title" class="text-3xl font-900 tracking-tighter leading-none mb-2">VOID</h2>
-                    <p id="player-artist" class="text-[9px] font-black tracking-[0.4em] text-[#1DB954] uppercase">In_Standby</p>
-                    
-                    <div class="mt-8 flex items-center justify-center gap-6">
-                        <button id="masterPlay" class="w-16 h-16 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-black transition-all">
-                            <i class="fa-solid fa-play ml-1"></i>
-                        </button>
-                    </div>
+                <div class="flex items-center gap-4 my-6 opacity-20">
+                    <div class="h-[1px] flex-1 bg-white"></div>
+                    <span class="text-[10px]">OR</span>
+                    <div class="h-[1px] flex-1 bg-white"></div>
                 </div>
 
-                <svg class="absolute inset-0 w-full h-full -rotate-90">
-                    <circle cx="160" cy="160" r="158" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
-                    <circle id="progress-circle" cx="160" cy="160" r="158" fill="none" stroke="#1DB954" stroke-width="2" stroke-dasharray="1000" stroke-dashoffset="1000"/>
-                </svg>
+                <button onclick="loginGoogle()" class="w-full py-4 bg-white text-black rounded-2xl font-black text-xs uppercase flex items-center justify-center gap-3">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_Logo.svg" class="w-4"> Google Login
+                </button>
+                
+                <button onclick="showPhoneLogin()" class="text-[10px] font-bold text-purple-400 uppercase tracking-widest pt-4">Login with Phone</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-content" class="max-w-md mx-auto min-h-screen relative pb-44 bg-gradient-to-b from-[#0a0a0f] to-black hidden">
+        
+        <header class="p-8 pb-4 sticky top-0 bg-[#0a0a0f]/80 backdrop-blur-xl z-40">
+            <div class="flex justify-between items-center mb-6">
+                <div class="text-xl font-black tracking-tighter italic">RHK <span class="text-purple-500">MUSIC</span></div>
+                <button onclick="logout()" class="text-[10px] bg-white/5 px-4 py-2 rounded-full font-bold opacity-50">LOGOUT</button>
+            </div>
+
+            <div id="home-filters" class="flex gap-2 overflow-x-auto no-scrollbar">
+                <button onclick="filterGrid('all')" class="cat-chip active" id="f-all">All</button>
+                <button onclick="filterGrid('trending')" class="cat-chip" id="f-trending">Trending</button>
+                <button onclick="filterGrid('recent')" class="cat-chip" id="f-recent">Recent</button>
+            </div>
+        </header>
+
+        <main class="px-6">
+            <section id="view-home" class="app-view">
+                <h3 class="view-label">Cloud Studio</h3>
+                <div id="track-grid" class="grid grid-cols-2 gap-4"></div>
+            </section>
+
+            <section id="view-search" class="app-view hidden">
+                <h3 class="view-label">Find Music</h3>
+                <input type="text" id="searchInput" onkeyup="searchSongs()" placeholder="Search track name..." class="auth-input mb-6">
+                <div id="search-results" class="grid grid-cols-2 gap-4"></div>
+            </section>
+
+            <section id="view-fav" class="app-view hidden">
+                <h3 class="view-label">Your Favorites</h3>
+                <div id="fav-grid" class="grid grid-cols-2 gap-4"></div>
+            </section>
+
+            <section id="view-settings" class="app-view hidden">
+                <h3 class="view-label">Account Settings</h3>
+                <div class="space-y-4">
+                    <div class="p-6 bg-white/5 rounded-[2rem] border border-white/5">
+                        <p class="text-[10px] opacity-40 uppercase mb-1">Signed in as</p>
+                        <p id="user-email-display" class="font-bold">user@rhkmusic.com</p>
+                    </div>
+                    <div class="p-6 bg-white/5 rounded-[2rem] border border-white/5 flex justify-between items-center">
+                        <p class="font-bold">Dark Mode</p>
+                        <div class="w-10 h-5 bg-purple-600 rounded-full"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <audio id="main-audio"></audio>
+        <div id="mini-player" class="fixed bottom-28 left-1/2 -translate-x-1/2 w-[92%] glass-player p-4 rounded-[2.5rem] z-50">
+            <div class="absolute top-0 left-8 right-8 -translate-y-1/2">
+                <input type="range" id="progress-bar" value="0" class="w-full h-1 bg-white/10 appearance-none cursor-pointer accent-purple-500">
+            </div>
+            <div class="flex items-center gap-4">
+                <img id="player-thumb" src="img1.jpg" class="w-14 h-14 rounded-2xl object-cover">
+                <div class="flex-1 overflow-hidden">
+                    <p id="player-title" class="text-[11px] font-bold truncate">Not Playing</p>
+                    <p id="player-meta" class="text-[9px] opacity-40 uppercase tracking-tighter">00:00 / 00:00</p>
+                </div>
+                <button id="masterPlay" class="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center">
+                    <i class="fa-solid fa-play text-xs ml-1"></i>
+                </button>
             </div>
         </div>
 
-        <div class="fixed bottom-12 flex gap-12 font-['Major_Mono_Display'] text-[10px] tracking-widest opacity-20 hover:opacity-100 transition-opacity">
-            <span class="cursor-pointer" onclick="prevTrack()">prev_</span>
-            <span class="cursor-pointer" onclick="nextTrack()">next_</span>
-        </div>
+        <nav class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[85%] h-20 bg-white/[0.03] backdrop-blur-3xl border border-white/10 rounded-[3rem] flex justify-around items-center z-50">
+            <div onclick="showView('home')" class="nav-btn active" id="nb-home"><i class="fa-solid fa-house"></i></div>
+            <div onclick="showView('search')" class="nav-btn" id="nb-search"><i class="fa-solid fa-magnifying-glass"></i></div>
+            <div onclick="showView('fav')" class="nav-btn" id="nb-fav"><i class="fa-solid fa-heart"></i></div>
+            <div onclick="showView('settings')" class="nav-btn" id="nb-settings"><i class="fa-solid fa-gear"></i></div>
+        </nav>
     </div>
 
-    <div id="name-modal" class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center hidden">
-        <div class="text-[10px] tracking-[2em] font-black opacity-10 mb-20">SINGULARITY_V1</div>
-        <input type="text" id="userNameInput" placeholder="ENTER_USER_KEY" class="bg-transparent border-none text-center text-5xl font-900 tracking-tighter outline-none focus:placeholder-transparent uppercase italic">
-        <div class="h-px w-24 bg-[#1DB954] mt-12 animate-width"></div>
-    </div>
-
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
