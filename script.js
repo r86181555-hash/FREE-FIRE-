@@ -1,80 +1,112 @@
-// CONFIG
-const metadata = [
-    { title: "Loneliness", artist: "Putri Ariani" },
-    { title: "Eclipse", artist: "RHK Studio" },
-    { title: "Neon Nights", artist: "Synthwave" }
-];
-
-const allSongs = Array.from({ length: 50 }, (_, i) => ({
-    id: i + 1,
-    title: metadata[i]?.title || `Track ID ${i + 1}`,
-    artist: metadata[i]?.artist || "Digital Studio",
-    file: `${i + 1}.mp3`,
-    thumb: `${i + 1}.jpg`
-}));
-
+const totalTracks = 1000;
+let vault = JSON.parse(localStorage.getItem('rhk_vault')) || [];
+let currentIdx = -1;
 const audio = document.getElementById('main-audio');
 const playBtn = document.getElementById('masterPlay');
-let library = JSON.parse(localStorage.getItem('rhk_library')) || [];
-let currentTrackIdx = -1;
 
-function renderHome(list = allSongs) {
+// 1. Render Home Grid
+function renderHome() {
     const grid = document.getElementById('home-grid');
-    grid.innerHTML = list.map((s, idx) => `
-        <div class="song-card" onclick="playSong(${s.id - 1})">
-            <div class="relative aspect-square mb-4 overflow-hidden rounded-[1.8rem]">
-                <img src="${s.thumb}" class="w-full h-full object-cover transition-transform duration-700 hover:scale-110" onerror="this.src='https://via.placeholder.com/300/000/fff?text=RHK'">
-                <div class="absolute bottom-3 right-3 w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20">
-                    <i class="fa-solid fa-play text-[10px]"></i>
+    grid.innerHTML = ''; 
+    for(let i = 1; i <= totalTracks; i++) {
+        const isInVault = vault.includes(i);
+        const card = document.createElement('div');
+        card.className = 'song-card';
+        card.innerHTML = `
+            <div class="relative aspect-square mb-4 overflow-hidden rounded-2xl shadow-lg" onclick="playSong(${i})">
+                <img src="${i}.jpg" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/300/111?text=${i}'">
+            </div>
+            <div class="flex items-center justify-between px-1">
+                <div class="w-2/3" onclick="playSong(${i})">
+                    <h4 class="text-[11px] font-bold truncate">Vibe ${i}</h4>
+                    <p class="text-[8px] text-white/30 font-bold uppercase tracking-widest">Studio File</p>
+                </div>
+                <button onclick="toggleVault(${i})" class="w-8 h-8 rounded-full flex items-center justify-center ${isInVault ? 'text-violet-500 bg-violet-500/10' : 'text-white/20 bg-white/5'}">
+                    <i class="fa-solid fa-heart"></i>
+                </button>
+            </div>
+        `;
+        grid.appendChild(card);
+    }
+}
+
+// 2. Playback Logic
+function playSong(id) {
+    currentIdx = id;
+    audio.src = `${id}.mp3`;
+    audio.play().catch(e => console.log("File not found, but trying to play..."));
+    
+    // UI Updates
+    document.getElementById('big-title').innerText = `Vibe ${id}`;
+    document.getElementById('big-thumb').src = `${id}.jpg`;
+    document.getElementById('player-bg-blur').style.background = `url(${id}.jpg) center/cover`;
+    document.getElementById('full-player').classList.remove('translate-y-full');
+    
+    updateSaveBtnUI(id);
+    playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+}
+
+// 3. AUTO-PLAY (One after another)
+audio.onended = () => {
+    nextTrack();
+};
+
+function nextTrack() {
+    currentIdx = (currentIdx >= totalTracks) ? 1 : currentIdx + 1;
+    playSong(currentIdx);
+}
+
+function prevTrack() {
+    currentIdx = (currentIdx <= 1) ? totalTracks : currentIdx - 1;
+    playSong(currentIdx);
+}
+
+// 4. Save/Vault System
+function toggleVault(id) {
+    const index = vault.indexOf(id);
+    if (index > -1) {
+        vault.splice(index, 1); // Delete
+    } else {
+        vault.push(id); // Save
+    }
+    localStorage.setItem('rhk_vault', JSON.stringify(vault));
+    renderHome();
+    renderVault();
+    updateSaveBtnUI(id);
+}
+
+function updateSaveBtnUI(id) {
+    const btn = document.getElementById('big-save-btn');
+    const isSaved = vault.includes(id);
+    btn.className = isSaved ? 'text-violet-500 text-2xl p-2' : 'text-white/20 text-2xl p-2';
+    btn.onclick = () => toggleVault(id);
+}
+
+function renderVault() {
+    const list = document.getElementById('library-list');
+    if (vault.length === 0) {
+        list.innerHTML = `<div class="py-20 text-center text-white/10 text-xs uppercase tracking-widest">No Saved Vibes</div>`;
+        return;
+    }
+    list.innerHTML = vault.map(id => `
+        <div class="vault-card flex items-center justify-between">
+            <div class="flex items-center gap-4 flex-1" onclick="playSong(${id})">
+                <img src="${id}.jpg" class="w-14 h-14 rounded-xl object-cover shadow-md">
+                <div>
+                    <h5 class="text-sm font-bold">Vibe ${id}</h5>
+                    <p class="text-[9px] text-white/30 uppercase tracking-tighter font-bold">Stored in Vault</p>
                 </div>
             </div>
-            <div class="px-2 pb-2">
-                <h4 class="text-xs font-bold truncate">${s.title}</h4>
-                <p class="text-[8px] text-white/30 font-bold uppercase tracking-tighter mt-1">${s.artist}</p>
-            </div>
+            <button onclick="toggleVault(${id})" class="w-10 h-10 text-red-500/40 hover:text-red-500 transition-colors">
+                <i class="fa-solid fa-trash-can"></i>
+            </button>
         </div>
     `).join('');
 }
 
-function playSong(idx) {
-    currentTrackIdx = idx;
-    const s = allSongs[idx];
-    audio.src = s.file;
-    audio.play();
-    
-    document.getElementById('player-title').innerText = s.title;
-    document.getElementById('player-artist').innerText = s.artist;
-    document.getElementById('player-thumb').src = s.thumb;
-    document.getElementById('mini-player').style.transform = "translateY(0)";
-    document.getElementById('visualizer-bar').style.opacity = "1";
-    playBtn.innerHTML = '<i class="fa-solid fa-pause text-black text-xl"></i>';
-}
-
-playBtn.onclick = () => {
-    if (audio.paused) { audio.play(); playBtn.innerHTML = '<i class="fa-solid fa-pause text-black text-xl"></i>'; }
-    else { audio.pause(); playBtn.innerHTML = '<i class="fa-solid fa-play text-black text-xl"></i>'; }
-};
-
-audio.ontimeupdate = () => {
-    const val = (audio.currentTime / audio.duration) * 100 || 0;
-    document.getElementById('progress-line').style.width = val + '%';
-    document.getElementById('current-time').innerText = fmt(audio.currentTime);
-    document.getElementById('duration-time').innerText = fmt(audio.duration || 0);
-};
-
-// Seek logic
-document.getElementById('progress-container').onclick = (e) => {
-    const rect = e.target.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    audio.currentTime = (x / rect.width) * audio.duration;
-};
-
-const fmt = s => `${Math.floor(s/60)}:${Math.floor(s%60).toString().padStart(2,'0')}`;
-
-function searchMusic() {
-    const q = document.getElementById('searchInput').value.toLowerCase();
-    const filtered = allSongs.filter(s => s.title.toLowerCase().includes(q) || s.artist.toLowerCase().includes(q));
-    renderHome(filtered);
+// 5. General UI Utilities
+function closePlayer() {
+    document.getElementById('full-player').classList.add('translate-y-full');
 }
 
 function showView(v) {
@@ -84,14 +116,31 @@ function showView(v) {
     document.getElementById('btn-lib').classList.toggle('active', v === 'library');
 }
 
-function saveUser() {
-    const n = document.getElementById('userNameInput').value;
-    if(n) { localStorage.setItem('rhk_user_name', n); location.reload(); }
-}
+playBtn.onclick = () => {
+    if (audio.paused) {
+        audio.play();
+        playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+    } else {
+        audio.pause();
+        playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+    }
+};
+
+audio.ontimeupdate = () => {
+    const p = (audio.currentTime / audio.duration) * 100 || 0;
+    document.getElementById('progress-line').style.width = p + '%';
+    document.getElementById('current-time').innerText = fmt(audio.currentTime);
+    document.getElementById('duration-time').innerText = fmt(audio.duration || 0);
+};
+
+document.getElementById('progress-container').onclick = (e) => {
+    const r = e.target.getBoundingClientRect();
+    audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration;
+};
+
+const fmt = s => Math.floor(s/60) + ":" + Math.floor(s%60).toString().padStart(2,'0');
 
 window.onload = () => {
-    const n = localStorage.getItem('rhk_user_name');
-    if (!n) document.getElementById('name-modal').classList.remove('hidden');
-    else document.getElementById('user-display').innerText = `Certified: ${n}`;
     renderHome();
+    renderVault();
 };
