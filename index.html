@@ -3,100 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RHK MUSIC | Premium</title>
+    <title>RHK STUDIO | AERO</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-[#050505] text-white font-['Montserrat'] overflow-x-hidden">
+<body class="bg-[#020202] text-white font-['Outfit'] overflow-x-hidden">
 
-    <div id="auth-overlay" class="fixed inset-0 z-[200] bg-black flex items-center justify-center p-6">
-        <div class="w-full max-w-sm text-center">
-            <div class="mb-10">
-                <div class="w-20 h-20 bg-purple-600 rounded-[2rem] mx-auto flex items-center justify-center shadow-lg rotate-12">
-                    <i class="fa-solid fa-bolt text-3xl -rotate-12"></i>
-                </div>
-                <h1 class="text-3xl font-black mt-6 italic">RHK <span class="text-purple-500">STUDIO</span></h1>
-                <p class="text-[9px] text-white/30 uppercase tracking-[0.4em] mt-2">Sign in to start listening</p>
-            </div>
-
-            <div class="space-y-3" id="auth-ui">
-                <input type="email" id="email" placeholder="Email Address" class="auth-field">
-                <input type="password" id="password" placeholder="Password" class="auth-field">
-                <button onclick="loginWithEmail()" class="w-full py-4 bg-purple-600 rounded-2xl font-black text-[10px] uppercase tracking-widest">Sign In</button>
-                
-                <div class="py-4 flex items-center gap-4 opacity-20"><div class="h-px flex-1 bg-white"></div><span class="text-[8px] font-bold">OR</span><div class="h-px flex-1 bg-white"></div></div>
-
-                <button onclick="loginWithGoogle()" class="w-full py-4 bg-white text-black rounded-2xl font-black text-[10px] uppercase flex items-center justify-center gap-3">
-                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-4"> Continue with Google
-                </button>
-
-                <button onclick="loginWithPhone()" class="w-full py-4 bg-white/5 border border-white/10 rounded-2xl font-black text-[10px] uppercase">Phone Number</button>
-                <div id="recaptcha-container"></div>
-            </div>
-        </div>
+    <div class="fixed inset-0 z-0">
+        <div class="absolute top-[-10%] left-[-20%] w-[70%] h-[70%] bg-purple-900/20 blur-[120px] rounded-full animate-pulse"></div>
+        <div class="absolute bottom-[-10%] right-[-20%] w-[70%] h-[70%] bg-emerald-900/20 blur-[120px] rounded-full animate-bounce-slow"></div>
     </div>
 
-    <div id="main-app" class="max-w-md mx-auto min-h-screen relative pb-44 bg-gradient-to-b from-[#0a0a0f] to-black hidden">
-        
-        <header class="p-8 pb-4 sticky top-0 bg-[#0a0a0f]/90 backdrop-blur-2xl z-40">
-            <div class="flex justify-between items-center mb-6">
-                <div class="text-xl font-black italic tracking-tighter">RHK <span class="text-purple-500">MUSIC</span></div>
-                <button onclick="logout()" class="text-[10px] font-bold opacity-40 uppercase bg-white/5 px-4 py-2 rounded-full">Logout</button>
+    <audio id="main-audio"></audio>
+
+    <div class="max-w-md mx-auto min-h-screen relative z-10 pb-44">
+        <header class="p-8 pb-4 sticky top-0 bg-[#020202]/50 backdrop-blur-2xl z-50">
+            <div class="flex justify-between items-end mb-6">
+                <div>
+                    <h1 class="text-4xl font-900 tracking-tighter leading-none italic">RHK<span class="text-[#1DB954]">.</span></h1>
+                    <p id="user-display" class="text-[10px] uppercase tracking-[0.4em] font-semibold text-white/30 mt-2">Connecting Studio...</p>
+                </div>
+                <div class="relative group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-[#1DB954] to-emerald-500 rounded-full blur opacity-25 group-hover:opacity-75 transition duration-1000"></div>
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=RHK" class="relative w-12 h-12 rounded-full bg-black p-1 border border-white/10">
+                </div>
             </div>
 
-            <div id="home-tabs" class="flex gap-2 overflow-x-auto no-scrollbar">
-                <button onclick="changeFilter('all')" class="cat-tab active" id="tab-all">All Tracks</button>
-                <button onclick="changeFilter('trending')" class="cat-tab" id="tab-trending">Trending</button>
-                <button onclick="changeFilter('recent')" class="cat-tab" id="tab-recent">Recent</button>
+            <div class="relative group">
+                <input type="text" id="searchInput" oninput="searchMusic()" placeholder="Search the vibe..." 
+                    class="w-full bg-white/[0.03] border border-white/5 rounded-2xl py-5 px-6 pl-14 outline-none focus:bg-white/[0.07] focus:border-[#1DB954]/50 transition-all text-sm">
+                <i class="fa-solid fa-wand-magic-sparkles absolute left-6 top-1/2 -translate-y-1/2 text-[#1DB954] text-xs"></i>
             </div>
         </header>
 
-        <main class="px-6">
-            <div id="view-home" class="app-view"><div id="main-grid" class="grid grid-cols-2 gap-4"></div></div>
-            <div id="view-search" class="app-view hidden">
-                <input type="text" id="search-input" onkeyup="searchTracks()" placeholder="Search music..." class="auth-field mb-6">
-                <div id="search-grid" class="grid grid-cols-2 gap-4"></div>
-            </div>
-            <div id="view-favs" class="app-view hidden"><div id="fav-grid" class="grid grid-cols-2 gap-4"></div></div>
-            <div id="view-settings" class="app-view hidden">
-                <div class="p-8 bg-white/5 rounded-[2.5rem] text-center border border-white/5">
-                    <p class="text-[10px] uppercase opacity-40 mb-2">Connected Account</p>
-                    <p id="user-info" class="font-bold mb-4">User Email</p>
-                    <div class="h-px bg-white/10 w-full mb-4"></div>
-                    <p class="text-[10px] uppercase opacity-40">Storage Version</p>
-                    <p class="font-bold">RHK Cloud v2.0</p>
+        <main class="px-6 mt-4">
+            <div id="home-view">
+                <div class="flex items-center gap-2 mb-6">
+                    <span class="w-2 h-2 rounded-full bg-[#1DB954] animate-ping"></span>
+                    <h2 class="text-[11px] font-bold uppercase tracking-widest text-white/40">Live Studio Feed</h2>
                 </div>
+                <div id="home-grid" class="grid grid-cols-2 gap-5"></div>
+            </div>
+
+            <div id="library-view" class="hidden">
+                <h2 class="text-3xl font-900 mb-8 tracking-tighter">Your <span class="text-gradient">Vault</span></h2>
+                <div id="library-list" class="space-y-4"></div>
             </div>
         </main>
 
-        <div id="player-bar" class="fixed bottom-28 left-1/2 -translate-x-1/2 w-[92%] glass-ui p-4 rounded-[2.5rem] z-50">
-            <input type="range" id="seek-bar" value="0" class="absolute top-0 left-8 right-8 -translate-y-1/2 h-1 accent-purple-500 bg-white/10 appearance-none cursor-pointer">
-            <div class="flex items-center gap-4">
-                <img id="p-img" src="1.jpg" class="w-14 h-14 rounded-2xl object-cover">
-                <div class="flex-1 overflow-hidden">
-                    <p id="p-title" class="text-[11px] font-black truncate">Not Playing</p>
-                    <p id="p-time" class="text-[9px] opacity-40 font-bold">0:00 / 0:00</p>
+        <div id="mini-player" class="fixed bottom-24 left-4 right-4 z-50 translate-y-64 transition-all duration-700">
+            <div class="bg-black/60 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-5 shadow-[0_40px_80px_rgba(0,0,0,0.7)]">
+                
+                <div class="flex items-center gap-5 mb-6">
+                    <div class="relative w-16 h-16 shrink-0">
+                        <img id="player-thumb" src="" class="w-full h-full rounded-2xl object-cover shadow-2xl relative z-10">
+                        <div id="visualizer-bar" class="absolute -bottom-1 left-2 right-2 h-1 bg-[#1DB954] blur-sm opacity-0 transition-opacity"></div>
+                    </div>
+                    <div class="flex-1 overflow-hidden">
+                        <h4 id="player-title" class="text-lg font-bold truncate leading-tight tracking-tight">Select Vibe</h4>
+                        <p id="player-artist" class="text-[9px] font-bold uppercase tracking-widest text-[#1DB954] opacity-80">RHK Music Group</p>
+                    </div>
+                    <button id="masterPlay" class="w-14 h-14 bg-white rounded-full flex items-center justify-center hover:scale-105 active:scale-90 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)]">
+                        <i class="fa-solid fa-play text-black text-xl"></i>
+                    </button>
                 </div>
-                <button id="master-play" class="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center">
-                    <i class="fa-solid fa-play text-xs ml-1"></i>
-                </button>
+
+                <div class="px-1">
+                    <div class="relative h-1.5 w-full bg-white/5 rounded-full mb-3 cursor-pointer" id="progress-container">
+                        <div id="progress-line" class="absolute top-0 left-0 h-full bg-gradient-to-r from-[#1DB954] to-emerald-400 rounded-full shadow-[0_0_15px_#1DB954]"></div>
+                    </div>
+                    <div class="flex justify-between items-center text-[10px] font-bold text-white/20">
+                        <span id="current-time">0:00</span>
+                        <div class="flex gap-8 text-sm text-white">
+                            <i class="fa-solid fa-backward-step opacity-40 hover:opacity-100" onclick="prevTrack()"></i>
+                            <i class="fa-solid fa-forward-step opacity-40 hover:opacity-100" onclick="nextTrack()"></i>
+                        </div>
+                        <span id="duration-time">0:00</span>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <nav class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[85%] h-20 bg-white/[0.02] backdrop-blur-3xl border border-white/5 rounded-[3rem] flex justify-around items-center z-50">
-            <div onclick="showTab('home')" class="nav-btn active" id="nb-home"><i class="fa-solid fa-house"></i></div>
-            <div onclick="showTab('search')" class="nav-btn" id="nb-search"><i class="fa-solid fa-magnifying-glass"></i></div>
-            <div onclick="showTab('favs')" class="nav-btn" id="nb-favs"><i class="fa-solid fa-heart"></i></div>
-            <div onclick="showTab('settings')" class="nav-btn" id="nb-settings"><i class="fa-solid fa-gear"></i></div>
+        <nav class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[60%] h-20 bg-white/[0.03] backdrop-blur-3xl border border-white/5 rounded-[3rem] flex justify-around items-center z-50">
+            <button onclick="showView('home')" id="btn-home" class="nav-btn active">
+                <i class="fa-solid fa-house-chimney-window"></i>
+            </button>
+            <button onclick="showView('library')" id="btn-lib" class="nav-btn">
+                <i class="fa-solid fa-square-rss"></i>
+            </button>
         </nav>
     </div>
 
-    <audio id="audio-engine"></audio>
+    <div id="name-modal" class="fixed inset-0 z-[200] bg-black flex items-center justify-center p-12 hidden">
+        <div class="w-full">
+            <p class="text-[#1DB954] font-bold tracking-[0.5em] text-[10px] uppercase mb-4">Identity Verification</p>
+            <h1 class="text-5xl font-900 tracking-tighter mb-10">Who's <br>Listening?</h1>
+            <input type="text" id="userNameInput" placeholder="Artist Signature" 
+                class="w-full bg-transparent border-b-2 border-white/10 py-4 text-2xl outline-none focus:border-[#1DB954] transition-all mb-12">
+            <button onclick="saveUser()" class="group flex items-center gap-4 text-xl font-bold">
+                <span>Access Studio</span>
+                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-black group-hover:translate-x-2 transition-transform">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </div>
+            </button>
+        </div>
+    </div>
 
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
