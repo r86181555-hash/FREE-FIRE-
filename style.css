@@ -1,39 +1,29 @@
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-.auth-input {
-    width: 100%;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    padding: 18px 24px;
-    border-radius: 1.5rem;
-    font-size: 13px;
-    outline: none;
-    transition: 0.3s;
+.auth-field {
+    width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+    padding: 20px 24px; border-radius: 1.5rem; font-size: 13px; outline: none; transition: 0.3s;
 }
+.auth-field:focus { border-color: #a855f7; background: rgba(168, 85, 247, 0.05); }
 
-.auth-input:focus { border-color: #a855f7; background: rgba(168, 85, 247, 0.05); }
-
-.cat-chip {
-    padding: 10px 24px; background: rgba(255, 255, 255, 0.03);
-    border-radius: 20px; font-size: 10px; font-weight: 800;
-    text-transform: uppercase; border: 1px solid rgba(255,255,255,0.05);
-    transition: 0.3s;
+.cat-tab {
+    padding: 10px 24px; background: rgba(255, 255, 255, 0.03); border-radius: 20px;
+    font-size: 10px; font-weight: 800; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.05);
 }
+.cat-tab.active { background: #a855f7; border-color: transparent; }
 
-.cat-chip.active { background: #a855f7; box-shadow: 0 8px 15px rgba(168, 85, 247, 0.3); }
+.glass-ui { background: rgba(15, 15, 22, 0.98); backdrop-filter: blur(40px); border: 1px solid rgba(255, 255, 255, 0.08); }
 
-.glass-player {
-    background: rgba(15, 15, 20, 0.98);
-    backdrop-filter: blur(40px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+.nav-icon { color: rgba(255,255,255,0.2); font-size: 20px; transition: 0.3s; cursor: pointer; }
+.nav-icon.active { color: #a855f7; transform: translateY(-5px); }
+
+.song-item { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); transition: 0.4s; position: relative; }
+.song-item:active { transform: scale(0.96); }
+
+.fav-heart { position: absolute; top: 12px; right: 12px; color: rgba(255,255,255,0.2); transition: 0.3s; }
+.is-loved { color: #ef4444; filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.4)); }
+
+#seek-slider::-webkit-slider-thumb {
+    appearance: none; width: 12px; height: 12px; background: #a855f7; border-radius: 50%; box-shadow: 0 0 10px #a855f7;
 }
-
-.nav-btn { color: rgba(255,255,255,0.25); font-size: 20px; cursor: pointer; transition: 0.3s; }
-.nav-btn.active { color: #a855f7; transform: translateY(-5px); }
-
-.view-label { font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.4em; color: rgba(255,255,255,0.2); margin: 24px 0; }
-
-.song-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; position: relative; }
-.fav-btn-float { position: absolute; top: 12px; right: 12px; z-index: 10; color: rgba(255,255,255,0.3); }
-.is-fav { color: #ef4444 !important; filter: drop-shadow(0 0 5px #ef4444); }
