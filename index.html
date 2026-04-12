@@ -3,111 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RHK STUDIO | AERO</title>
+    <title>RHK ELITE | STUDIO</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-[#020202] text-white font-['Outfit'] overflow-x-hidden">
-
-    <div class="fixed inset-0 z-0">
-        <div class="absolute top-[-10%] left-[-20%] w-[70%] h-[70%] bg-purple-900/20 blur-[120px] rounded-full animate-pulse"></div>
-        <div class="absolute bottom-[-10%] right-[-20%] w-[70%] h-[70%] bg-emerald-900/20 blur-[120px] rounded-full animate-bounce-slow"></div>
-    </div>
+<body class="bg-[#050505] text-white font-['Outfit'] overflow-hidden">
 
     <audio id="main-audio"></audio>
 
-    <div class="max-w-md mx-auto min-h-screen relative z-10 pb-44">
-        <header class="p-8 pb-4 sticky top-0 bg-[#020202]/50 backdrop-blur-2xl z-50">
-            <div class="flex justify-between items-end mb-6">
-                <div>
-                    <h1 class="text-4xl font-900 tracking-tighter leading-none italic">RHK<span class="text-[#1DB954]">.</span></h1>
-                    <p id="user-display" class="text-[10px] uppercase tracking-[0.4em] font-semibold text-white/30 mt-2">Connecting Studio...</p>
-                </div>
-                <div class="relative group">
-                    <div class="absolute -inset-1 bg-gradient-to-r from-[#1DB954] to-emerald-500 rounded-full blur opacity-25 group-hover:opacity-75 transition duration-1000"></div>
-                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=RHK" class="relative w-12 h-12 rounded-full bg-black p-1 border border-white/10">
-                </div>
+    <div class="h-screen w-full flex flex-col relative z-10">
+        <header class="p-6 flex justify-between items-center bg-[#050505]/80 backdrop-blur-md border-b border-white/5">
+            <div>
+                <h1 class="text-2xl font-900 tracking-tighter italic">RHK<span class="text-violet-500">.</span></h1>
+                <p id="user-display" class="text-[8px] uppercase tracking-[0.4em] text-white/40">Premium Access</p>
             </div>
-
-            <div class="relative group">
-                <input type="text" id="searchInput" oninput="searchMusic()" placeholder="Search the vibe..." 
-                    class="w-full bg-white/[0.03] border border-white/5 rounded-2xl py-5 px-6 pl-14 outline-none focus:bg-white/[0.07] focus:border-[#1DB954]/50 transition-all text-sm">
-                <i class="fa-solid fa-wand-magic-sparkles absolute left-6 top-1/2 -translate-y-1/2 text-[#1DB954] text-xs"></i>
+            <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
+                <i class="fa-solid fa-music text-violet-500 text-xs"></i>
             </div>
         </header>
 
-        <main class="px-6 mt-4">
+        <main class="flex-1 overflow-y-auto px-6 pb-40">
             <div id="home-view">
-                <div class="flex items-center gap-2 mb-6">
-                    <span class="w-2 h-2 rounded-full bg-[#1DB954] animate-ping"></span>
-                    <h2 class="text-[11px] font-bold uppercase tracking-widest text-white/40">Live Studio Feed</h2>
+                <div class="py-6">
+                    <h2 class="text-[10px] font-black uppercase tracking-[0.3em] text-violet-400 mb-4">Studio Collection</h2>
+                    <div id="home-grid" class="grid grid-cols-2 gap-5"></div>
                 </div>
-                <div id="home-grid" class="grid grid-cols-2 gap-5"></div>
             </div>
 
-            <div id="library-view" class="hidden">
-                <h2 class="text-3xl font-900 mb-8 tracking-tighter">Your <span class="text-gradient">Vault</span></h2>
+            <div id="library-view" class="hidden py-6">
+                <h2 class="text-3xl font-900 tracking-tighter mb-6">Your <span class="text-violet-500">Vault</span></h2>
                 <div id="library-list" class="space-y-4"></div>
             </div>
         </main>
 
-        <div id="mini-player" class="fixed bottom-24 left-4 right-4 z-50 translate-y-64 transition-all duration-700">
-            <div class="bg-black/60 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-5 shadow-[0_40px_80px_rgba(0,0,0,0.7)]">
-                
-                <div class="flex items-center gap-5 mb-6">
-                    <div class="relative w-16 h-16 shrink-0">
-                        <img id="player-thumb" src="" class="w-full h-full rounded-2xl object-cover shadow-2xl relative z-10">
-                        <div id="visualizer-bar" class="absolute -bottom-1 left-2 right-2 h-1 bg-[#1DB954] blur-sm opacity-0 transition-opacity"></div>
-                    </div>
-                    <div class="flex-1 overflow-hidden">
-                        <h4 id="player-title" class="text-lg font-bold truncate leading-tight tracking-tight">Select Vibe</h4>
-                        <p id="player-artist" class="text-[9px] font-bold uppercase tracking-widest text-[#1DB954] opacity-80">RHK Music Group</p>
-                    </div>
-                    <button id="masterPlay" class="w-14 h-14 bg-white rounded-full flex items-center justify-center hover:scale-105 active:scale-90 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)]">
-                        <i class="fa-solid fa-play text-black text-xl"></i>
-                    </button>
-                </div>
-
-                <div class="px-1">
-                    <div class="relative h-1.5 w-full bg-white/5 rounded-full mb-3 cursor-pointer" id="progress-container">
-                        <div id="progress-line" class="absolute top-0 left-0 h-full bg-gradient-to-r from-[#1DB954] to-emerald-400 rounded-full shadow-[0_0_15px_#1DB954]"></div>
-                    </div>
-                    <div class="flex justify-between items-center text-[10px] font-bold text-white/20">
-                        <span id="current-time">0:00</span>
-                        <div class="flex gap-8 text-sm text-white">
-                            <i class="fa-solid fa-backward-step opacity-40 hover:opacity-100" onclick="prevTrack()"></i>
-                            <i class="fa-solid fa-forward-step opacity-40 hover:opacity-100" onclick="nextTrack()"></i>
-                        </div>
-                        <span id="duration-time">0:00</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <nav class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[60%] h-20 bg-white/[0.03] backdrop-blur-3xl border border-white/5 rounded-[3rem] flex justify-around items-center z-50">
-            <button onclick="showView('home')" id="btn-home" class="nav-btn active">
-                <i class="fa-solid fa-house-chimney-window"></i>
-            </button>
-            <button onclick="showView('library')" id="btn-lib" class="nav-btn">
-                <i class="fa-solid fa-square-rss"></i>
-            </button>
+        <nav class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[70%] h-16 bg-[#111]/80 backdrop-blur-2xl border border-white/10 rounded-full flex justify-around items-center z-40 shadow-2xl">
+            <button onclick="showView('home')" id="btn-home" class="nav-btn active"><i class="fa-solid fa-grip-vertical"></i></button>
+            <button onclick="showView('library')" id="btn-lib" class="nav-btn"><i class="fa-solid fa-heart"></i></button>
         </nav>
     </div>
 
-    <div id="name-modal" class="fixed inset-0 z-[200] bg-black flex items-center justify-center p-12 hidden">
-        <div class="w-full">
-            <p class="text-[#1DB954] font-bold tracking-[0.5em] text-[10px] uppercase mb-4">Identity Verification</p>
-            <h1 class="text-5xl font-900 tracking-tighter mb-10">Who's <br>Listening?</h1>
-            <input type="text" id="userNameInput" placeholder="Artist Signature" 
-                class="w-full bg-transparent border-b-2 border-white/10 py-4 text-2xl outline-none focus:border-[#1DB954] transition-all mb-12">
-            <button onclick="saveUser()" class="group flex items-center gap-4 text-xl font-bold">
-                <span>Access Studio</span>
-                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-black group-hover:translate-x-2 transition-transform">
-                    <i class="fa-solid fa-arrow-right"></i>
+    <div id="full-player" class="fixed inset-0 z-[100] bg-black translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.33,1,0.68,1)] flex flex-col">
+        <div class="absolute inset-0 opacity-40 blur-[80px] scale-150" id="player-bg-blur"></div>
+        
+        <header class="relative p-8 flex justify-between">
+            <button onclick="closePlayer()" class="text-2xl p-2"><i class="fa-solid fa-chevron-down"></i></button>
+            <button id="big-save-btn" class="text-2xl p-2 transition-colors"><i class="fa-solid fa-heart"></i></button>
+        </header>
+
+        <div class="flex-1 flex flex-col items-center justify-center px-10 relative">
+            <div class="w-full aspect-square rounded-[2.5rem] overflow-hidden shadow-2xl border border-white/10 mb-12">
+                <img id="big-thumb" src="" class="w-full h-full object-cover">
+            </div>
+
+            <div class="w-full mb-10">
+                <h2 id="big-title" class="text-4xl font-900 tracking-tighter mb-1">Track</h2>
+                <p id="big-artist" class="text-violet-400 font-bold tracking-[0.2em] uppercase text-[10px]">RHK Studio Production</p>
+            </div>
+
+            <div class="w-full mb-10">
+                <div class="relative h-1.5 w-full bg-white/10 rounded-full cursor-pointer" id="progress-container">
+                    <div id="progress-line" class="absolute h-full bg-white rounded-full transition-all duration-100"></div>
                 </div>
-            </button>
+                <div class="flex justify-between mt-3 text-[10px] font-bold text-white/30">
+                    <span id="current-time">0:00</span>
+                    <span id="duration-time">0:00</span>
+                </div>
+            </div>
+
+            <div class="w-full flex justify-around items-center">
+                <button onclick="prevTrack()" class="text-4xl"><i class="fa-solid fa-backward-step"></i></button>
+                <button id="masterPlay" class="w-24 h-24 bg-white rounded-full flex items-center justify-center text-black text-4xl shadow-[0_0_30px_rgba(255,255,255,0.3)]">
+                    <i class="fa-solid fa-play"></i>
+                </button>
+                <button onclick="nextTrack()" class="text-4xl"><i class="fa-solid fa-forward-step"></i></button>
+            </div>
         </div>
     </div>
 
