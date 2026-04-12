@@ -3,81 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RHK ELITE | STUDIO</title>
+    <title>RHK STUDIO | ELITE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: #000; color: #fff; font-family: 'Outfit', sans-serif; overflow: hidden; }
+        .nav-btn { font-size: 1.5rem; color: rgba(255,255,255,0.2); transition: 0.3s; }
+        .nav-btn.active { color: #8b5cf6; transform: scale(1.2); }
+        .song-card { background: rgba(255,255,255,0.03); border-radius: 2rem; padding: 12px; border: 1px solid rgba(255,255,255,0.05); }
+        ::-webkit-scrollbar { width: 0; }
+        #progress-line, #video-progress-line { box-shadow: 0 0 15px #fff; transition: width 0.1s linear; }
+    </style>
 </head>
-<body class="bg-[#050505] text-white font-['Outfit'] overflow-hidden">
+<body>
 
-    <audio id="main-audio"></audio>
+    <audio id="main-audio" preload="auto"></audio>
 
     <div class="h-screen w-full flex flex-col relative z-10">
-        <header class="p-6 flex justify-between items-center bg-[#050505]/80 backdrop-blur-md border-b border-white/5">
-            <div>
-                <h1 class="text-2xl font-900 tracking-tighter italic">RHK<span class="text-violet-500">.</span></h1>
-                <p id="user-display" class="text-[8px] uppercase tracking-[0.4em] text-white/40">Premium Access</p>
-            </div>
-            <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
-                <i class="fa-solid fa-music text-violet-500 text-xs"></i>
-            </div>
+        <header class="p-6 flex justify-between items-center bg-black/50 backdrop-blur-xl border-b border-white/5">
+            <h1 class="text-2xl font-900 tracking-tighter italic text-violet-500">RHK.</h1>
+            <div id="user-display" class="text-[9px] font-black uppercase tracking-[0.3em] text-white/40">Studio Member</div>
         </header>
 
         <main class="flex-1 overflow-y-auto px-6 pb-40">
-            <div id="home-view">
-                <div class="py-6">
-                    <h2 class="text-[10px] font-black uppercase tracking-[0.3em] text-violet-400 mb-4">Studio Collection</h2>
-                    <div id="home-grid" class="grid grid-cols-2 gap-5"></div>
-                </div>
+            <div id="home-view" class="py-6">
+                <div id="home-grid" class="grid grid-cols-2 gap-5"></div>
             </div>
-
             <div id="library-view" class="hidden py-6">
-                <h2 class="text-3xl font-900 tracking-tighter mb-6">Your <span class="text-violet-500">Vault</span></h2>
+                <h2 class="text-3xl font-900 tracking-tighter mb-6 text-violet-500">The Vault</h2>
                 <div id="library-list" class="space-y-4"></div>
             </div>
         </main>
 
-        <nav class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[70%] h-16 bg-[#111]/80 backdrop-blur-2xl border border-white/10 rounded-full flex justify-around items-center z-40 shadow-2xl">
-            <button onclick="showView('home')" id="btn-home" class="nav-btn active"><i class="fa-solid fa-grip-vertical"></i></button>
+        <nav class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[70%] h-16 bg-[#111]/90 backdrop-blur-2xl border border-white/10 rounded-full flex justify-around items-center z-40 shadow-2xl">
+            <button onclick="showView('home')" id="btn-home" class="nav-btn active"><i class="fa-solid fa-house"></i></button>
             <button onclick="showView('library')" id="btn-lib" class="nav-btn"><i class="fa-solid fa-heart"></i></button>
         </nav>
     </div>
 
-    <div id="full-player" class="fixed inset-0 z-[100] bg-black translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.33,1,0.68,1)] flex flex-col">
-        <div class="absolute inset-0 opacity-40 blur-[80px] scale-150" id="player-bg-blur"></div>
-        
+    <div id="full-player" class="fixed inset-0 z-[100] bg-black translate-y-full transition-transform duration-500 flex flex-col">
+        <div class="absolute inset-0 opacity-40 blur-[100px] scale-150" id="player-bg-blur"></div>
         <header class="relative p-8 flex justify-between">
-            <button onclick="closePlayer()" class="text-2xl p-2"><i class="fa-solid fa-chevron-down"></i></button>
-            <button id="big-save-btn" class="text-2xl p-2 transition-colors"><i class="fa-solid fa-heart"></i></button>
+            <button onclick="closePlayer()" class="text-2xl"><i class="fa-solid fa-chevron-down"></i></button>
+            <button id="player-heart-btn" class="text-3xl transition-all active:scale-125"><i class="fa-solid fa-heart"></i></button>
         </header>
-
         <div class="flex-1 flex flex-col items-center justify-center px-10 relative">
-            <div class="w-full aspect-square rounded-[2.5rem] overflow-hidden shadow-2xl border border-white/10 mb-12">
+            <div class="w-full aspect-square rounded-[3rem] overflow-hidden shadow-2xl border border-white/10 mb-10">
                 <img id="big-thumb" src="" class="w-full h-full object-cover">
             </div>
-
-            <div class="w-full mb-10">
-                <h2 id="big-title" class="text-4xl font-900 tracking-tighter mb-1">Track</h2>
-                <p id="big-artist" class="text-violet-400 font-bold tracking-[0.2em] uppercase text-[10px]">RHK Studio Production</p>
+            <div class="w-full mb-8">
+                <h2 id="big-title" class="text-4xl font-900 tracking-tighter truncate">Vibe</h2>
+                <p class="text-violet-400 font-bold tracking-[0.2em] uppercase text-[10px] mt-2">RHK Official Audio</p>
             </div>
-
             <div class="w-full mb-10">
-                <div class="relative h-1.5 w-full bg-white/10 rounded-full cursor-pointer" id="progress-container">
-                    <div id="progress-line" class="absolute h-full bg-white rounded-full transition-all duration-100"></div>
-                </div>
-                <div class="flex justify-between mt-3 text-[10px] font-bold text-white/30">
-                    <span id="current-time">0:00</span>
-                    <span id="duration-time">0:00</span>
+                <div class="relative h-1 w-full bg-white/10 rounded-full cursor-pointer" id="progress-container">
+                    <div id="progress-line" class="absolute h-full bg-white rounded-full"></div>
                 </div>
             </div>
-
             <div class="w-full flex justify-around items-center">
                 <button onclick="prevTrack()" class="text-4xl"><i class="fa-solid fa-backward-step"></i></button>
-                <button id="masterPlay" class="w-24 h-24 bg-white rounded-full flex items-center justify-center text-black text-4xl shadow-[0_0_30px_rgba(255,255,255,0.3)]">
-                    <i class="fa-solid fa-play"></i>
-                </button>
+                <button id="masterPlay" class="w-24 h-24 bg-white rounded-full flex items-center justify-center text-black text-4xl shadow-2xl"><i class="fa-solid fa-play"></i></button>
                 <button onclick="nextTrack()" class="text-4xl"><i class="fa-solid fa-forward-step"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div id="video-player" class="fixed inset-0 z-[110] bg-black translate-y-full transition-transform duration-500 flex flex-col">
+        <header class="p-8 flex justify-between items-center relative z-20">
+            <button onclick="closeVideo()" class="text-2xl bg-white/10 w-12 h-12 rounded-full flex items-center justify-center backdrop-blur-md"><i class="fa-solid fa-xmark"></i></button>
+            <h2 id="video-title" class="text-xs font-black uppercase tracking-[0.3em] text-white/50">Cinema Mode</h2>
+        </header>
+        <div class="flex-1 flex items-center justify-center relative">
+            <video id="main-video" class="w-full max-h-screen object-contain" playsinline></video>
+        </div>
+        <div class="p-8 relative z-20">
+            <div class="relative h-1 w-full bg-white/20 rounded-full mb-8 cursor-pointer" id="video-progress-container">
+                <div id="video-progress-line" class="absolute h-full bg-violet-500 rounded-full"></div>
+            </div>
+            <div class="flex justify-center gap-12 items-center">
+                <button onclick="prevVideo()" class="text-3xl text-white/50"><i class="fa-solid fa-backward"></i></button>
+                <button id="video-play-btn" class="w-20 h-20 bg-violet-500 rounded-full flex items-center justify-center text-2xl shadow-lg shadow-violet-500/20"><i class="fa-solid fa-play"></i></button>
+                <button onclick="nextVideo()" class="text-3xl text-white/50"><i class="fa-solid fa-forward"></i></button>
             </div>
         </div>
     </div>
