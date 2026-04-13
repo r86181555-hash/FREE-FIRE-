@@ -7,7 +7,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        .nav-item.active { color: #8b5cf6; }
+        .animate-fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 </head>
 <body class="bg-[#000] text-white font-['Outfit'] overflow-hidden">
 
@@ -15,7 +19,7 @@
 
     <div class="h-screen flex flex-col relative">
         <header class="p-6 flex justify-between items-center z-20 bg-black/50 backdrop-blur-xl">
-            <h1 class="text-2xl font-900 tracking-tighter italic text-violet-500">RHK STUDIO</h1>
+            <h1 class="text-2xl font-[900] tracking-tighter italic text-violet-500">RHK STUDIO</h1>
             <div id="user-tag" class="text-[10px] font-bold bg-white/10 px-3 py-1 rounded-full border border-white/10">MEMBER</div>
         </header>
 
@@ -30,14 +34,14 @@
 
             <div id="home-view" class="space-y-6">
                 <section>
-                    <h2 class="text-3xl font-900 mb-4 px-2">Global <span class="text-violet-500">Library</span></h2>
+                    <h2 class="text-3xl font-[900] mb-4 px-2">Global <span class="text-violet-500">Library</span></h2>
                     <div id="home-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
                 </section>
             </div>
 
             <div id="library-view" class="hidden animate-fade-in">
                 <div class="flex justify-between items-end mb-6 px-2">
-                    <h2 class="text-4xl font-900">Your <span class="text-fuchsia-500">Vault</span></h2>
+                    <h2 class="text-4xl font-[900]">Your <span class="text-fuchsia-500">Vault</span></h2>
                     <span id="vault-count" class="text-xs font-bold text-white/40">0 TRACKS</span>
                 </div>
                 <div id="library-list" class="space-y-2"></div>
@@ -56,13 +60,13 @@
         </div>
 
         <nav class="fixed bottom-0 left-0 right-0 h-20 bg-black border-t border-white/5 flex justify-around items-center z-50">
-            <button onclick="showView('home')" id="nav-home" class="nav-item active">
+            <button onclick="showView('home')" id="nav-home" class="nav-item active flex flex-col items-center gap-1">
                 <i class="fa-solid fa-house"></i>
-                <span>Studio</span>
+                <span class="text-[10px] uppercase font-bold">Studio</span>
             </button>
-            <button onclick="showView('library')" id="nav-lib" class="nav-item">
+            <button onclick="showView('library')" id="nav-lib" class="nav-item flex flex-col items-center gap-1">
                 <i class="fa-solid fa-folder-open"></i>
-                <span>Vault</span>
+                <span class="text-[10px] uppercase font-bold">Vault</span>
             </button>
         </nav>
     </div>
@@ -78,7 +82,7 @@
                 <img id="big-thumb" src="" class="w-full h-full object-cover scale-105">
             </div>
             <div class="w-full text-left mb-10">
-                <h2 id="big-title" class="text-3xl font-900 tracking-tighter mb-1">Track Name</h2>
+                <h2 id="big-title" class="text-3xl font-[900] tracking-tighter mb-1">Track Name</h2>
                 <p class="text-violet-500 font-bold tracking-widest text-xs uppercase">Elite Member Track</p>
             </div>
             <div class="w-full mb-10">
@@ -102,9 +106,9 @@
 
     <div id="auth-modal" class="fixed inset-0 z-[200] bg-black flex items-center justify-center p-8 hidden">
         <div class="w-full">
-            <h1 class="text-5xl font-900 mb-8 italic">READY<br><span class="text-violet-600">STUDIO?</span></h1>
+            <h1 class="text-5xl font-[900] mb-8 italic">READY<br><span class="text-violet-600">STUDIO?</span></h1>
             <input type="text" id="name-input" placeholder="User Name" class="w-full bg-transparent border-b-2 border-white/20 py-4 text-2xl outline-none mb-10 focus:border-violet-600 transition">
-            <button onclick="login()" class="w-full py-5 bg-white text-black font-900 uppercase tracking-widest rounded-xl">Initialize</button>
+            <button onclick="login()" class="w-full py-5 bg-white text-black font-[900] uppercase tracking-widest rounded-xl">Initialize</button>
         </div>
     </div>
 
