@@ -1,191 +1,191 @@
-const totalTracks = 1000;
-let vault = JSON.parse(localStorage.getItem('rhk_vault')) || [];
-let currentId = null;
-let isLoop = false;
-let isShuffle = false;
+let userPlaylist = JSON.parse(localStorage.getItem('rhk_vault')) || [];
+let currentTracksData = [];
+let currentTrackIndex = 0;
+let searchTimer;
 
 const audio = document.getElementById('main-audio');
-const masterPlay = document.getElementById('master-play');
-const miniPlay = document.getElementById('mini-play-btn');
+const playBtn = document.getElementById('main-play-btn');
+const miniPlayBtn = document.getElementById('mini-play-btn');
+const searchInput = document.getElementById('search-input');
 
-// 1. SPLASH SCREEN & INITIALIZATION
-window.onload = () => {
-    setTimeout(() => {
-        document.getElementById('splash').style.opacity = '0';
-        document.getElementById('app-content').style.opacity = '1';
-        setTimeout(() => document.getElementById('splash').remove(), 1000);
-    }, 2500);
-
-    filterLibrary('all'); // Initial Load
-    renderVault();
-};
-
-// 2. CATEGORY FILTERING LOGIC
-function filterLibrary(category) {
-    // Update UI Tabs
-    const btns = document.querySelectorAll('.tab-btn');
-    btns.forEach(b => b.classList.remove('active'));
-    event?.target?.classList?.add('active');
-
-    const grid = document.getElementById('track-grid');
-    document.getElementById('section-title').innerText = category.charAt(0).toUpperCase() + category.slice(1);
+// 1. FETCH MUSIC WITH PROXY TUNNEL
+async function fetchMusic(query = '') {
+    const grid = document.getElementById('home-grid');
+    grid.innerHTML = '<div class="col-span-2 py-20 text-center opacity-30 text-xs font-bold animate-pulse">TUNNELING TO RHK NODES...</div>';
     
-    // Feature: Change Hero Based on Category
-    const heroTitle = document.getElementById('hero-title');
-    const heroTag = document.getElementById('hero-tag');
+    const searchQuery = query ? encodeURIComponent(query) : 'Kannada%20Latest';
     
-    let tracks = [];
-    if(category === 'trending') {
-        tracks = [5, 12, 45, 88, 120, 300, 550, 999];
-        heroTitle.innerHTML = "Top Hits<br>Today";
-        heroTag.innerText = "Trending Now";
-    } else if (category === 'relax') {
-        tracks = [2, 9, 22, 67, 101, 404, 808];
-        heroTitle.innerHTML = "Peaceful<br>Studio";
-        heroTag.innerText = "Chill Vibes";
-    } else {
-        // Show random selection for 'All'
-        tracks = Array.from({length: 40}, (_, i) => i + 1);
-        heroTitle.innerHTML = "Your Studio<br>Session";
-        heroTag.innerText = "Discover More";
+    // Using AllOrigins Proxy to bypass "Server Busy" errors
+    const proxy = "https://api.allorigins.win/get?url=";
+    const targetUrl = encodeURIComponent(`https://saavn.me/search/songs?query=${searchQuery}`);
+
+    try {
+        const response = await fetch(`${proxy}${targetUrl}`);
+        const result = await response.json();
+        
+        // Proxy returns actual data inside "contents" as a string
+        const json = JSON.parse(result.contents);
+        const tracks = json.data?.results || json.data || [];
+        
+        if (tracks.length > 0) {
+            currentTracksData = tracks;
+            renderMusicGrid(currentTracksData);
+        } else {
+            grid.innerHTML = '<div class="col-span-2 py-20 text-center opacity-50 text-xs">NO SONGS FOUND</div>';
+        }
+    } catch (err) {
+        console.error("Tunnel error:", err);
+        grid.innerHTML = '<div class="col-span-2 py-20 text-center text-red-500 text-[10px] font-bold uppercase tracking-widest">NETWORK TIMEOUT<br><span class="opacity-40 text-[8px]">Check 5G/WiFi Connection</span></div>';
     }
-
-    document.getElementById('track-count').innerText = `${tracks.length} Tracks`;
-
-    grid.innerHTML = tracks.map(id => `
-        <div class="track-card animate-fade-in" onclick="playTrack(${id}, '${category}')">
-            <div class="relative aspect-square rounded-2xl overflow-hidden mb-3">
-                <img src="${id}.jpg" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/300/111?text=RHK+${id}'">
-                <div class="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 hover:opacity-100 transition">
-                    <i class="fa-solid fa-play text-2xl"></i>
-                </div>
-            </div>
-            <div class="flex items-center justify-between px-1">
-                <div class="w-2/3">
-                    <h5 class="text-[11px] font-bold truncate">Track ID ${id}</h5>
-                    <p class="text-[8px] opacity-40 font-bold uppercase">${category}</p>
-                </div>
-                <button onclick="event.stopPropagation(); toggleVault(${id})" class="${vault.includes(id) ? 'text-violet-500' : 'opacity-20'}">
-                    <i class="fa-solid fa-heart"></i>
-                </button>
-            </div>
-        </div>
-    `).join('');
 }
 
-// 3. CORE PLAYER ENGINE
-function playTrack(id, cat = "RHK Music") {
-    currentId = id;
-    audio.src = `${id}.mp3`;
-    audio.play();
+function renderMusicGrid(tracks) {
+    const grid = document.getElementById('home-grid');
+    grid.innerHTML = tracks.map((track, index) => {
+        const isInVault = userPlaylist.some(t => t.id === track.id);
+        const img = track.image[2]?.link || track.image[1]?.link || 'https://via.placeholder.com/300/111?text=RHK';
+        
+        return `
+            <div class="track-card animate-fade-in">
+                <div class="relative aspect-square mb-3 overflow-hidden rounded-xl" onclick="loadAndPlay('${index}')">
+                    <img src="${img}" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                </div>
+                <div class="flex items-center justify-between">
+                    <div class="overflow-hidden mr-2" onclick="loadAndPlay('${index}')">
+                        <p class="text-[11px] font-bold truncate">${track.name || track.title}</p>
+                        <p class="text-[8px] opacity-40 font-bold uppercase">${track.artists?.primary[0]?.name || 'Unknown'}</p>
+                    </div>
+                    <button onclick="toggleVault('${index}')" class="text-lg ${isInVault ? 'text-violet-500' : 'opacity-20'}">
+                        <i class="fa-solid ${isInVault ? 'fa-circle-check' : 'fa-circle-plus'}"></i>
+                    </button>
+                </div>
+            </div>`;
+    }).join('');
+}
 
-    // Update Player UI
-    document.getElementById('mini-title').innerText = `Track #${id}`;
-    document.getElementById('big-title').innerText = `Elite Track ${id}`;
-    document.getElementById('mini-thumb').src = `${id}.jpg`;
-    document.getElementById('big-thumb').src = `${id}.jpg`;
-    document.getElementById('category-tag').innerText = cat;
-    document.getElementById('player-bg').style.backgroundImage = `url(${id}.jpg)`;
+// 2. SEARCH ENGINE
+searchInput.addEventListener('input', (e) => {
+    clearTimeout(searchTimer);
+    const val = e.target.value;
+    searchTimer = setTimeout(() => {
+        fetchMusic(val);
+    }, 800);
+});
+
+// 3. PLAYBACK ENGINE
+function loadAndPlay(index) {
+    currentTrackIndex = parseInt(index);
+    const track = currentTracksData[currentTrackIndex];
+    
+    const img = track.image[2]?.link || track.image[1]?.link;
+    const stream = track.downloadUrl[4]?.link || track.downloadUrl[2]?.link;
+
+    if(!stream) return;
+
+    audio.src = stream;
+    audio.play();
+    
+    document.getElementById('mini-title').innerText = track.name || track.title;
+    document.getElementById('big-title').innerText = track.name || track.title;
+    document.getElementById('mini-thumb').src = img;
+    document.getElementById('big-thumb').src = img;
     
     document.getElementById('mini-player').classList.remove('translate-y-40');
     updatePlayIcons(true);
 }
 
-function updatePlayIcons(playing) {
-    const icon = playing ? '<i class="fa-solid fa-pause"></i>' : '<i class="fa-solid fa-play"></i>';
-    masterPlay.innerHTML = icon;
-    miniPlay.innerHTML = icon;
-    document.getElementById('art-container').style.transform = playing ? 'scale(1)' : 'scale(0.9)';
-}
-
-masterPlay.onclick = () => {
+function togglePlay() {
     if(audio.paused) { audio.play(); updatePlayIcons(true); }
     else { audio.pause(); updatePlayIcons(false); }
-};
+}
 
-miniPlay.onclick = (e) => { e.stopPropagation(); masterPlay.click(); };
+function updatePlayIcons(isPlaying) {
+    const icon = isPlaying ? '<i class="fa-solid fa-pause"></i>' : '<i class="fa-solid fa-play"></i>';
+    playBtn.innerHTML = icon;
+    miniPlayBtn.innerHTML = icon;
+}
 
-// 4. VAULT SYSTEM
-function toggleVault(id) {
-    const idx = vault.indexOf(id);
-    if(idx > -1) vault.splice(idx, 1);
-    else vault.push(id);
+// 4. VAULT LOGIC
+function toggleVault(index) {
+    const track = currentTracksData[index];
+    const existingIndex = userPlaylist.findIndex(t => t.id === track.id);
+    if (existingIndex > -1) userPlaylist.splice(existingIndex, 1);
+    else userPlaylist.push(track);
     
-    localStorage.setItem('rhk_vault', JSON.stringify(vault));
+    localStorage.setItem('rhk_vault', JSON.stringify(userPlaylist));
+    renderMusicGrid(currentTracksData);
     renderVault();
 }
 
 function renderVault() {
-    const list = document.getElementById('vault-list');
-    if(vault.length === 0) {
-        list.innerHTML = `<div class="py-20 text-center opacity-20 font-bold">VAULT IS EMPTY</div>`;
+    const list = document.getElementById('library-list');
+    document.getElementById('vault-count').innerText = `${userPlaylist.length} TRACKS`;
+    if(userPlaylist.length === 0) {
+        list.innerHTML = `<div class="py-20 text-center opacity-20 font-bold">VAULT EMPTY</div>`;
         return;
     }
-    list.innerHTML = vault.map(id => `
-        <div class="flex items-center gap-4 bg-white/5 p-4 rounded-3xl border border-white/5 active:scale-95 transition">
-            <img src="${id}.jpg" class="w-14 h-14 rounded-2xl object-cover" onclick="playTrack(${id})">
-            <div class="flex-1" onclick="playTrack(${id})">
-                <h5 class="text-sm font-bold">Track #${id}</h5>
-                <p class="text-[9px] text-violet-500 font-bold uppercase">Saved to Vault</p>
+    list.innerHTML = userPlaylist.map((track, idx) => `
+        <div class="flex items-center bg-[#111] p-3 rounded-2xl border border-white/5 mb-2">
+            <div class="flex flex-1 items-center gap-4" onclick="playSaved('${track.id}')">
+                <img src="${track.image[0]?.link}" class="w-12 h-12 rounded-lg">
+                <div>
+                    <h5 class="text-sm font-bold truncate">${track.name || track.title}</h5>
+                    <p class="text-[9px] opacity-40 font-bold uppercase">Stored</p>
+                </div>
             </div>
-            <button onclick="toggleVault(${id})" class="text-red-500/30 px-2"><i class="fa-solid fa-trash"></i></button>
-        </div>
-    `).join('');
+            <button onclick="removeSaved(${idx})" class="w-10 h-10 text-red-500/50"><i class="fa-solid fa-trash"></i></button>
+        </div>`).join('');
 }
 
-// 5. ADDITIONAL FEATURES
-function toggleLoop() {
-    isLoop = !isLoop;
-    audio.loop = isLoop;
-    document.getElementById('loop-btn').classList.toggle('text-violet-500', isLoop);
-    document.getElementById('loop-btn').classList.toggle('text-white/30', !isLoop);
+function playSaved(id) {
+    const track = userPlaylist.find(t => t.id === id);
+    const stream = track.downloadUrl[4]?.link || track.downloadUrl[2]?.link;
+    audio.src = stream;
+    audio.play();
+    document.getElementById('mini-title').innerText = track.name || track.title;
+    document.getElementById('mini-thumb').src = track.image[2]?.link;
+    document.getElementById('mini-player').classList.remove('translate-y-40');
+    updatePlayIcons(true);
 }
 
-function toggleShuffle() {
-    isShuffle = !isShuffle;
-    document.getElementById('shuffle-btn').classList.toggle('text-violet-500', isShuffle);
+function removeSaved(idx) {
+    userPlaylist.splice(idx, 1);
+    localStorage.setItem('rhk_vault', JSON.stringify(userPlaylist));
+    renderVault();
+    renderMusicGrid(currentTracksData);
 }
 
-function toggleSleepTimer() {
-    alert("Sleep timer set for 30 minutes.");
-    setTimeout(() => audio.pause(), 1800000);
-}
-
-// 6. UTILS & NAVIGATION
-function showView(v) {
-    document.getElementById('home-view').classList.toggle('hidden', v !== 'home');
-    document.getElementById('library-view').classList.toggle('hidden', v !== 'library');
-    document.getElementById('nav-home').classList.toggle('active', v === 'home');
-    document.getElementById('nav-lib').classList.toggle('active', v === 'library');
-}
-
-function openPlayer() { document.getElementById('full-player').classList.remove('translate-y-full'); }
-function closePlayer() { document.getElementById('full-player').classList.add('translate-y-full'); }
-
+// 5. UI CONTROLS
 audio.ontimeupdate = () => {
     const pct = (audio.currentTime / audio.duration) * 100 || 0;
-    document.getElementById('seek-fill').style.width = pct + '%';
-    document.getElementById('time-now').innerText = formatTime(audio.currentTime);
-    document.getElementById('time-total').innerText = formatTime(audio.duration || 0);
+    document.getElementById('seek-bar-fill').style.width = pct + '%';
+    document.getElementById('cur-time').innerText = formatTime(audio.currentTime);
+    document.getElementById('dur-time').innerText = formatTime(audio.duration || 0);
 };
 
-function formatTime(s) {
-    if(isNaN(s)) return "0:00";
-    return Math.floor(s/60) + ":" + Math.floor(s%60).toString().padStart(2, '0');
+function formatTime(s) { return Math.floor(s/60) + ":" + Math.floor(s%60).toString().padStart(2, '0'); }
+playBtn.onclick = togglePlay;
+miniPlayBtn.onclick = (e) => { e.stopPropagation(); togglePlay(); };
+function nextTrack() { if(currentTrackIndex < currentTracksData.length - 1) loadAndPlay(currentTrackIndex + 1); }
+function prevTrack() { if(currentTrackIndex > 0) loadAndPlay(currentTrackIndex - 1); }
+function showView(view) {
+    document.getElementById('home-view').classList.toggle('hidden', view !== 'home');
+    document.getElementById('library-view').classList.toggle('hidden', view !== 'library');
+    document.getElementById('nav-home').classList.toggle('active', view === 'home');
+    document.getElementById('nav-lib').classList.toggle('active', view === 'library');
+}
+function openPlayer() { document.getElementById('full-player').classList.remove('translate-y-full'); }
+function closePlayer() { document.getElementById('full-player').classList.add('translate-y-full'); }
+function login() {
+    const val = document.getElementById('name-input').value;
+    if(val) { localStorage.setItem('rhk_user', val); location.reload(); }
 }
 
-function nextTrack() {
-    let next = isShuffle ? Math.floor(Math.random() * totalTracks) : currentId + 1;
-    playTrack(next > totalTracks ? 1 : next);
-}
-
-function prevTrack() {
-    playTrack(currentId > 1 ? currentId - 1 : totalTracks);
-}
-
-// Seeker Logic
-document.getElementById('seek-bar').onclick = function(e) {
-    const rect = this.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    audio.currentTime = (x / rect.width) * audio.duration;
+window.onload = () => {
+    const user = localStorage.getItem('rhk_user');
+    if(!user) document.getElementById('auth-modal').classList.remove('hidden');
+    else document.getElementById('user-tag').innerText = user.toUpperCase();
+    fetchMusic();
+    renderVault();
 };
