@@ -2,19 +2,31 @@ let userPlaylist = JSON.parse(localStorage.getItem('rhk_vault')) || [];
 let currentTracksData = [];
 let currentTrackIndex = 0;
 let searchTimer;
-let currentView = 'home'; // Track if we are in Home or Vault
 
 const audio = document.getElementById('main-audio');
 const playBtn = document.getElementById('main-play-btn');
 const miniPlayBtn = document.getElementById('mini-play-btn');
 const searchInput = document.getElementById('search-input');
 
-// 1. FETCH MUSIC
+audio.preload = "auto"; // smoother playback
+
+// 🔥 AUTO PLAY NEXT SONG (NO STOP)
+audio.onended = () => {
+    if (currentTrackIndex < currentTracksData.length - 1) {
+        loadAndPlay(currentTrackIndex + 1);
+    } else {
+        // loop back to first track
+        loadAndPlay(0);
+    }
+};
+
+// 1. FETCH MUSIC (Tunnel Mode)
 async function fetchMusic(query = '') {
     const grid = document.getElementById('home-grid');
     grid.innerHTML = '<div class="col-span-2 py-20 text-center opacity-30 text-xs font-bold animate-pulse">CONNECTING TO RHK NODES...</div>';
     
     const searchQuery = query ? encodeURIComponent(query) : 'Kannada%20Latest';
+    
     const proxy = "https://api.allorigins.win/get?url=";
     const targetUrl = encodeURIComponent(`https://saavn.me/search/songs?query=${searchQuery}`);
 
@@ -33,8 +45,8 @@ async function fetchMusic(query = '') {
         }
     } catch (err) {
         console.error("Tunnel failed:", err);
-        grid.innerHTML = '<div class="col-span-2 py-20 text-center text-red-500 text-[10px] font-bold uppercase tracking-widest">TUNNEL ERROR</div>';
-        setTimeout(() => fetchMusic(query), 5000);
+        grid.innerHTML = '<div class="col-span-2 py-20 text-center text-red-500 text-[10px] font-bold uppercase tracking-widest">TUNNEL ERROR<br><span class="opacity-40 text-[8px]">RETRYING...</span></div>';
+        setTimeout(() => fetchMusic(query), 3000);
     }
 }
 
@@ -46,16 +58,16 @@ function renderMusicGrid(tracks) {
         
         return `
             <div class="track-card animate-fade-in">
-                <div class="relative aspect-square mb-3 overflow-hidden rounded-xl" onclick="loadAndPlay(${index}, 'home')">
+                <div class="relative aspect-square mb-3 overflow-hidden rounded-xl" onclick="loadAndPlay('${index}')">
                     <img src="${img}" class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                 </div>
                 <div class="flex items-center justify-between px-1">
-                    <div class="overflow-hidden mr-2 flex-1" onclick="loadAndPlay(${index}, 'home')">
+                    <div class="overflow-hidden mr-2 flex-1" onclick="loadAndPlay('${index}')">
                         <p class="text-[11px] font-bold truncate">${track.name || track.title}</p>
-                        <p class="text-[8px] opacity-40 font-bold uppercase">${track.artists?.primary ? track.artists.primary[0].name : 'Artist'}</p>
+                        <p class="text-[8px] opacity-40 font-bold uppercase">${track.artists?.primary[0]?.name || 'Unknown'}</p>
                     </div>
-                    <button onclick="toggleVault(${index})" class="text-lg ${isInVault ? 'text-violet-500' : 'opacity-20'}">
+                    <button onclick="toggleVault('${index}')" class="text-lg ${isInVault ? 'text-violet-500' : 'opacity-20'}">
                         <i class="fa-solid ${isInVault ? 'fa-circle-check' : 'fa-circle-plus'}"></i>
                     </button>
                 </div>
@@ -63,35 +75,28 @@ function renderMusicGrid(tracks) {
     }).join('');
 }
 
-// 2. SEARCH
+// 2. SEARCH ENGINE
 searchInput.addEventListener('input', (e) => {
     clearTimeout(searchTimer);
     const val = e.target.value;
-    searchTimer = setTimeout(() => fetchMusic(val), 800);
+    searchTimer = setTimeout(() => {
+        fetchMusic(val);
+    }, 800);
 });
 
 // 3. PLAYBACK ENGINE
-function loadAndPlay(index, view = 'home') {
-    currentView = view;
+function loadAndPlay(index) {
     currentTrackIndex = parseInt(index);
+    const track = currentTracksData[currentTrackIndex];
     
-    // Pick track based on current view (Searching vs Vault)
-    const track = (currentView === 'home') ? currentTracksData[currentTrackIndex] : userPlaylist[currentTrackIndex];
-    
-    if(!track) return;
-
     const img = track.image[2]?.link || track.image[1]?.link;
     const stream = track.downloadUrl[4]?.link || track.downloadUrl[2]?.link;
 
-    if(!stream) {
-        alert("Track unavailable");
-        return;
-    }
+    if(!stream) return;
 
     audio.src = stream;
-    audio.play().catch(e => console.log("Playback failed:", e));
+    audio.play();
     
-    // UI Updates
     document.getElementById('mini-title').innerText = track.name || track.title;
     document.getElementById('big-title').innerText = track.name || track.title;
     document.getElementById('mini-thumb').src = img;
@@ -133,7 +138,7 @@ function renderVault() {
     }
     list.innerHTML = userPlaylist.map((track, idx) => `
         <div class="flex items-center bg-[#111] p-3 rounded-2xl border border-white/5 mb-2">
-            <div class="flex flex-1 items-center gap-4" onclick="loadAndPlay(${idx}, 'vault')">
+            <div class="flex flex-1 items-center gap-4" onclick="playSaved('${track.id}')">
                 <img src="${track.image[0]?.link}" class="w-12 h-12 rounded-lg bg-black">
                 <div>
                     <h5 class="text-sm font-bold truncate">${track.name || track.title}</h5>
@@ -142,6 +147,19 @@ function renderVault() {
             </div>
             <button onclick="removeSaved(${idx})" class="w-10 h-10 text-red-500/50"><i class="fa-solid fa-trash"></i></button>
         </div>`).join('');
+}
+
+function playSaved(id) {
+    const track = userPlaylist.find(t => t.id === id);
+    const stream = track.downloadUrl[4]?.link || track.downloadUrl[2]?.link;
+
+    audio.src = stream;
+    audio.play();
+
+    document.getElementById('mini-title').innerText = track.name || track.title;
+    document.getElementById('mini-thumb').src = track.image[2]?.link;
+    document.getElementById('mini-player').classList.remove('translate-y-40');
+    updatePlayIcons(true);
 }
 
 function removeSaved(idx) {
@@ -159,11 +177,6 @@ audio.ontimeupdate = () => {
     document.getElementById('dur-time').innerText = formatTime(audio.duration || 0);
 };
 
-// AUTO-PLAY NEXT TRACK
-audio.onended = () => {
-    nextTrack();
-};
-
 function formatTime(s) { 
     if(isNaN(s)) return "0:00";
     return Math.floor(s/60) + ":" + Math.floor(s%60).toString().padStart(2, '0'); 
@@ -172,20 +185,11 @@ function formatTime(s) {
 playBtn.onclick = togglePlay;
 miniPlayBtn.onclick = (e) => { e.stopPropagation(); togglePlay(); };
 
-function nextTrack() {
-    const listLength = (currentView === 'home') ? currentTracksData.length : userPlaylist.length;
-    if(currentTrackIndex < listLength - 1) {
-        loadAndPlay(currentTrackIndex + 1, currentView);
-    } else {
-        // Optional: Loop back to start
-        loadAndPlay(0, currentView);
-    }
+function nextTrack() { 
+    if(currentTrackIndex < currentTracksData.length - 1) loadAndPlay(currentTrackIndex + 1); 
 }
-
-function prevTrack() {
-    if(currentTrackIndex > 0) {
-        loadAndPlay(currentTrackIndex - 1, currentView);
-    }
+function prevTrack() { 
+    if(currentTrackIndex > 0) loadAndPlay(currentTrackIndex - 1); 
 }
 
 function showView(view) {
@@ -207,6 +211,7 @@ window.onload = () => {
     const user = localStorage.getItem('rhk_user');
     if(!user) document.getElementById('auth-modal').classList.remove('hidden');
     else document.getElementById('user-tag').innerText = user.toUpperCase();
+
     fetchMusic();
     renderVault();
 };
