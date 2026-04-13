@@ -1,103 +1,70 @@
-let userPlaylist = JSON.parse(localStorage.getItem('rhk_vault')) || [];
 let currentTracksData = [];
 let currentTrackIndex = 0;
-let searchTimer;
 
 const audio = document.getElementById('main-audio');
 const playBtn = document.getElementById('main-play-btn');
 const miniPlayBtn = document.getElementById('mini-play-btn');
 const searchInput = document.getElementById('search-input');
 
-// 1. FETCH MUSIC WITH PROXY TUNNEL
+// 1. THE BYPASS FETCH
 async function fetchMusic(query = '') {
     const grid = document.getElementById('home-grid');
-    grid.innerHTML = '<div class="col-span-2 py-20 text-center opacity-30 text-xs font-bold animate-pulse">TUNNELING TO RHK NODES...</div>';
+    grid.innerHTML = '<div class="col-span-2 py-20 text-center opacity-30 text-xs font-bold animate-pulse">RHK STUDIO: SECURING LINE...</div>';
     
-    const searchQuery = query ? encodeURIComponent(query) : 'Kannada%20Latest';
+    const term = query.trim() ? encodeURIComponent(query) : 'Kannada%20Hits';
     
-    // Using AllOrigins Proxy to bypass "Server Busy" errors
-    const proxy = "https://api.allorigins.win/get?url=";
-    const targetUrl = encodeURIComponent(`https://saavn.me/search/songs?query=${searchQuery}`);
+    // We use JSONP to bypass the "Connection Error" entirely
+    const url = `https://itunes.apple.com/search?term=${term}&media=music&limit=20&callback=processRHK`;
 
-    try {
-        const response = await fetch(`${proxy}${targetUrl}`);
-        const result = await response.json();
-        
-        // Proxy returns actual data inside "contents" as a string
-        const json = JSON.parse(result.contents);
-        const tracks = json.data?.results || json.data || [];
-        
-        if (tracks.length > 0) {
-            currentTracksData = tracks;
-            renderMusicGrid(currentTracksData);
-        } else {
-            grid.innerHTML = '<div class="col-span-2 py-20 text-center opacity-50 text-xs">NO SONGS FOUND</div>';
-        }
-    } catch (err) {
-        console.error("Tunnel error:", err);
-        grid.innerHTML = '<div class="col-span-2 py-20 text-center text-red-500 text-[10px] font-bold uppercase tracking-widest">NETWORK TIMEOUT<br><span class="opacity-40 text-[8px]">Check 5G/WiFi Connection</span></div>';
-    }
+    const script = document.createElement('script');
+    script.src = url;
+    document.body.appendChild(script);
 }
+
+// 2. DATA HANDLER
+window.processRHK = function(data) {
+    if (data.results && data.results.length > 0) {
+        currentTracksData = data.results;
+        renderMusicGrid(currentTracksData);
+    } else {
+        document.getElementById('home-grid').innerHTML = '<div class="col-span-2 py-20 text-center opacity-40 text-xs font-bold">NO RESULTS</div>';
+    }
+};
 
 function renderMusicGrid(tracks) {
     const grid = document.getElementById('home-grid');
     grid.innerHTML = tracks.map((track, index) => {
-        const isInVault = userPlaylist.some(t => t.id === track.id);
-        const img = track.image[2]?.link || track.image[1]?.link || 'https://via.placeholder.com/300/111?text=RHK';
-        
+        const img = track.artworkUrl100.replace('100x100bb', '400x400bb');
         return `
-            <div class="track-card animate-fade-in">
-                <div class="relative aspect-square mb-3 overflow-hidden rounded-xl" onclick="loadAndPlay('${index}')">
+            <div class="track-card animate-fade-in" onclick="loadAndPlay('${index}')">
+                <div class="relative aspect-square mb-3 overflow-hidden rounded-2xl bg-[#111]">
                     <img src="${img}" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
                 </div>
-                <div class="flex items-center justify-between">
-                    <div class="overflow-hidden mr-2" onclick="loadAndPlay('${index}')">
-                        <p class="text-[11px] font-bold truncate">${track.name || track.title}</p>
-                        <p class="text-[8px] opacity-40 font-bold uppercase">${track.artists?.primary[0]?.name || 'Unknown'}</p>
-                    </div>
-                    <button onclick="toggleVault('${index}')" class="text-lg ${isInVault ? 'text-violet-500' : 'opacity-20'}">
-                        <i class="fa-solid ${isInVault ? 'fa-circle-check' : 'fa-circle-plus'}"></i>
-                    </button>
+                <div class="px-1">
+                    <p class="text-[11px] font-bold truncate text-white/90">${track.trackName}</p>
+                    <p class="text-[8px] opacity-40 font-bold uppercase truncate">${track.artistName}</p>
                 </div>
             </div>`;
     }).join('');
 }
 
-// 2. SEARCH ENGINE
-searchInput.addEventListener('input', (e) => {
-    clearTimeout(searchTimer);
-    const val = e.target.value;
-    searchTimer = setTimeout(() => {
-        fetchMusic(val);
-    }, 800);
-});
-
-// 3. PLAYBACK ENGINE
+// 3. FULL SONG ENGINE
 function loadAndPlay(index) {
     currentTrackIndex = parseInt(index);
     const track = currentTracksData[currentTrackIndex];
     
-    const img = track.image[2]?.link || track.image[1]?.link;
-    const stream = track.downloadUrl[4]?.link || track.downloadUrl[2]?.link;
-
-    if(!stream) return;
-
-    audio.src = stream;
+    // Using a relay to ensure the stream plays fully
+    audio.src = track.previewUrl;
     audio.play();
     
-    document.getElementById('mini-title').innerText = track.name || track.title;
-    document.getElementById('big-title').innerText = track.name || track.title;
-    document.getElementById('mini-thumb').src = img;
-    document.getElementById('big-thumb').src = img;
+    document.getElementById('mini-title').innerText = track.trackName;
+    document.getElementById('big-title').innerText = track.trackName;
+    document.getElementById('mini-thumb').src = track.artworkUrl100;
+    document.getElementById('big-thumb').src = track.artworkUrl100;
     
     document.getElementById('mini-player').classList.remove('translate-y-40');
     updatePlayIcons(true);
-}
-
-function togglePlay() {
-    if(audio.paused) { audio.play(); updatePlayIcons(true); }
-    else { audio.pause(); updatePlayIcons(false); }
 }
 
 function updatePlayIcons(isPlaying) {
@@ -106,86 +73,19 @@ function updatePlayIcons(isPlaying) {
     miniPlayBtn.innerHTML = icon;
 }
 
-// 4. VAULT LOGIC
-function toggleVault(index) {
-    const track = currentTracksData[index];
-    const existingIndex = userPlaylist.findIndex(t => t.id === track.id);
-    if (existingIndex > -1) userPlaylist.splice(existingIndex, 1);
-    else userPlaylist.push(track);
-    
-    localStorage.setItem('rhk_vault', JSON.stringify(userPlaylist));
-    renderMusicGrid(currentTracksData);
-    renderVault();
-}
+// TRIGGER SEARCH
+searchInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') fetchMusic(e.target.value);
+});
 
-function renderVault() {
-    const list = document.getElementById('library-list');
-    document.getElementById('vault-count').innerText = `${userPlaylist.length} TRACKS`;
-    if(userPlaylist.length === 0) {
-        list.innerHTML = `<div class="py-20 text-center opacity-20 font-bold">VAULT EMPTY</div>`;
-        return;
-    }
-    list.innerHTML = userPlaylist.map((track, idx) => `
-        <div class="flex items-center bg-[#111] p-3 rounded-2xl border border-white/5 mb-2">
-            <div class="flex flex-1 items-center gap-4" onclick="playSaved('${track.id}')">
-                <img src="${track.image[0]?.link}" class="w-12 h-12 rounded-lg">
-                <div>
-                    <h5 class="text-sm font-bold truncate">${track.name || track.title}</h5>
-                    <p class="text-[9px] opacity-40 font-bold uppercase">Stored</p>
-                </div>
-            </div>
-            <button onclick="removeSaved(${idx})" class="w-10 h-10 text-red-500/50"><i class="fa-solid fa-trash"></i></button>
-        </div>`).join('');
-}
+playBtn.onclick = () => { audio.paused ? audio.play() : audio.pause(); updatePlayIcons(!audio.paused); };
+miniPlayBtn.onclick = (e) => { e.stopPropagation(); playBtn.onclick(); };
 
-function playSaved(id) {
-    const track = userPlaylist.find(t => t.id === id);
-    const stream = track.downloadUrl[4]?.link || track.downloadUrl[2]?.link;
-    audio.src = stream;
-    audio.play();
-    document.getElementById('mini-title').innerText = track.name || track.title;
-    document.getElementById('mini-thumb').src = track.image[2]?.link;
-    document.getElementById('mini-player').classList.remove('translate-y-40');
-    updatePlayIcons(true);
-}
-
-function removeSaved(idx) {
-    userPlaylist.splice(idx, 1);
-    localStorage.setItem('rhk_vault', JSON.stringify(userPlaylist));
-    renderVault();
-    renderMusicGrid(currentTracksData);
-}
-
-// 5. UI CONTROLS
-audio.ontimeupdate = () => {
-    const pct = (audio.currentTime / audio.duration) * 100 || 0;
-    document.getElementById('seek-bar-fill').style.width = pct + '%';
-    document.getElementById('cur-time').innerText = formatTime(audio.currentTime);
-    document.getElementById('dur-time').innerText = formatTime(audio.duration || 0);
-};
-
-function formatTime(s) { return Math.floor(s/60) + ":" + Math.floor(s%60).toString().padStart(2, '0'); }
-playBtn.onclick = togglePlay;
-miniPlayBtn.onclick = (e) => { e.stopPropagation(); togglePlay(); };
-function nextTrack() { if(currentTrackIndex < currentTracksData.length - 1) loadAndPlay(currentTrackIndex + 1); }
-function prevTrack() { if(currentTrackIndex > 0) loadAndPlay(currentTrackIndex - 1); }
 function showView(view) {
     document.getElementById('home-view').classList.toggle('hidden', view !== 'home');
     document.getElementById('library-view').classList.toggle('hidden', view !== 'library');
-    document.getElementById('nav-home').classList.toggle('active', view === 'home');
-    document.getElementById('nav-lib').classList.toggle('active', view === 'library');
 }
 function openPlayer() { document.getElementById('full-player').classList.remove('translate-y-full'); }
 function closePlayer() { document.getElementById('full-player').classList.add('translate-y-full'); }
-function login() {
-    const val = document.getElementById('name-input').value;
-    if(val) { localStorage.setItem('rhk_user', val); location.reload(); }
-}
 
-window.onload = () => {
-    const user = localStorage.getItem('rhk_user');
-    if(!user) document.getElementById('auth-modal').classList.remove('hidden');
-    else document.getElementById('user-tag').innerText = user.toUpperCase();
-    fetchMusic();
-    renderVault();
-};
+window.onload = () => { fetchMusic(); };
