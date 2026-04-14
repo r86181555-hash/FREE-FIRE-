@@ -2,54 +2,51 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RHK ELITE | STUDIO</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background: radial-gradient(circle at top right, #1e1b4b, #000); font-family: 'Outfit', sans-serif; overflow: hidden; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .active-nav { color: #8b5cf6; text-shadow: 0 0 15px rgba(139, 92, 246, 0.5); }
-        ::-webkit-scrollbar { display: none; }
+        body { background: #0b0b15; font-family: 'Outfit', sans-serif; color: white; overflow: hidden; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .nav-active { color: #8b5cf6; filter: drop-shadow(0 0 8px #8b5cf6); }
+        .hide-scroll::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="text-white h-screen flex flex-col">
-
+<body class="h-screen flex flex-col">
     <audio id="main-audio"></audio>
 
-    <header class="p-6 flex justify-between items-center z-50">
-        <div>
-            <p class="text-[10px] font-bold opacity-40 uppercase tracking-[4px]">Welcome Back</p>
-            <h1 class="text-2xl font-900 tracking-tighter italic">RHK <span class="text-violet-500">STUDIO</span></h1>
+    <header class="p-6 space-y-4">
+        <div class="flex justify-between items-center">
+            <h1 class="text-2xl font-900 italic text-violet-500">RHK STUDIO</h1>
+            <div class="w-10 h-10 glass rounded-full flex items-center justify-center"><i class="fa-solid fa-user text-xs opacity-40"></i></div>
         </div>
-        <div class="w-10 h-10 glass rounded-full flex items-center justify-center border border-white/10">
-            <i class="fa-solid fa-magnifying-glass text-xs opacity-50"></i>
+        <div class="glass flex items-center px-4 py-3 rounded-2xl">
+            <i class="fa-solid fa-magnifying-glass opacity-30 mr-3"></i>
+            <input type="text" id="search-input" placeholder="Search your vibe..." class="bg-transparent border-none outline-none text-sm w-full" oninput="searchSongs()">
         </div>
     </header>
 
-    <main class="flex-1 overflow-y-auto px-6 pb-40">
-        <h2 class="text-xl font-bold mb-6">Trending <span class="opacity-40 font-normal">Playlist</span></h2>
-        
-        <div id="song-grid" class="grid grid-cols-1 gap-4">
-            </div>
+    <main class="flex-1 overflow-y-auto px-6 pb-32 hide-scroll">
+        <div id="section-title" class="text-xl font-bold mb-6">Trending <span class="opacity-30">Studio</span></div>
+        <div id="song-list" class="space-y-4"></div>
     </main>
 
-    <div id="mini-player" class="fixed bottom-24 left-4 right-4 glass p-3 rounded-3xl flex items-center gap-4 shadow-2xl translate-y-40 transition-transform duration-700 z-50" onclick="toggleFullPlayer(true)">
-        <img id="mini-thumb" src="" class="w-14 h-14 rounded-2xl object-cover shadow-lg">
+    <div id="mini-player" class="fixed bottom-24 left-4 right-4 glass p-3 rounded-3xl flex items-center gap-4 translate-y-40 transition-transform duration-500" onclick="togglePlay()">
+        <img id="mini-thumb" src="" class="w-14 h-14 rounded-2xl object-cover bg-white/5">
         <div class="flex-1 overflow-hidden">
-            <h4 id="mini-title" class="text-sm font-bold truncate">Not Playing</h4>
-            <p id="mini-artist" class="text-[10px] opacity-40 font-bold uppercase">RHK Elite</p>
+            <h4 id="mini-title" class="text-sm font-bold truncate italic">Select a track</h4>
+            <p class="text-[10px] opacity-40 font-bold uppercase tracking-widest">RHK Elite</p>
         </div>
-        <button id="play-pause-btn" class="w-12 h-12 bg-white text-black rounded-full flex items-center justify-center shadow-lg">
-            <i class="fa-solid fa-play"></i>
+        <button class="w-12 h-12 bg-white text-black rounded-full flex items-center justify-center shadow-lg">
+            <i id="mini-play-icon" class="fa-solid fa-play"></i>
         </button>
     </div>
 
-    <nav class="fixed bottom-0 left-0 right-0 h-20 bg-black/80 backdrop-blur-xl border-t border-white/5 flex justify-around items-center z-50">
-        <div class="flex flex-col items-center active-nav"><i class="fa-solid fa-house mb-1"></i><span class="text-[8px] font-bold">HOME</span></div>
-        <div class="flex flex-col items-center opacity-30"><i class="fa-solid fa-compass mb-1"></i><span class="text-[8px] font-bold">EXPLORE</span></div>
-        <div class="flex flex-col items-center opacity-30"><i class="fa-solid fa-heart mb-1"></i><span class="text-[8px] font-bold">FAV</span></div>
+    <nav class="fixed bottom-0 left-0 right-0 h-20 bg-black/80 backdrop-blur-2xl border-t border-white/5 flex justify-around items-center">
+        <button onclick="changeTab('home')" id="nav-home" class="flex flex-col items-center nav-active"><i class="fa-solid fa-house text-xl"></i><span class="text-[8px] mt-1 font-bold">HOME</span></button>
+        <button onclick="changeTab('fav')" id="nav-fav" class="flex flex-col items-center opacity-30"><i class="fa-solid fa-heart text-xl"></i><span class="text-[8px] mt-1 font-bold">FAV</span></button>
     </nav>
 
     <script src="script.js"></script>
