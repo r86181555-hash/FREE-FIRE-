@@ -1,208 +1,109 @@
-let allSongs = JSON.parse(localStorage.getItem('rhk_songs')) || [];
-let userPlaylist = JSON.parse(localStorage.getItem('rhk_vault')) || [];
-let currentTrackIndex = 0;
-let tempImageData = "";
+// --- ADMIN PANEL: EDIT YOUR SONGS HERE ---
+const allSongs = [
+    {
+        titel: "Tum Prem Ho",
+        artist: "Mohit Lalwani",
+        url: "https://mofgpijvfbzrvikwvzxl.supabase.co/storage/v1/object/public/RHK%20MUSIC/Mohit%20Lalwani%20-%20Tum%20Prem%20Ho%20(Reprise).mp3",
+        image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=500" // Default Music Image
+    },
+    {
+        titel: "DARKSIDE",
+        artist: "Neoni",
+        url: "https://mofgpijvfbzrvikwvzxl.supabase.co/storage/v1/object/public/RHK%20MUSIC/Neoni%20-%20DARKSIDE.mp3",
+        image: "https://images.unsplash.com/photo-1493225255756-d9584f8606e9?w=500"
+    },
+    {
+        titel: "Peaky Blinder",
+        artist: "Otnicka",
+        url: "https://mofgpijvfbzrvikwvzxl.supabase.co/storage/v1/object/public/RHK%20MUSIC/Otnicka%20-%20Peaky%20Blinder.mp3",
+        image: "https://images.unsplash.com/photo-1514525253361-bee8a487409e?w=500"
+    },
+    {
+        titel: "Aarambh",
+        artist: "Piyush Mishra",
+        url: "https://mofgpijvfbzrvikwvzxl.supabase.co/storage/v1/object/public/RHK%20MUSIC/Piyush%20Mishra%20-%20Aarambh.mp3",
+        image: "https://images.unsplash.com/photo-1459749411177-042180ce673c?w=500"
+    },
+    {
+        titel: "Suzume",
+        artist: "Radwimps",
+        url: "https://mofgpijvfbzrvikwvzxl.supabase.co/storage/v1/object/public/RHK%20MUSIC/Radwimps%20-%20Suzume%20(feat.%20Toaka).mp3",
+        image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500"
+    },
+    {
+        titel: "Ram Siya Ram",
+        artist: "Sachet Tandon",
+        url: "https://mofgpijvfbzrvikwvzxl.supabase.co/storage/v1/object/public/RHK%20MUSIC/Sachet%20Tandon%20-%20Ram%20Siya%20Ram%20(From%20%20Adipurush%20).mp3",
+        image: "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=500"
+    },
+    {
+        titel: "Me and the Devil",
+        artist: "Soap&Skin",
+        url: "https://mofgpijvfbzrvikwvzxl.supabase.co/storage/v1/object/public/RHK%20MUSIC/Soap&Skin%20-%20Me%20and%20the%20Devil.mp3",
+        image: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=500"
+    },
+    {
+        titel: "Rise Up",
+        artist: "TheFatRat",
+        url: "https://mofgpijvfbzrvikwvzxl.supabase.co/storage/v1/object/public/RHK%20MUSIC/TheFatRat%20-%20Rise%20Up.mp3",
+        image: "https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?w=500"
+    },
+    {
+        titel: "Kavithe Kavithe",
+        artist: "Vijay Prakash",
+        url: "https://mofgpijvfbzrvikwvzxl.supabase.co/storage/v1/object/public/RHK%20MUSIC/Vijay%20Prakash%20-%20Kavithe%20Kavithe.mp3",
+        image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=500"
+    }
+];
 
+let currentIndex = 0;
 const audio = document.getElementById('main-audio');
-const playBtn = document.getElementById('main-play-btn');
-const miniPlayBtn = document.getElementById('mini-play-btn');
+const playBtn = document.getElementById('play-pause-btn');
 
-// --- 1. AUTO-PLAY NEXT SONG ---
-audio.onended = () => {
-    nextTrack();
-};
-
-// --- 2. SECRET ADMIN TRIGGER (Long Press RHK STUDIO) ---
-const adminTrigger = document.getElementById('admin-trigger');
-let pressTimer;
-
-adminTrigger.addEventListener('mousedown', startPress);
-adminTrigger.addEventListener('touchstart', startPress);
-adminTrigger.addEventListener('mouseup', cancelPress);
-adminTrigger.addEventListener('touchend', cancelPress);
-
-function startPress() {
-    pressTimer = window.setTimeout(() => {
-        toggleAdmin(true);
-    }, 3000); // 3 Seconds to open
-}
-
-function cancelPress() {
-    clearTimeout(pressTimer);
-}
-
-function toggleAdmin(show) {
-    document.getElementById('admin-modal').classList.toggle('hidden', !show);
-}
-
-// --- 3. CORE LOGIC (Modified for your Admin needs) ---
-function previewImage(input) {
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            tempImageData = e.target.result;
-            document.getElementById('file-label').innerText = "IMAGE READY ✓";
-        }
-        reader.readAsDataURL(input.files[0]);
-    }
-}
-
-function addSong() {
-    const name = document.getElementById('admin-name').value;
-    const url = document.getElementById('admin-url').value;
-
-    if(!name || !url || !tempImageData) return alert("Fill all details!");
-
-    allSongs.push({ id: Date.now(), name, url, image: tempImageData });
-    localStorage.setItem('rhk_songs', JSON.stringify(allSongs));
-    
-    // Clear Form
-    document.getElementById('admin-name').value = "";
-    document.getElementById('admin-url').value = "";
-    tempImageData = "";
-    document.getElementById('file-label').innerText = "Upload Cover Image";
-    
-    toggleAdmin(false);
-    renderTracks();
-}
-
-function renderTracks() {
-    const grid = document.getElementById('home-grid');
-    if(allSongs.length === 0) {
-        grid.innerHTML = '<div class="col-span-2 py-20 text-center opacity-20 text-xs font-bold uppercase tracking-widest">Studio Empty</div>';
-        return;
-    }
-
-    grid.innerHTML = allSongs.map((song, index) => {
-        const isInVault = userPlaylist.some(s => s.id === song.id);
-        return `
-            <div class="track-card animate-fade-in">
-                <div class="relative aspect-square mb-3 overflow-hidden rounded-xl" onclick="loadTrack(${index})">
-                    <img src="${song.image}" class="w-full h-full object-cover">
-                </div>
-                <div class="flex items-center justify-between">
-                    <div class="overflow-hidden mr-2" onclick="loadTrack(${index})">
-                        <p class="text-[11px] font-bold truncate">${song.name}</p>
-                        <p class="text-[8px] opacity-40 font-bold uppercase">RHK Elite</p>
-                    </div>
-                    <button onclick="toggleVault(${song.id})" class="text-lg ${isInVault ? 'text-violet-500' : 'opacity-20'}">
-                        <i class="fa-solid ${isInVault ? 'fa-circle-check' : 'fa-circle-plus'}"></i>
-                    </button>
-                </div>
-            </div>`;
-    }).join('');
-}
-
-function loadTrack(index) {
-    currentTrackIndex = index;
-    const song = allSongs[index];
-    audio.src = song.url;
-    audio.play();
-    
-    document.getElementById('mini-title').innerText = song.name;
-    document.getElementById('big-title').innerText = song.name;
-    document.getElementById('mini-thumb').src = song.image;
-    document.getElementById('big-thumb').src = song.image;
-    document.getElementById('mini-player').classList.remove('translate-y-40');
-    updatePlayIcons(true);
-}
-
-function nextTrack() {
-    let next = currentTrackIndex + 1;
-    if(next >= allSongs.length) next = 0;
-    if(allSongs.length > 0) loadTrack(next);
-}
-
-function prevTrack() {
-    let prev = currentTrackIndex - 1;
-    if(prev < 0) prev = allSongs.length - 1;
-    if(allSongs.length > 0) loadTrack(prev);
-}
-
-// Keep your existing togglePlay, updatePlayIcons, toggleVault, renderVault, 
-// showView, openPlayer, closePlayer, formatTime, login and window.onload functions here...
-
-function togglePlay() {
-    if(audio.paused) { audio.play(); updatePlayIcons(true); }
-    else { audio.pause(); updatePlayIcons(false); }
-}
-
-function updatePlayIcons(isPlaying) {
-    const icon = isPlaying ? '<i class="fa-solid fa-pause"></i>' : '<i class="fa-solid fa-play"></i>';
-    playBtn.innerHTML = icon;
-    miniPlayBtn.innerHTML = icon;
-}
-
-function toggleVault(id) {
-    const song = allSongs.find(s => s.id === id);
-    const index = userPlaylist.findIndex(s => s.id === id);
-    if (index > -1) userPlaylist.splice(index, 1);
-    else userPlaylist.push(song);
-    localStorage.setItem('rhk_vault', JSON.stringify(userPlaylist));
-    renderTracks();
-    renderVault();
-}
-
-function renderVault() {
-    const list = document.getElementById('library-list');
-    document.getElementById('vault-count').innerText = `${userPlaylist.length} TRACKS`;
-    if(userPlaylist.length === 0) {
-        list.innerHTML = `<div class="py-20 text-center opacity-20 font-bold">YOUR VAULT IS EMPTY</div>`;
-        return;
-    }
-    list.innerHTML = userPlaylist.map(song => `
-        <div class="flex items-center bg-[#111] p-3 rounded-2xl border border-white/5 animate-fade-in">
-            <div class="flex flex-1 items-center gap-4" onclick="loadTrackById(${song.id})">
-                <img src="${song.image}" class="w-12 h-12 rounded-lg object-cover bg-black">
-                <div><h5 class="text-sm font-bold">${song.name}</h5><p class="text-[9px] opacity-40 font-bold uppercase">Stored in Vault</p></div>
+function render() {
+    const grid = document.getElementById('song-grid');
+    grid.innerHTML = allSongs.map((s, i) => `
+        <div class="glass p-4 rounded-3xl flex items-center gap-4 active:scale-95 transition-all" onclick="playSong(${i})">
+            <img src="${s.image}" class="w-16 h-16 rounded-2xl object-cover">
+            <div class="flex-1">
+                <h3 class="font-bold text-sm">${s.titel}</h3>
+                <p class="text-[10px] opacity-40 font-bold uppercase">${s.artist}</p>
             </div>
-            <button onclick="toggleVault(${song.id})" class="w-10 h-10 text-red-500/50"><i class="fa-solid fa-trash"></i></button>
+            <div class="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center">
+                <i class="fa-solid fa-play text-[10px]"></i>
+            </div>
         </div>
     `).join('');
 }
 
-function loadTrackById(id) {
-    const idx = allSongs.findIndex(s => s.id === id);
-    if(idx !== -1) loadTrack(idx);
+function playSong(i) {
+    currentIndex = i;
+    const s = allSongs[i];
+    audio.src = s.url;
+    audio.play();
+    
+    // Update Mini Player
+    document.getElementById('mini-title').innerText = s.titel;
+    document.getElementById('mini-artist').innerText = s.artist;
+    document.getElementById('mini-thumb').src = s.image;
+    document.getElementById('mini-player').classList.remove('translate-y-40');
+    playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
 }
 
-function showView(view) {
-    document.getElementById('home-view').classList.toggle('hidden', view !== 'home');
-    document.getElementById('library-view').classList.toggle('hidden', view !== 'library');
-    document.getElementById('nav-home').classList.toggle('active', view === 'home');
-    document.getElementById('nav-lib').classList.toggle('active', view === 'library');
-}
-
-function openPlayer() { document.getElementById('full-player').classList.remove('translate-y-full'); }
-function closePlayer() { document.getElementById('full-player').classList.add('translate-y-full'); }
-
-audio.ontimeupdate = () => {
-    const pct = (audio.currentTime / audio.duration) * 100 || 0;
-    document.getElementById('seek-bar-fill').style.width = pct + '%';
-    document.getElementById('cur-time').innerText = formatTime(audio.currentTime);
-    document.getElementById('dur-time').innerText = formatTime(audio.duration || 0);
+playBtn.onclick = (e) => {
+    e.stopPropagation();
+    if(audio.paused) {
+        audio.play();
+        playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+    } else {
+        audio.pause();
+        playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+    }
 };
 
-function formatTime(s) {
-    return Math.floor(s/60) + ":" + Math.floor(s%60).toString().padStart(2, '0');
-}
-
-playBtn.onclick = togglePlay;
-miniPlayBtn.onclick = (e) => { e.stopPropagation(); togglePlay(); };
-
-function login() {
-    const val = document.getElementById('name-input').value;
-    if(val) { localStorage.setItem('rhk_user', val); location.reload(); }
-}
-
-function clearAllData() {
-    if(confirm("Wipe Database?")) { localStorage.clear(); location.reload(); }
-}
-
-window.onload = () => {
-    const user = localStorage.getItem('rhk_user');
-    if(!user) document.getElementById('auth-modal').classList.remove('hidden');
-    else document.getElementById('user-tag').innerText = user.toUpperCase();
-    renderTracks();
-    renderVault();
+audio.onended = () => {
+    currentIndex = (currentIndex + 1) % allSongs.length;
+    playSong(currentIndex);
 };
+
+window.onload = render;
