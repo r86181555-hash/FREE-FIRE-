@@ -7,120 +7,50 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        body { background: radial-gradient(circle at top right, #1e1b4b, #000); font-family: 'Outfit', sans-serif; overflow: hidden; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .active-nav { color: #8b5cf6; text-shadow: 0 0 15px rgba(139, 92, 246, 0.5); }
+        ::-webkit-scrollbar { display: none; }
+    </style>
 </head>
-<body class="bg-[#000] text-white font-['Outfit'] overflow-hidden">
+<body class="text-white h-screen flex flex-col">
 
     <audio id="main-audio"></audio>
 
-    <div class="h-screen flex flex-col relative">
-        <header class="p-6 flex justify-between items-center z-20 bg-black/50 backdrop-blur-xl">
-            <h1 id="admin-trigger" class="text-2xl font-900 tracking-tighter italic text-violet-500 select-none">RHK STUDIO</h1>
-            <div id="user-tag" class="text-[10px] font-bold bg-white/10 px-3 py-1 rounded-full border border-white/10">MEMBER</div>
-        </header>
-
-        <main class="flex-1 overflow-y-auto px-4 pt-4 pb-32" id="scroll-container">
-            <div id="home-view" class="space-y-6">
-                <section>
-                    <h2 class="text-3xl font-900 mb-4 px-2">Studio <span class="text-violet-500">Library</span></h2>
-                    <div id="home-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
-                </section>
-            </div>
-
-            <div id="library-view" class="hidden animate-fade-in">
-                <div class="flex justify-between items-end mb-6 px-2">
-                    <h2 class="text-4xl font-900">Your <span class="text-fuchsia-500">Vault</span></h2>
-                    <span id="vault-count" class="text-xs font-bold text-white/40">0 TRACKS</span>
-                </div>
-                <div id="library-list" class="space-y-2"></div>
-            </div>
-        </main>
-
-        <div id="mini-player" class="fixed bottom-24 left-4 right-4 bg-violet-600 rounded-2xl p-3 flex items-center gap-3 shadow-2xl translate-y-40 transition-transform duration-500 z-40" onclick="openPlayer()">
-            <img id="mini-thumb" src="" class="w-12 h-12 rounded-lg object-cover bg-black">
-            <div class="flex-1 overflow-hidden">
-                <h4 id="mini-title" class="text-sm font-bold truncate">Not Playing</h4>
-                <p class="text-[10px] opacity-70 uppercase font-bold tracking-widest">RHK Elite</p>
-            </div>
-            <button id="mini-play-btn" class="w-10 h-10 flex items-center justify-center bg-white text-black rounded-full">
-                <i class="fa-solid fa-play"></i>
-            </button>
+    <header class="p-6 flex justify-between items-center z-50">
+        <div>
+            <p class="text-[10px] font-bold opacity-40 uppercase tracking-[4px]">Welcome Back</p>
+            <h1 class="text-2xl font-900 tracking-tighter italic">RHK <span class="text-violet-500">STUDIO</span></h1>
         </div>
-
-        <nav class="fixed bottom-0 left-0 right-0 h-20 bg-black border-t border-white/5 flex justify-around items-center z-50">
-            <button onclick="showView('home')" id="nav-home" class="nav-item active">
-                <i class="fa-solid fa-house"></i>
-                <span>Studio</span>
-            </button>
-            <button onclick="showView('library')" id="nav-lib" class="nav-item">
-                <i class="fa-solid fa-folder-open"></i>
-                <span>Vault</span>
-            </button>
-        </nav>
-    </div>
-
-    <div id="full-player" class="fixed inset-0 bg-[#0a0a0a] z-[100] translate-y-full transition-transform duration-500 flex flex-col">
-        <div class="p-8 flex justify-between">
-            <button onclick="closePlayer()" class="text-xl opacity-50"><i class="fa-solid fa-chevron-down"></i></button>
-            <span class="text-[10px] font-black tracking-[0.4em] opacity-40 uppercase">RHK Elite Playback</span>
-            <div class="w-5"></div>
+        <div class="w-10 h-10 glass rounded-full flex items-center justify-center border border-white/10">
+            <i class="fa-solid fa-magnifying-glass text-xs opacity-50"></i>
         </div>
+    </header>
+
+    <main class="flex-1 overflow-y-auto px-6 pb-40">
+        <h2 class="text-xl font-bold mb-6">Trending <span class="opacity-40 font-normal">Playlist</span></h2>
         
-        <div class="flex-1 flex flex-col items-center justify-center px-10">
-            <div class="w-full aspect-square rounded-[2rem] shadow-[0_40px_80px_rgba(0,0,0,0.6)] overflow-hidden mb-12 border border-white/5">
-                <img id="big-thumb" src="" class="w-full h-full object-cover scale-105">
+        <div id="song-grid" class="grid grid-cols-1 gap-4">
             </div>
-            <div class="w-full text-left mb-10">
-                <h2 id="big-title" class="text-3xl font-900 tracking-tighter mb-1">Track Name</h2>
-                <p class="text-violet-500 font-bold tracking-widest text-xs uppercase">Elite Member Track</p>
-            </div>
-            <div class="w-full mb-10">
-                <div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden" id="seek-bar-bg">
-                    <div id="seek-bar-fill" class="h-full bg-white w-0 shadow-[0_0_15px_white]"></div>
-                </div>
-                <div class="flex justify-between mt-3 text-[10px] font-bold opacity-40">
-                    <span id="cur-time">0:00</span>
-                    <span id="dur-time">0:00</span>
-                </div>
-            </div>
-            <div class="flex items-center gap-10">
-                <button onclick="prevTrack()" class="text-2xl"><i class="fa-solid fa-backward-step"></i></button>
-                <button id="main-play-btn" class="w-20 h-20 bg-white text-black rounded-full text-3xl flex items-center justify-center">
-                    <i class="fa-solid fa-play"></i>
-                </button>
-                <button onclick="nextTrack()" class="text-2xl"><i class="fa-solid fa-forward-step"></i></button>
-            </div>
+    </main>
+
+    <div id="mini-player" class="fixed bottom-24 left-4 right-4 glass p-3 rounded-3xl flex items-center gap-4 shadow-2xl translate-y-40 transition-transform duration-700 z-50" onclick="toggleFullPlayer(true)">
+        <img id="mini-thumb" src="" class="w-14 h-14 rounded-2xl object-cover shadow-lg">
+        <div class="flex-1 overflow-hidden">
+            <h4 id="mini-title" class="text-sm font-bold truncate">Not Playing</h4>
+            <p id="mini-artist" class="text-[10px] opacity-40 font-bold uppercase">RHK Elite</p>
         </div>
+        <button id="play-pause-btn" class="w-12 h-12 bg-white text-black rounded-full flex items-center justify-center shadow-lg">
+            <i class="fa-solid fa-play"></i>
+        </button>
     </div>
 
-    <div id="admin-modal" class="fixed inset-0 z-[300] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-8 hidden">
-        <div class="w-full max-w-sm animate-fade-in">
-            <h3 class="text-3xl font-900 mb-6">ADMIN <span class="text-violet-500">STUDIO</span></h3>
-            <div class="space-y-4">
-                <input type="text" id="admin-name" placeholder="Song Name" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none">
-                <input type="text" id="admin-url" placeholder="Audio URL (.mp3 link)" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none">
-                
-                <label class="block w-full bg-white/5 border border-white/10 p-6 rounded-xl text-center cursor-pointer">
-                    <span id="file-label" class="text-[10px] font-bold uppercase tracking-widest opacity-40">Upload Cover Image</span>
-                    <input type="file" id="admin-file" accept="image/*" class="hidden" onchange="previewImage(this)">
-                </label>
-
-                <div class="flex gap-2">
-                    <button onclick="addSong()" class="flex-1 py-4 bg-violet-600 text-white font-900 rounded-xl">SAVE TRACK</button>
-                    <button onclick="toggleAdmin(false)" class="px-6 py-4 bg-white/10 font-bold rounded-xl">CLOSE</button>
-                </div>
-                <button onclick="clearAllData()" class="w-full py-2 text-[10px] text-red-500 opacity-30 font-bold uppercase tracking-widest mt-4">Reset Studio Database</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="auth-modal" class="fixed inset-0 z-[200] bg-black flex items-center justify-center p-8 hidden">
-        <div class="w-full">
-            <h1 class="text-5xl font-900 mb-8 italic">READY<br><span class="text-violet-600">STUDIO?</span></h1>
-            <input type="text" id="name-input" placeholder="User Name" class="w-full bg-transparent border-b-2 border-white/20 py-4 text-2xl outline-none mb-10">
-            <button onclick="login()" class="w-full py-5 bg-white text-black font-900 uppercase tracking-widest rounded-xl">Initialize</button>
-        </div>
-    </div>
+    <nav class="fixed bottom-0 left-0 right-0 h-20 bg-black/80 backdrop-blur-xl border-t border-white/5 flex justify-around items-center z-50">
+        <div class="flex flex-col items-center active-nav"><i class="fa-solid fa-house mb-1"></i><span class="text-[8px] font-bold">HOME</span></div>
+        <div class="flex flex-col items-center opacity-30"><i class="fa-solid fa-compass mb-1"></i><span class="text-[8px] font-bold">EXPLORE</span></div>
+        <div class="flex flex-col items-center opacity-30"><i class="fa-solid fa-heart mb-1"></i><span class="text-[8px] font-bold">FAV</span></div>
+    </nav>
 
     <script src="script.js"></script>
 </body>
