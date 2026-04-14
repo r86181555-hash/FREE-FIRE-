@@ -1,47 +1,102 @@
-const totalTracks = 1000;
+let allSongs = JSON.parse(localStorage.getItem('rhk_songs')) || [];
 let userPlaylist = JSON.parse(localStorage.getItem('rhk_vault')) || [];
-let currentTrackId = null;
+let currentTrackIndex = 0;
+let tempImageData = "";
 
 const audio = document.getElementById('main-audio');
 const playBtn = document.getElementById('main-play-btn');
 const miniPlayBtn = document.getElementById('mini-play-btn');
 
-// 1. Generate 1000 Tracks
+// --- ADMIN FUNCTIONS ---
+function toggleAdmin(show) {
+    document.getElementById('admin-modal').classList.toggle('hidden', !show);
+}
+
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            tempImageData = e.target.result;
+            document.getElementById('file-label').innerText = "Image Loaded ✓";
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function addSong() {
+    const name = document.getElementById('admin-name').value;
+    const url = document.getElementById('admin-url').value;
+
+    if(!name || !url || !tempImageData) return alert("Please fill all fields!");
+
+    const newSong = {
+        id: Date.now(),
+        name: name,
+        url: url,
+        image: tempImageData
+    };
+
+    allSongs.push(newSong);
+    localStorage.setItem('rhk_songs', JSON.stringify(allSongs));
+    
+    // Clear form
+    document.getElementById('admin-name').value = "";
+    document.getElementById('admin-url').value = "";
+    tempImageData = "";
+    document.getElementById('file-label').innerText = "Select Track Image";
+    
+    toggleAdmin(false);
+    renderTracks();
+}
+
+function clearAllData() {
+    if(confirm("Delete all songs?")) {
+        localStorage.removeItem('rhk_songs');
+        localStorage.removeItem('rhk_vault');
+        location.reload();
+    }
+}
+
+// --- CORE STUDIO LOGIC ---
 function renderTracks() {
     const grid = document.getElementById('home-grid');
-    let html = '';
-    for(let i = 1; i <= totalTracks; i++) {
-        const isInVault = userPlaylist.includes(i);
-        html += `
-            <div class="track-card">
-                <div class="relative aspect-square mb-3 overflow-hidden rounded-xl" onclick="loadTrack(${i})">
-                    <img src="${i}.jpg" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/300/111?text=RHK+${i}'">
+    if(allSongs.length === 0) {
+        grid.innerHTML = '<div class="col-span-2 py-20 text-center opacity-20 text-xs font-bold uppercase tracking-widest">No Tracks in Studio</div>';
+        return;
+    }
+
+    grid.innerHTML = allSongs.map((song, index) => {
+        const isInVault = userPlaylist.some(s => s.id === song.id);
+        return `
+            <div class="track-card animate-fade-in">
+                <div class="relative aspect-square mb-3 overflow-hidden rounded-xl" onclick="loadTrack(${index})">
+                    <img src="${song.image}" class="w-full h-full object-cover">
                 </div>
                 <div class="flex items-center justify-between">
-                    <div class="overflow-hidden mr-2" onclick="loadTrack(${i})">
-                        <p class="text-[11px] font-bold truncate">Track ID #${i}</p>
-                        <p class="text-[8px] opacity-40 font-bold uppercase">Series RHK</p>
+                    <div class="overflow-hidden mr-2" onclick="loadTrack(${index})">
+                        <p class="text-[11px] font-bold truncate">${song.name}</p>
+                        <p class="text-[8px] opacity-40 font-bold uppercase">RHK Elite</p>
                     </div>
-                    <button onclick="toggleVault(${i})" id="btn-${i}" class="text-lg ${isInVault ? 'text-violet-500' : 'opacity-20'}">
+                    <button onclick="toggleVault(${song.id})" class="text-lg ${isInVault ? 'text-violet-500' : 'opacity-20'}">
                         <i class="fa-solid ${isInVault ? 'fa-circle-check' : 'fa-circle-plus'}"></i>
                     </button>
                 </div>
             </div>`;
-    }
-    grid.innerHTML = html;
+    }).join('');
 }
 
-// 2. Load & Play
-function loadTrack(id) {
-    currentTrackId = id;
-    audio.src = `${id}.mp3`;
+function loadTrack(index) {
+    currentTrackIndex = index;
+    const song = allSongs[index];
+    
+    audio.src = song.url;
     audio.play();
     
     // Update UI
-    document.getElementById('mini-title').innerText = `Track ID #${id}`;
-    document.getElementById('big-title').innerText = `Track ID #${id}`;
-    document.getElementById('mini-thumb').src = `${id}.jpg`;
-    document.getElementById('big-thumb').src = `${id}.jpg`;
+    document.getElementById('mini-title').innerText = song.name;
+    document.getElementById('big-title').innerText = song.name;
+    document.getElementById('mini-thumb').src = song.image;
+    document.getElementById('big-thumb').src = song.image;
     
     document.getElementById('mini-player').classList.remove('translate-y-40');
     updatePlayIcons(true);
@@ -58,14 +113,16 @@ function updatePlayIcons(isPlaying) {
     miniPlayBtn.innerHTML = icon;
 }
 
-// 3. Playlist / Vault Logic
 function toggleVault(id) {
-    const index = userPlaylist.indexOf(id);
+    const song = allSongs.find(s => s.id === id);
+    const index = userPlaylist.findIndex(s => s.id === id);
+    
     if (index > -1) {
-        userPlaylist.splice(index, 1); // Delete
+        userPlaylist.splice(index, 1);
     } else {
-        userPlaylist.push(id); // Add
+        userPlaylist.push(song);
     }
+    
     localStorage.setItem('rhk_vault', JSON.stringify(userPlaylist));
     renderTracks();
     renderVault();
@@ -80,21 +137,39 @@ function renderVault() {
         return;
     }
 
-    list.innerHTML = userPlaylist.map(id => `
+    list.innerHTML = userPlaylist.map(song => `
         <div class="flex items-center bg-[#111] p-3 rounded-2xl border border-white/5 animate-fade-in">
-            <div class="flex flex-1 items-center gap-4" onclick="loadTrack(${id})">
-                <img src="${id}.jpg" class="w-12 h-12 rounded-lg bg-black" onerror="this.src='https://via.placeholder.com/100/111?text=${id}'">
+            <div class="flex flex-1 items-center gap-4" onclick="loadTrackById(${song.id})">
+                <img src="${song.image}" class="w-12 h-12 rounded-lg object-cover bg-black">
                 <div>
-                    <h5 class="text-sm font-bold">Track #${id}</h5>
+                    <h5 class="text-sm font-bold">${song.name}</h5>
                     <p class="text-[9px] opacity-40 font-bold uppercase">Stored in Vault</p>
                 </div>
             </div>
-            <button onclick="toggleVault(${id})" class="w-10 h-10 text-red-500/50"><i class="fa-solid fa-trash"></i></button>
+            <button onclick="toggleVault(${song.id})" class="w-10 h-10 text-red-500/50"><i class="fa-solid fa-trash"></i></button>
         </div>
     `).join('');
 }
 
-// 4. Navigation & UI Controls
+function loadTrackById(id) {
+    const idx = allSongs.findIndex(s => s.id === id);
+    if(idx !== -1) loadTrack(idx);
+}
+
+// Controls
+function nextTrack() {
+    let next = currentTrackIndex + 1;
+    if(next >= allSongs.length) next = 0;
+    loadTrack(next);
+}
+
+function prevTrack() {
+    let prev = currentTrackIndex - 1;
+    if(prev < 0) prev = allSongs.length - 1;
+    loadTrack(prev);
+}
+
+// Standard UI Logic
 function showView(view) {
     document.getElementById('home-view').classList.toggle('hidden', view !== 'home');
     document.getElementById('library-view').classList.toggle('hidden', view !== 'library');
@@ -116,14 +191,9 @@ function formatTime(s) {
     return Math.floor(s/60) + ":" + Math.floor(s%60).toString().padStart(2, '0');
 }
 
-// Controls
 playBtn.onclick = togglePlay;
 miniPlayBtn.onclick = (e) => { e.stopPropagation(); togglePlay(); };
 
-function nextTrack() { loadTrack(currentTrackId < totalTracks ? currentTrackId + 1 : 1); }
-function prevTrack() { loadTrack(currentTrackId > 1 ? currentTrackId - 1 : totalTracks); }
-
-// Auth logic
 function login() {
     const val = document.getElementById('name-input').value;
     if(val) {
