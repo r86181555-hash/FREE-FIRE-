@@ -7,17 +7,41 @@ const audio = document.getElementById('main-audio');
 const playBtn = document.getElementById('main-play-btn');
 const miniPlayBtn = document.getElementById('mini-play-btn');
 
-// --- ADMIN FUNCTIONS ---
+// --- 1. AUTO-PLAY NEXT SONG ---
+audio.onended = () => {
+    nextTrack();
+};
+
+// --- 2. SECRET ADMIN TRIGGER (Long Press RHK STUDIO) ---
+const adminTrigger = document.getElementById('admin-trigger');
+let pressTimer;
+
+adminTrigger.addEventListener('mousedown', startPress);
+adminTrigger.addEventListener('touchstart', startPress);
+adminTrigger.addEventListener('mouseup', cancelPress);
+adminTrigger.addEventListener('touchend', cancelPress);
+
+function startPress() {
+    pressTimer = window.setTimeout(() => {
+        toggleAdmin(true);
+    }, 3000); // 3 Seconds to open
+}
+
+function cancelPress() {
+    clearTimeout(pressTimer);
+}
+
 function toggleAdmin(show) {
     document.getElementById('admin-modal').classList.toggle('hidden', !show);
 }
 
+// --- 3. CORE LOGIC (Modified for your Admin needs) ---
 function previewImage(input) {
     if (input.files && input.files[0]) {
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = (e) => {
             tempImageData = e.target.result;
-            document.getElementById('file-label').innerText = "Image Loaded ✓";
+            document.getElementById('file-label').innerText = "IMAGE READY ✓";
         }
         reader.readAsDataURL(input.files[0]);
     }
@@ -27,41 +51,25 @@ function addSong() {
     const name = document.getElementById('admin-name').value;
     const url = document.getElementById('admin-url').value;
 
-    if(!name || !url || !tempImageData) return alert("Please fill all fields!");
+    if(!name || !url || !tempImageData) return alert("Fill all details!");
 
-    const newSong = {
-        id: Date.now(),
-        name: name,
-        url: url,
-        image: tempImageData
-    };
-
-    allSongs.push(newSong);
+    allSongs.push({ id: Date.now(), name, url, image: tempImageData });
     localStorage.setItem('rhk_songs', JSON.stringify(allSongs));
     
-    // Clear form
+    // Clear Form
     document.getElementById('admin-name').value = "";
     document.getElementById('admin-url').value = "";
     tempImageData = "";
-    document.getElementById('file-label').innerText = "Select Track Image";
+    document.getElementById('file-label').innerText = "Upload Cover Image";
     
     toggleAdmin(false);
     renderTracks();
 }
 
-function clearAllData() {
-    if(confirm("Delete all songs?")) {
-        localStorage.removeItem('rhk_songs');
-        localStorage.removeItem('rhk_vault');
-        location.reload();
-    }
-}
-
-// --- CORE STUDIO LOGIC ---
 function renderTracks() {
     const grid = document.getElementById('home-grid');
     if(allSongs.length === 0) {
-        grid.innerHTML = '<div class="col-span-2 py-20 text-center opacity-20 text-xs font-bold uppercase tracking-widest">No Tracks in Studio</div>';
+        grid.innerHTML = '<div class="col-span-2 py-20 text-center opacity-20 text-xs font-bold uppercase tracking-widest">Studio Empty</div>';
         return;
     }
 
@@ -88,19 +96,31 @@ function renderTracks() {
 function loadTrack(index) {
     currentTrackIndex = index;
     const song = allSongs[index];
-    
     audio.src = song.url;
     audio.play();
     
-    // Update UI
     document.getElementById('mini-title').innerText = song.name;
     document.getElementById('big-title').innerText = song.name;
     document.getElementById('mini-thumb').src = song.image;
     document.getElementById('big-thumb').src = song.image;
-    
     document.getElementById('mini-player').classList.remove('translate-y-40');
     updatePlayIcons(true);
 }
+
+function nextTrack() {
+    let next = currentTrackIndex + 1;
+    if(next >= allSongs.length) next = 0;
+    if(allSongs.length > 0) loadTrack(next);
+}
+
+function prevTrack() {
+    let prev = currentTrackIndex - 1;
+    if(prev < 0) prev = allSongs.length - 1;
+    if(allSongs.length > 0) loadTrack(prev);
+}
+
+// Keep your existing togglePlay, updatePlayIcons, toggleVault, renderVault, 
+// showView, openPlayer, closePlayer, formatTime, login and window.onload functions here...
 
 function togglePlay() {
     if(audio.paused) { audio.play(); updatePlayIcons(true); }
@@ -116,13 +136,8 @@ function updatePlayIcons(isPlaying) {
 function toggleVault(id) {
     const song = allSongs.find(s => s.id === id);
     const index = userPlaylist.findIndex(s => s.id === id);
-    
-    if (index > -1) {
-        userPlaylist.splice(index, 1);
-    } else {
-        userPlaylist.push(song);
-    }
-    
+    if (index > -1) userPlaylist.splice(index, 1);
+    else userPlaylist.push(song);
     localStorage.setItem('rhk_vault', JSON.stringify(userPlaylist));
     renderTracks();
     renderVault();
@@ -131,20 +146,15 @@ function toggleVault(id) {
 function renderVault() {
     const list = document.getElementById('library-list');
     document.getElementById('vault-count').innerText = `${userPlaylist.length} TRACKS`;
-    
     if(userPlaylist.length === 0) {
         list.innerHTML = `<div class="py-20 text-center opacity-20 font-bold">YOUR VAULT IS EMPTY</div>`;
         return;
     }
-
     list.innerHTML = userPlaylist.map(song => `
         <div class="flex items-center bg-[#111] p-3 rounded-2xl border border-white/5 animate-fade-in">
             <div class="flex flex-1 items-center gap-4" onclick="loadTrackById(${song.id})">
                 <img src="${song.image}" class="w-12 h-12 rounded-lg object-cover bg-black">
-                <div>
-                    <h5 class="text-sm font-bold">${song.name}</h5>
-                    <p class="text-[9px] opacity-40 font-bold uppercase">Stored in Vault</p>
-                </div>
+                <div><h5 class="text-sm font-bold">${song.name}</h5><p class="text-[9px] opacity-40 font-bold uppercase">Stored in Vault</p></div>
             </div>
             <button onclick="toggleVault(${song.id})" class="w-10 h-10 text-red-500/50"><i class="fa-solid fa-trash"></i></button>
         </div>
@@ -156,20 +166,6 @@ function loadTrackById(id) {
     if(idx !== -1) loadTrack(idx);
 }
 
-// Controls
-function nextTrack() {
-    let next = currentTrackIndex + 1;
-    if(next >= allSongs.length) next = 0;
-    loadTrack(next);
-}
-
-function prevTrack() {
-    let prev = currentTrackIndex - 1;
-    if(prev < 0) prev = allSongs.length - 1;
-    loadTrack(prev);
-}
-
-// Standard UI Logic
 function showView(view) {
     document.getElementById('home-view').classList.toggle('hidden', view !== 'home');
     document.getElementById('library-view').classList.toggle('hidden', view !== 'library');
@@ -196,17 +192,17 @@ miniPlayBtn.onclick = (e) => { e.stopPropagation(); togglePlay(); };
 
 function login() {
     const val = document.getElementById('name-input').value;
-    if(val) {
-        localStorage.setItem('rhk_user', val);
-        location.reload();
-    }
+    if(val) { localStorage.setItem('rhk_user', val); location.reload(); }
+}
+
+function clearAllData() {
+    if(confirm("Wipe Database?")) { localStorage.clear(); location.reload(); }
 }
 
 window.onload = () => {
     const user = localStorage.getItem('rhk_user');
     if(!user) document.getElementById('auth-modal').classList.remove('hidden');
     else document.getElementById('user-tag').innerText = user.toUpperCase();
-    
     renderTracks();
     renderVault();
 };
