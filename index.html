@@ -2,51 +2,147 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RHK ELITE | STUDIO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RHK MUSIC | ELITE</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background: #0b0b15; font-family: 'Outfit', sans-serif; color: white; overflow: hidden; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .nav-active { color: #8b5cf6; filter: drop-shadow(0 0 8px #8b5cf6); }
-        .hide-scroll::-webkit-scrollbar { display: none; }
+        :root { --spotify-green: #1DB954; --dark-bg: #0a0a0a; }
+        body { background-color: var(--dark-bg); font-family: 'Outfit', sans-serif; color: white; overflow: hidden; }
+        
+        /* Screen Transitions */
+        .screen { position: absolute; inset: 0; display: none; flex-direction: column; padding-bottom: 90px; }
+        .active-screen { display: flex; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Full Screen Player Overlay */
+        #player-screen { 
+            position: fixed; top: 100%; left: 0; width: 100%; height: 100%; 
+            background: linear-gradient(to bottom, #1e1e1e, #000); 
+            z-index: 500; transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+            display: flex; flex-direction: column; padding: 40px 25px;
+        }
+        #player-screen.up { transform: translateY(-100%); }
+
+        .glass-nav { background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.05); }
+        .category-pill { padding: 8px 20px; border-radius: 25px; font-size: 13px; font-weight: 600; background: #282828; white-space: nowrap; transition: 0.3s; }
+        .pill-active { background: white; color: black; }
+        
+        .spinning-disk { width: 300px; height: 300px; border-radius: 15px; box-shadow: 0 30px 60px rgba(0,0,0,0.8); }
+        input[type="range"] { accent-color: var(--spotify-green); height: 4px; }
+        ::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="h-screen flex flex-col">
+<body>
+
+    <div id="splash" class="fixed inset-0 bg-black z-[1000] flex flex-col items-center justify-center">
+        <div class="text-4xl font-800 italic text-green-500 tracking-tighter">RHK MUSIC</div>
+        <div class="mt-4 w-40 h-1 bg-white/10 rounded-full overflow-hidden">
+            <div class="h-full bg-green-500 animate-[loading_2s_linear]"></div>
+        </div>
+    </div>
+
     <audio id="main-audio"></audio>
 
-    <header class="p-6 space-y-4">
-        <div class="flex justify-between items-center">
-            <h1 class="text-2xl font-900 italic text-violet-500">RHK STUDIO</h1>
-            <div class="w-10 h-10 glass rounded-full flex items-center justify-center"><i class="fa-solid fa-user text-xs opacity-40"></i></div>
+    <div id="screen-home" class="screen active-screen overflow-y-auto">
+        <div class="relative h-80 shrink-0">
+            <img id="header-img" src="https://mofgpijvfbzrvikwvzxl.supabase.co/storage/v1/object/public/RHK%20MUSIC/file_00000000593c7208ab7159e15bbbb7bb.png" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent"></div>
+            <div class="absolute bottom-6 left-6">
+                <h1 id="header-text" class="text-5xl font-800 tracking-tighter">Browse All</h1>
+            </div>
         </div>
-        <div class="glass flex items-center px-4 py-3 rounded-2xl">
-            <i class="fa-solid fa-magnifying-glass opacity-30 mr-3"></i>
-            <input type="text" id="search-input" placeholder="Search your vibe..." class="bg-transparent border-none outline-none text-sm w-full" oninput="searchSongs()">
+        
+        <div class="px-5 space-y-6">
+            <div class="flex gap-3 overflow-x-auto pb-2">
+                <button onclick="changeCategory('All')" class="category-pill pill-active">All</button>
+                <button onclick="changeCategory('Dhurandhar')" class="category-pill">Dhurandhar</button>
+                <button onclick="changeCategory('Others')" class="category-pill">Others</button>
+            </div>
+            <div id="song-list-home" class="space-y-1 pb-10"></div>
         </div>
-    </header>
+    </div>
 
-    <main class="flex-1 overflow-y-auto px-6 pb-32 hide-scroll">
-        <div id="section-title" class="text-xl font-bold mb-6">Trending <span class="opacity-30">Studio</span></div>
-        <div id="song-list" class="space-y-4"></div>
-    </main>
+    <div id="screen-liked" class="screen overflow-y-auto p-6">
+        <h1 class="text-3xl font-800 mb-8 mt-10">Your Library</h1>
+        <div id="song-list-liked" class="space-y-1"></div>
+    </div>
 
-    <div id="mini-player" class="fixed bottom-24 left-4 right-4 glass p-3 rounded-3xl flex items-center gap-4 translate-y-40 transition-transform duration-500" onclick="togglePlay()">
-        <img id="mini-thumb" src="" class="w-14 h-14 rounded-2xl object-cover bg-white/5">
-        <div class="flex-1 overflow-hidden">
-            <h4 id="mini-title" class="text-sm font-bold truncate italic">Select a track</h4>
-            <p class="text-[10px] opacity-40 font-bold uppercase tracking-widest">RHK Elite</p>
+    <div id="screen-search" class="screen p-6">
+        <h1 class="text-3xl font-800 mb-6 mt-10">Search</h1>
+        <div class="bg-[#282828] flex items-center px-4 py-3 rounded-xl mb-6">
+            <i class="fa-solid fa-magnifying-glass opacity-40 mr-3"></i>
+            <input type="text" id="search-bar" oninput="handleSearch()" placeholder="Artists, songs, or categories" class="bg-transparent border-none outline-none w-full text-sm">
         </div>
-        <button class="w-12 h-12 bg-white text-black rounded-full flex items-center justify-center shadow-lg">
-            <i id="mini-play-icon" class="fa-solid fa-play"></i>
+        <div id="song-list-search" class="space-y-1 overflow-y-auto"></div>
+    </div>
+
+    <div id="mini-player" class="fixed bottom-24 left-3 right-3 bg-[#282828] p-2 rounded-xl flex items-center gap-3 z-[400] hidden" onclick="togglePlayerView(true)">
+        <img id="mini-img" src="" class="w-10 h-10 rounded-lg object-cover">
+        <div class="flex-1 min-w-0">
+            <h4 id="mini-name" class="text-xs font-bold truncate">Song Title</h4>
+            <p id="mini-cat" class="text-[10px] opacity-50 uppercase font-bold">Category</p>
+        </div>
+        <button onclick="event.stopPropagation(); togglePlay()" class="w-10 h-10 flex items-center justify-center text-xl">
+            <i id="mini-play-btn" class="fa-solid fa-play"></i>
         </button>
     </div>
 
-    <nav class="fixed bottom-0 left-0 right-0 h-20 bg-black/80 backdrop-blur-2xl border-t border-white/5 flex justify-around items-center">
-        <button onclick="changeTab('home')" id="nav-home" class="flex flex-col items-center nav-active"><i class="fa-solid fa-house text-xl"></i><span class="text-[8px] mt-1 font-bold">HOME</span></button>
-        <button onclick="changeTab('fav')" id="nav-fav" class="flex flex-col items-center opacity-30"><i class="fa-solid fa-heart text-xl"></i><span class="text-[8px] mt-1 font-bold">FAV</span></button>
+    <div id="player-screen">
+        <div class="flex justify-between items-center mb-12">
+            <i class="fa-solid fa-chevron-down text-2xl" onclick="togglePlayerView(false)"></i>
+            <div class="text-center">
+                <p class="text-[10px] tracking-widest opacity-50 font-bold uppercase">Now Playing</p>
+                <p id="full-cat-name" class="text-xs font-bold">CATEGORY</p>
+            </div>
+            <i class="fa-solid fa-ellipsis text-2xl"></i>
+        </div>
+
+        <div class="flex-1 flex flex-col items-center">
+            <img id="full-img" src="" class="spinning-disk mb-12">
+            
+            <div class="w-full flex justify-between items-start mb-10">
+                <div class="flex-1 min-w-0">
+                    <h2 id="full-name" class="text-2xl font-800 truncate">Song Name</h2>
+                    <p id="full-artist" class="text-lg opacity-60">RHK Music Official</p>
+                </div>
+                <button onclick="handleLike()" class="mt-2"><i id="like-icon" class="fa-regular fa-heart text-2xl"></i></button>
+            </div>
+
+            <div class="w-full space-y-2">
+                <input type="range" id="seek-bar" value="0" class="w-full">
+                <div class="flex justify-between text-[11px] opacity-40 font-bold">
+                    <span id="time-now">0:00</span>
+                    <span id="time-end">0:00</span>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center w-full mt-12 px-4">
+                <i class="fa-solid fa-shuffle text-xl opacity-40"></i>
+                <i class="fa-solid fa-backward-step text-3xl" onclick="prevSong()"></i>
+                <button onclick="togglePlay()" class="w-20 h-20 bg-white text-black rounded-full flex items-center justify-center">
+                    <i id="full-play-btn" class="fa-solid fa-play text-3xl"></i>
+                </button>
+                <i class="fa-solid fa-forward-step text-3xl" onclick="nextSong()"></i>
+                <i class="fa-solid fa-repeat text-xl opacity-40"></i>
+            </div>
+        </div>
+    </div>
+
+    <nav class="fixed bottom-0 inset-x-0 h-20 glass-nav flex justify-around items-center z-[600]">
+        <div onclick="navigateTo('home')" id="nav-home" class="flex flex-col items-center text-white">
+            <i class="fa-solid fa-house-chimney text-xl mb-1"></i>
+            <span class="text-[9px] font-bold">Home</span>
+        </div>
+        <div onclick="navigateTo('search')" id="nav-search" class="flex flex-col items-center text-white/40">
+            <i class="fa-solid fa-magnifying-glass text-xl mb-1"></i>
+            <span class="text-[9px] font-bold">Search</span>
+        </div>
+        <div onclick="navigateTo('liked')" id="nav-liked" class="flex flex-col items-center text-white/40">
+            <i class="fa-solid fa-layer-group text-xl mb-1"></i>
+            <span class="text-[9px] font-bold">Library</span>
+        </div>
     </nav>
 
     <script src="script.js"></script>
