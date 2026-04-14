@@ -1,22 +1,9 @@
-.nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; opacity: 0.3; transition: 0.3s; }
-.nav-item i { font-size: 1.4rem; }
-.nav-item span { font-size: 10px; font-weight: 700; text-transform: uppercase; }
-.nav-item.active { opacity: 1; color: #8b5cf6; transform: translateY(-3px); }
-
-.track-card {
-    background: #111;
-    border-radius: 1.5rem;
-    padding: 10px;
-    transition: 0.3s;
-    border: 1px solid rgba(255,255,255,0.03);
-}
-.track-card:active { transform: scale(0.95); background: #1a1a1a; }
-
-@keyframes fade-in {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-.animate-fade-in { animation: fade-in 0.4s ease-out; }
-
-/* Hide Scrollbars */
-::-webkit-scrollbar { display: none; }
+body { -webkit-tap-highlight-color: transparent; }
+.nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; opacity: 0.4; transition: 0.3s; }
+.nav-item.active { opacity: 1; color: #8b5cf6; }
+.nav-item i { font-size: 20px; }
+.nav-item span { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+.track-card { background: rgba(255,255,255,0.03); padding: 8px; border-radius: 16px; transition: transform 0.2s; }
+.track-card:active { transform: scale(0.95); }
+.animate-fade-in { animation: fadeIn 0.5s ease forwards; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
